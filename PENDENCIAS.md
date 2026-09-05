@@ -30,7 +30,14 @@ O que precisa ser olhado no aparelho:
 
 ### 2. O vetor do logo
 
-Só existe PNG. Sem o `.svg` (ou `.ai`/`.pdf`) não saem:
+✅ O logo do cabeçalho/rodapé já está resolvido: achei `logo.png` (a marca
+real, traço marrom sobre fundo transparente) na pasta do handoff no Drive.
+Ele aparece em branco sólido ali (mesmo truque do protótipo original:
+`filter:brightness(0) invert(1)` sobre o PNG transparente), sem precisar
+de um `.svg` separado.
+
+O que ainda falta é só `.svg`/`.ai`/`.pdf` de verdade pra gerar, em alta
+qualidade e nos formatos certos:
 
 - `favicon.ico`
 - `apple-touch-icon.png` (ícone na tela de início do iPhone)
@@ -38,8 +45,11 @@ Só existe PNG. Sem o `.svg` (ou `.ai`/`.pdf`) não saem:
 - `compartilhar.jpg` (prévia do link no WhatsApp — e o site inteiro é
   atendimento por WhatsApp, então essa imagem é a capa do negócio)
 
-E a cor exata da marca: o marrom do logo **não corresponde a nenhum token**
-do handoff. Enquanto não chega, não existe token para ele.
+A cor exata: medida direto no `logo.png`, o marrom do traço é `#3E1B0F` —
+bem mais escuro que qualquer token atual (o mais próximo, `--terracota-
+-fundo #532C17`, ainda é bem mais claro/avermelhado). Ainda não criei um
+token pra ele nem troquei nada — é decisão de vocês se esse tom entra
+como uma cor nova ou fica só no logo.
 
 ### 3. Fotos e vídeos reais
 

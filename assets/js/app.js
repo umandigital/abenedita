@@ -303,15 +303,9 @@
 
     var ativa = Math.round(ax);
     areas.rotulos.forEach(function (btn, i) {
-      var ligada = i === ativa;
-      btn.style.color = ligada ? btn.getAttribute('data-cor') : 'var(--pedra-txt)';
-      btn.setAttribute('aria-selected', ligada ? 'true' : 'false');
+      btn.setAttribute('aria-selected', i === ativa ? 'true' : 'false');
     });
-    if (areas.barra) {
-      areas.barra.style.transform = 'scaleX(' + (ax / 2).toFixed(3) + ')';
-      var atual = areas.rotulos[ativa];
-      if (atual) areas.barra.style.background = atual.getAttribute('data-cor');
-    }
+    if (areas.barra) areas.barra.style.transform = 'scaleX(' + (ax / 2).toFixed(3) + ')';
 
     $$('[data-painel]', areas.trilho).forEach(function (painel) {
       var k = +painel.getAttribute('data-painel');
