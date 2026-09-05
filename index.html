@@ -367,8 +367,14 @@ a{color:inherit; text-decoration:none}
   .socia--invertida .socia__retrato{order:0}   /* empilhado, inverter só confundiria */
 }
 
-/* Respiro entre seções — filete de giz, no idioma da marca */
-.respiro{display:flex; justify-content:center; padding:var(--s6) 5vw; color:var(--nevoa-txt)}
+/* Respiro entre seções — filete de giz, no idioma da marca.
+   Sócias e Áreas são as duas do mesmo --creme lado a lado: sem uma faixa
+   com tom próprio aqui, a emenda entre as duas dobras desaparece. */
+.respiro{
+  display:flex; justify-content:center; padding:var(--s6) 5vw; color:var(--nevoa-txt);
+  background:var(--creme-alt);
+  box-shadow:inset 0 1px 0 rgba(60,40,20,.1), inset 0 -1px 0 rgba(60,40,20,.1);
+}
 .respiro svg{width:min(320px,70vw); height:auto}
 
 /* =====================================================================
