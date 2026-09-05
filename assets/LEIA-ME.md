@@ -126,12 +126,27 @@ parecia correto em toda conferência por imagem; só o navegador mostrou.
 Confira sempre com
 `ffprobe -show_entries stream=sample_aspect_ratio` — tem que dar `1:1`.
 
-### Pendência: o texto sobre a florada no celular
+### O véu de leitura
 
-Na tela estreita, o texto do topo cai sobre a cena cheia de flores e o
-subtítulo fica no limite da leitura. O protótipo tinha um scrim (gradiente
-escuro à esquerda) marcado como `display:none`. Vale reativá-lo, ou dar um
-fundo ao bloco de texto no celular. Decisão de design, em aberto.
+O texto do topo cai sobre a cena cheia de flores. Medido, o fundo sob o
+subtítulo (pior 5% da área, que é onde a leitura quebra):
+
+| | Sem véu | Com véu |
+|---|---|---|
+| Celular | 2,96:1 | **12,99:1** |
+| Desktop | 2,68:1 | **7,47:1** |
+
+Reprovava nos dois, não só no celular. O protótipo já trazia esse véu, mas
+marcado como `display:none`.
+
+Ele entra com a **mesma opacidade que traz o texto**, escrita pelo laço de
+animação — existe para o texto ser lido, então não faz sentido escurecer a
+cena antes de o texto chegar. A animação inteira roda limpa.
+
+O gradiente muda com a largura: no desktop vem da esquerda, onde o texto
+fica; no celular o texto ocupa quase toda a largura, então um gradiente
+lateral não cobriria nada e ele escurece a faixa horizontal, soltando em cima
+e embaixo para a cena continuar aparecendo.
 
 ### Sobre a taxa de quadros
 

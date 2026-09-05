@@ -154,6 +154,7 @@
     topo.texto   = $('#topoTexto');
     topo.pista   = $('#topoPista');
     topo.petalas = $('#topoPetalas');
+    topo.veu     = $('#topoVeu');
     if (!topo.secao) return;
 
     /* O <source media> escolhe o vídeo certo, mas o poster é um atributo só:
@@ -163,9 +164,11 @@
     if (posterEstreito && telaEstreita.matches) topo.video.poster = posterEstreito;
 
     if (poucoMovimento) {
-      /* Sem scrub: a dobra encolhe para uma tela e o texto já entra pronto. */
+      /* Sem scrub: a dobra encolhe para uma tela e o texto já entra pronto —
+         e o véu junto com ele, senão o texto fica sobre as flores. */
       topo.secao.style.height = '100svh';
       if (topo.texto) { topo.texto.style.opacity = '1'; topo.texto.style.transform = 'none'; }
+      if (topo.veu) topo.veu.style.opacity = '1';
       mostraCabecalho(1);
       return;
     }
@@ -235,6 +238,7 @@
       topo.texto.style.transform = 'translateY(' + ((1 - entrada) * 28).toFixed(1) + 'px)';
       topo.texto.style.pointerEvents = entrada > 0.5 ? 'auto' : 'none';
     }
+    if (topo.veu) topo.veu.style.opacity = entrada;
     mostraCabecalho(entrada);
     if (topo.pista) topo.pista.style.opacity = Math.max(0, 1 - entrada * 1.4).toFixed(3);
 
