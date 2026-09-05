@@ -338,18 +338,18 @@ a{color:inherit; text-decoration:none}
 
 /* =====================================================================
    02 · SÓCIAS
-   Os dois quadros pendurados vêm de uma imagem só (assets/img/socias-
-   -molduras.webp) — recorte com transparência mandado pronto, sem CSS
-   tentando reconstruir moldura/cordão/prego. Embaixo, nome e texto de
-   cada uma, na mesma largura de cada quadro.
+   O quadro pendurado (moldura+cordão+prego, com transparência, mandado
+   pronto) é uma imagem por sócia, recortada ao meio da imagem original —
+   assim cada quadro cai na mesma coluna do nome/texto dela, em vez de um
+   quadro largo centralizado por cima de uma grade de texto mais larga.
    ===================================================================== */
-.socias__molduras{grid-column:1/-1; margin:0 0 var(--s3); text-align:center}
-.socias__molduras img{width:100%; max-width:640px; height:auto; margin-inline:auto}
 .socias-grade{
   display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,72px);
   margin-top:var(--s3);
 }
 .socia{text-align:center}
+.socia__moldura{margin:0 0 var(--s4)}
+.socia__moldura img{width:100%; max-width:300px; height:auto; margin-inline:auto}
 .socia__texto h3{font-size:clamp(24px,2.6vw,32px); margin-bottom:6px}
 .socia__funcao{
   font-family:var(--f-mono); font-weight:700; font-size:11px; letter-spacing:.22em;
@@ -820,12 +820,10 @@ a{color:inherit; text-decoration:none}
       </div>
 
       <div class="socias-grade">
-        <figure class="socias__molduras">
-          <img src="assets/img/socias-molduras.webp" alt="Retratos de Simone e Ana Paula Castro, cada uma num quadro pendurado"
-               width="1536" height="1024" loading="lazy" decoding="async">
-        </figure>
-
         <article class="socia">
+          <figure class="socia__moldura">
+            <img src="assets/img/socia-1-moldura.webp" alt="Retrato de Simone Castro, num quadro pendurado" width="768" height="1024" loading="lazy" decoding="async">
+          </figure>
           <div class="socia__texto">
             <h3>Simone Castro</h3>
             <p class="socia__funcao" data-marcacao>Função dela na loja</p>
@@ -835,6 +833,9 @@ a{color:inherit; text-decoration:none}
         </article>
 
         <article class="socia">
+          <figure class="socia__moldura">
+            <img src="assets/img/socia-2-moldura.webp" alt="Retrato de Ana Paula Castro, num quadro pendurado" width="768" height="1024" loading="lazy" decoding="async">
+          </figure>
           <div class="socia__texto">
             <h3>Ana Paula Castro</h3>
             <p class="socia__funcao" data-marcacao>Função dela na loja</p>
