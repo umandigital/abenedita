@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · a Benedita Floristeria</title>
+<style>
+/* =====================================================================
+   Painel administrativo — mesmos tokens de cor do site, layout próprio.
+   Sem dependências externas, sem etapa de build (mesma regra do index.html).
+   ===================================================================== */
+:root{
+  --creme:#F4EEE4; --marfim:#F7F2EA; --grafite:#2A241D; --carvao:#1C1A17;
+  --sepia:#524738; --magenta:#C0356B; --ouro:#E9B23A; --laranja:#F9A901;
+  --verde:#5C7A3A; --vermelho:#B23A3A; --nevoa-txt:#746A5B; --pedra-txt:#786A55;
+  --linha:rgba(60,40,20,.16);
+  --r-sm:12px; --r-md:20px; --r-lg:26px; --r-pill:100px;
+  --sh-sm:0 6px 16px rgba(40,26,12,.12); --sh-md:0 8px 24px rgba(40,26,12,.16);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{
+  margin:0; background:var(--creme); color:var(--grafite);
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif; font-size:15px; line-height:1.6;
+}
+h1,h2,h3{font-weight:700; margin:0; line-height:1.2}
+p{margin:0}
+button{font:inherit; cursor:pointer}
+a{color:inherit}
+::selection{background:var(--ouro); color:var(--carvao)}
+
+.topo{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:18px 24px; background:var(--carvao); color:#fff;
+}
+.topo h1{font-size:16px; letter-spacing:.02em}
+.topo small{display:block; color:rgba(255,255,255,.6); font-size:11px; margin-top:2px}
+
+.envelope{max-width:1080px; margin-inline:auto; padding:24px}
+.envelope--estreito{max-width:420px}
+
+.cartao{background:#fff; border-radius:var(--r-lg); box-shadow:var(--sh-sm); padding:28px}
+
+.campo{display:flex; flex-direction:column; gap:6px; margin-bottom:16px}
+.campo label{font-size:12px; font-weight:700; letter-spacing:.03em; color:var(--nevoa-txt)}
+.campo input[type=text],.campo input[type=email],.campo input[type=password],
+.campo input[type=number],.campo select,.campo textarea{
+  font:inherit; padding:11px 14px; border:1.5px solid var(--linha); border-radius:var(--r-sm);
+  background:#fff; color:var(--grafite); outline:none; width:100%;
+  transition:border-color .2s, box-shadow .2s;
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{
+  border-color:var(--ouro); box-shadow:0 0 0 3px rgba(233,178,58,.2);
+}
+.campo textarea{resize:vertical; min-height:80px}
+.campo--linha{flex-direction:row; align-items:center; gap:10px}
+.campo--linha label{font-weight:600; color:var(--grafite); font-size:14px}
+.erro{color:var(--vermelho); font-size:13px; margin-top:4px}
+.dica{color:var(--nevoa-txt); font-size:12.5px; margin-top:4px}
+
+.btn{
+  font-weight:700; font-size:13px; letter-spacing:.02em; padding:11px 20px;
+  border-radius:var(--r-pill); border:1.5px solid transparent; cursor:pointer;
+  transition:background .2s, color .2s, border-color .2s;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn--ouro{background:var(--ouro); color:var(--carvao)}
+.btn--ouro:hover{background:var(--laranja)}
+.btn--contorno{background:transparent; color:var(--grafite); border-color:var(--linha)}
+.btn--contorno:hover{border-color:var(--grafite)}
+.btn--perigo{background:transparent; color:var(--vermelho); border-color:rgba(178,58,58,.4)}
+.btn--perigo:hover{background:rgba(178,58,58,.08)}
+.btn--sm{padding:7px 14px; font-size:12px}
+.btn:disabled{opacity:.55; cursor:default}
+
+#telaLogin .cartao{margin-top:12vh}
+#telaLogin h2{font-size:22px; margin-bottom:20px}
+
+.abas{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; border-bottom:1.5px solid var(--linha); padding-bottom:0}
+.aba{
+  padding:10px 16px; border-radius:var(--r-sm) var(--r-sm) 0 0; border:none; background:transparent;
+  color:var(--nevoa-txt); font-weight:600; font-size:13.5px; border-bottom:2.5px solid transparent; margin-bottom:-1.5px;
+}
+.aba[aria-selected="true"]{color:var(--magenta); border-color:var(--magenta)}
+
+.cabecalho-aba{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:12px; flex-wrap:wrap}
+.cabecalho-aba h2{font-size:19px}
+
+.tabela{width:100%; border-collapse:collapse; font-size:14px}
+.tabela th{text-align:left; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--nevoa-txt); padding:8px 10px; border-bottom:1.5px solid var(--linha)}
+.tabela td{padding:10px; border-bottom:1px solid var(--linha); vertical-align:middle}
+.tabela tr:last-child td{border-bottom:none}
+.tabela img.miniatura{width:44px; height:44px; object-fit:cover; border-radius:8px; display:block; background:var(--marfim)}
+.tabela .col-acoes{white-space:nowrap; text-align:right}
+.tabela .col-acoes .btn{margin-left:6px}
+.vazio{color:var(--nevoa-txt); padding:24px; text-align:center}
+.carregando{color:var(--nevoa-txt); padding:24px; text-align:center}
+
+.badge{display:inline-block; padding:3px 10px; border-radius:var(--r-pill); font-size:11px; font-weight:700}
+.badge--on{background:rgba(92,122,58,.14); color:var(--verde)}
+.badge--off{background:rgba(178,58,58,.12); color:var(--vermelho)}
+
+.veu-modal{
+  position:fixed; inset:0; background:rgba(28,26,23,.55); display:flex; align-items:flex-start;
+  justify-content:center; overflow-y:auto; padding:5vh 16px; z-index:100;
+}
+.modal{
+  background:#fff; border-radius:var(--r-lg); box-shadow:var(--sh-md); width:100%; max-width:560px;
+  padding:28px; margin-bottom:5vh;
+}
+.modal h3{font-size:18px; margin-bottom:18px}
+.modal__rodape{display:flex; justify-content:flex-end; gap:10px; margin-top:22px; padding-top:18px; border-top:1px solid var(--linha)}
+
+.tamanhos-lista{display:flex; flex-direction:column; gap:8px}
+.tamanho-linha{display:flex; gap:8px; align-items:center}
+.tamanho-linha input{flex:1}
+.tamanho-linha input[data-campo=preco]{max-width:120px}
+
+.imagem-campo{display:flex; align-items:center; gap:14px}
+.imagem-campo img,.imagem-campo video{width:72px; height:72px; object-fit:cover; border-radius:10px; background:var(--marfim)}
+.imagem-campo .imagem-campo__controles{display:flex; flex-direction:column; gap:6px}
+
+.mensagem-topo{padding:12px 16px; border-radius:var(--r-sm); font-size:13.5px; margin-bottom:16px}
+.mensagem-topo--erro{background:rgba(178,58,58,.1); color:var(--vermelho)}
+.mensagem-topo--ok{background:rgba(92,122,58,.12); color:var(--verde)}
+
+#telaSemAcesso .cartao{margin-top:12vh}
+#telaSemAcesso code{background:var(--marfim); padding:2px 6px; border-radius:6px; font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div>
+    <h1>a Benedita · Painel</h1>
+    <small>catálogo, galerias, depoimentos, dúvidas e banner</small>
+  </div>
+  <button type="button" class="btn btn--contorno btn--sm" id="btnSair" hidden>Sair</button>
+</header>
+
+<main class="envelope">
+
+  <section id="telaLogin" class="envelope--estreito">
+    <div class="cartao">
+      <h2>Entrar</h2>
+      <div id="loginMensagem"></div>
+      <form id="formLogin">
+        <div class="campo">
+          <label for="loginEmail">E-mail</label>
+          <input type="email" id="loginEmail" name="email" autocomplete="username" required>
+        </div>
+        <div class="campo">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" name="senha" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn--ouro" id="btnEntrar" style="width:100%">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="telaSemAcesso" hidden>
+    <div class="cartao envelope--estreito">
+      <h2>Sem acesso de administrador</h2>
+      <p style="margin-top:12px">Este login é válido, mas sua conta ainda não tem permissão de edição.
+      Peça para alguém com acesso ao banco rodar, no SQL Editor do Supabase:</p>
+      <p style="margin-top:10px"><code>insert into public.perfis (id, papel) values ('SEU-ID-AQUI', 'admin');</code></p>
+      <p style="margin-top:10px">O <code>SEU-ID-AQUI</code> é o UUID do usuário, visível em
+      Authentication → Users no painel do Supabase.</p>
+      <button type="button" class="btn btn--contorno" id="btnSairSemAcesso" style="margin-top:18px">Sair</button>
+    </div>
+  </section>
+
+  <section id="telaPainel" hidden>
+    <nav class="abas" id="abas"></nav>
+    <div id="conteudoAba"></div>
+  </section>
+
+</main>
+
+<script>window.BENEDITA_SUPABASE = {
+  url: 'https://dldyizoyrkvaijskzqzc.supabase.co',
+  chave: 'sb_publishable_e8mzshbK5JvuIkimHpX9oQ_ZlLWG-Vf'
+};</script>
+<script src="assets/js/admin.js" defer></script>
+</body>
+</html>

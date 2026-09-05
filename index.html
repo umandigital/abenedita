@@ -504,6 +504,21 @@ a{color:inherit; text-decoration:none}
 }
 
 /* =====================================================================
+   06 · BANNER DA ESTAÇÃO
+   Arte trocada pelo painel administrativo. O ✕ some com o bloco só para
+   quem clicou — a escolha fica gravada no navegador, não no banco.
+   ===================================================================== */
+.estacao__moldura{position:relative; border-radius:var(--r-xl); overflow:hidden; box-shadow:var(--sh-lg)}
+.estacao__moldura img{display:block; width:100%; height:auto}
+.estacao__fechar{
+  position:absolute; top:14px; right:14px; width:34px; height:34px;
+  border:none; border-radius:50%; background:rgba(40,26,12,.55); color:#fff;
+  font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; transition:background .2s var(--ease);
+}
+.estacao__fechar:hover{background:rgba(40,26,12,.8)}
+
+/* =====================================================================
    07 · CATÁLOGO
    Estado 1 — grade de categorias. O CSS assume cinco (as cinco linhas de
    produto da loja: Arranjos, Buquês, Caixas prontas, Cestas, Cachepôs); se um
@@ -923,8 +938,8 @@ a{color:inherit; text-decoration:none}
   <section class="secao revela" id="estacao" aria-label="Campanha da estação" hidden>
     <div class="wrap">
       <div class="estacao__moldura">
-        <a data-zap="evento" href="#contato"><img id="estacaoArte" src="assets/img/banner-campanha.png" alt="" width="2048" height="768" loading="lazy" decoding="async"></a>
-        <button type="button" id="estacaoFechar" aria-label="Desligar este bloco">✕</button>
+        <a id="estacaoLink" href="#contato"><img id="estacaoArte" src="" alt="" width="2048" height="768" loading="lazy" decoding="async"></a>
+        <button type="button" id="estacaoFechar" class="estacao__fechar" aria-label="Desligar este bloco">✕</button>
       </div>
     </div>
   </section>
@@ -1039,7 +1054,7 @@ a{color:inherit; text-decoration:none}
     <nav aria-label="Canais de atendimento">
       <a data-zap="flutuante" href="#contato">WhatsApp</a>
     </nav>
-    <p><small>a Benedita Floristeria · Porto Alegre, RS</small></p>
+    <p><small>a Benedita Floristeria · Porto Alegre, RS · <a href="admin.html" style="text-decoration:underline">painel</a></small></p>
   </div>
 </footer>
 

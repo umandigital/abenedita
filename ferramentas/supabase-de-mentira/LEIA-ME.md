@@ -45,3 +45,30 @@ parece defeito do cliente e não é.
 documento assim, os `fetch` que ele dispara para outra origem morrem com
 `ERR_ABORTED`. Gere um arquivo de teste em disco e sirva normalmente; foi
 assim que o teste passou a medir o site em vez de medir a si mesmo.
+
+## O segundo servidor: `servidor_admin.py`
+
+`servidor.py` só sabe responder `GET` — o bastante para o site público. O
+painel administrativo (`admin.html` + `assets/js/admin.js`) também escreve
+(`POST`/`PATCH`/`DELETE`) e precisa fazer login, então ganhou um servidor de
+mentira à parte:
+
+```bash
+python3 servidor_admin.py 5420
+```
+
+Duas contas fixas, prontas pra testar os dois caminhos:
+
+| Conta | Senha | O que testa |
+|---|---|---|
+| `admin@teste.com` | `segredo123` | login, CRUD, upload — tudo liberado |
+| `leitor@teste.com` | `segredo123` | login válido, mas sem linha em `perfis` com papel `admin` — cai na tela "sem acesso" |
+
+Aponte uma cópia de `admin.html` para ele (trocando o bloco
+`window.BENEDITA_SUPABASE`) e sirva com o `python -m http.server` comum — não
+precisa do servidor com suporte a `Range` do vídeo, porque não há vídeo
+envolvido aqui.
+
+Continua valendo o mesmo limite: isto testa o cliente (`admin.js`), não o
+RLS de verdade. A política real (quem pode escrever o quê) só se confere
+rodando contra o projeto Supabase de verdade.

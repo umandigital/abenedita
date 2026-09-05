@@ -111,14 +111,38 @@ diferenciais.
 | **WhatsApp** | confirmar `5551985054194` como número de produção |
 | **Preços** | os doze produtos do protótipo têm preço inventado |
 | **Supabase** | ✅ projeto criado, chave no `index.html`, migração aplicada pelo SQL Editor ("Success. No rows returned"). Ainda falta: conectar o GitHub em Settings → Integrations, para as próximas migrações aplicarem sozinhas a cada merge (o painel mostrava "No repository connected") |
-| **Quem administra** | quem recebe o acesso de admin para editar produtos, banner e dúvidas |
+| **Quem administra** | ✅ o painel (`/admin.html`) já está pronto — falta só criar o primeiro usuário e promovê-lo a admin, ver abaixo |
 
 O banco está no ar, mas segue vazio de conteúdo real — as sete tabelas
 existem e `config` tem as duas linhas de fábrica (`whatsapp`, `estacao`), o
 resto (`produtos`, `categorias`, `galerias`, `depoimentos`, `faq`) só ganha
-linhas quando alguém cadastrar pelo painel administrativo, que ainda não foi
-construído. Até lá o site mostra o conteúdo local — é o comportamento
-esperado, não uma falha.
+linhas quando alguém cadastrar pelo painel administrativo. Até lá o site
+mostra o conteúdo local — é o comportamento esperado, não uma falha.
+
+### Colocar o painel administrativo no ar
+
+O painel (`/admin.html`, link discreto no rodapé do site) já está pronto e
+testado — o que falta é só criar a primeira conta e liberar o acesso, e isso
+só dá pra fazer de dentro do Supabase:
+
+1. **Criar o usuário.** No painel do Supabase: Authentication → Users →
+   "Add user" → e-mail e senha de quem vai administrar (pode ser você
+   mesma, ou já direto a dona da loja). Guarde o UUID que aparece na lista
+   (é o `id` do usuário).
+2. **Promover a admin.** Ainda no Supabase, em SQL Editor, rodar (trocando
+   o UUID pelo que apareceu no passo 1):
+   ```sql
+   insert into public.perfis (id, papel) values ('COLE-O-UUID-AQUI', 'admin');
+   ```
+   Sem essa linha o login funciona, mas o painel mostra "sem acesso de
+   administrador" — é a política de segurança (RLS) barrando escrita de
+   quem não está em `perfis` como `admin`, funcionando como deveria.
+3. **Entrar.** Abrir `/admin.html`, logar com o e-mail e senha do passo 1.
+
+Dá pra repetir o passo 2 pra mais de uma pessoa, se mais de uma for
+administrar. Não existe tela no próprio painel para isso de propósito: são
+duas ou três contas no total, e um formulário de "promover admin" seria mais
+uma superfície pra travar mal configurada do que economia de tempo.
 
 ---
 

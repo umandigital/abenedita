@@ -119,3 +119,11 @@
   [headers.values]
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/xml; charset=utf-8"
+
+# O painel não é secreto (a proteção de verdade é o RLS no Supabase), mas
+# também não é pra ficar indexado nem em cache.
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"

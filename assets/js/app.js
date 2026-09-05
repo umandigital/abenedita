@@ -481,7 +481,15 @@
   function ligaEstacao() {
     var secao = $('#estacao'), fechar = $('#estacaoFechar');
     if (!secao) return;
-    secao.hidden = !estado.estacaoLigada;
+    var cfg = CONTEUDO.estacao;
+    var mostra = !!(cfg && cfg.ligado && cfg.arte && estado.estacaoLigada);
+    secao.hidden = !mostra;
+    if (!mostra) return;
+
+    var link = $('#estacaoLink'), arte = $('#estacaoArte');
+    if (arte) arte.src = cfg.arte;
+    if (link) link.href = linkZap(MENSAGENS[cfg.destino] || MENSAGENS.evento);
+
     if (fechar) fechar.addEventListener('click', function () {
       estado.estacaoLigada = false;
       secao.hidden = true;
@@ -797,6 +805,7 @@
      não responder.
      =================================================================== */
   var CONTEUDO = {
+    estacao: { ligado: false, arte: '', destino: 'evento' },
     galerias: {
       loja: [1,2,3,4,5].map(function (i) {
         return { foto: 'assets/img/loja-g' + i + '.webp', alt: '' };
@@ -855,9 +864,10 @@
       buscaTabela('depoimentos', 'select=nome,contexto,citacao,foto,ordem&ativo=eq.true&order=ordem.asc'),
       buscaTabela('faq', 'select=pergunta,resposta,ordem&ativa=eq.true&order=ordem.asc'),
       buscaTabela('categorias', 'select=id,nome,slug,acento,video,capa,ordem&ativa=eq.true&order=ordem.asc'),
-      buscaTabela('produtos', 'select=slug,nome,categoria_id,descricao,acento,foto,tamanhos,ordem&ativo=eq.true&order=ordem.asc')
+      buscaTabela('produtos', 'select=slug,nome,categoria_id,descricao,acento,foto,tamanhos,ordem&ativo=eq.true&order=ordem.asc'),
+      buscaTabela('config', 'select=chave,valor&chave=eq.estacao')
     ]).then(function (r) {
-      var gal = r[0], dep = r[1], faq = r[2], cat = r[3], prod = r[4];
+      var gal = r[0], dep = r[1], faq = r[2], cat = r[3], prod = r[4], cfg = r[5];
       if (gal) {
         var caixas = { loja: [], eventos: [] };
         gal.forEach(function (l) {
@@ -894,6 +904,15 @@
           };
         });
         CONTEUDO.catalogo = { categorias: categorias, produtos: produtos };
+      }
+
+      if (cfg && cfg[0] && cfg[0].valor) {
+        var v = cfg[0].valor;
+        CONTEUDO.estacao = {
+          ligado: v.ligado !== false,
+          arte: caminhoMidia(v.arte || ''),
+          destino: v.destino || 'evento'
+        };
       }
     }).catch(function () { /* fica tudo no padrão */ });
   }
@@ -1314,7 +1333,6 @@
     ligaNavegacao();
     ligaSacola();
     ligaVeu();
-    ligaEstacao();
     ligaFormulario();
     preparaTopo();
     preparaAreas();
@@ -1324,6 +1342,7 @@
        quando não há banco configurado, e no pior caso espera o tempo limite
        de 2,5s. Todas estão bem abaixo da dobra. */
     carregaConteudo().then(function () {
+      ligaEstacao();
       ligaGalerias();
       ligaDepoimentos();
       ligaFaq();
