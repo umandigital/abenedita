@@ -69,15 +69,16 @@ Falta especificamente:
   depoimento inventado, apresentado como cliente de verdade, é outra coisa.
   Precisa de foto e depoimento reais, com autorização de quem aparece.
 
-- **capa de cada categoria** (Arranjos, Buquês, Caixas prontas, Cestas,
-  Cachepôs). Hoje são retângulos coloridos gerados aqui, 540×960 (9:16). É
-  a foto que aparece parada — o vídeo é opcional, ela é obrigatória: sem
-  vídeo cadastrado, é só ela que mostra.
-
-- **vídeo por categoria**, opcional mas recomendado — é o que faz a grade
-  do catálogo comportar como a das áreas de Loja/Eventos: toca no hover, no
-  celular fica só a capa. Nenhum vídeo de categoria existe ainda (nem
-  sequer um placeholder, diferente da capa).
+- **capa e vídeo de cada categoria** (Arranjos, Buquês, Caixas prontas,
+  Cestas, Cachepôs). ✅ O hover-para-tocar já está funcionando — testado de
+  ponta a ponta (capa carrega na hora, vídeo só baixa no hover, funde a
+  opacidade, volta pro início quando o mouse sai). O que está no ar hoje é
+  **o mesmo vídeo e a mesma capa nas cinco categorias** — o primeiro vídeo
+  que vocês mandaram (a caixa giratória), só pra mostrar o hover
+  funcionando antes de cada categoria ter o seu de verdade. Precisa, pra
+  cada categoria, do vídeo (vertical, 9:16, uns 10s bastam) e de uma capa —
+  ou me avisem que a capa pode continuar sendo o primeiro quadro do
+  próprio vídeo, que é o que está rodando agora.
 
 - **as doze fotos de produto**. Hoje são retângulos coloridos gerados aqui,
   800×1000. Cada produto pede uma.
