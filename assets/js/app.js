@@ -156,6 +156,12 @@
     topo.petalas = $('#topoPetalas');
     if (!topo.secao) return;
 
+    /* O <source media> escolhe o vídeo certo, mas o poster é um atributo só:
+       em tela estreita ele precisa apontar para o quadro vertical, senão o
+       primeiro pixel pintado é o enquadramento errado. */
+    var posterEstreito = topo.video && topo.video.getAttribute('data-poster-estreito');
+    if (posterEstreito && telaEstreita.matches) topo.video.poster = posterEstreito;
+
     if (poucoMovimento) {
       /* Sem scrub: a dobra encolhe para uma tela e o texto já entra pronto. */
       topo.secao.style.height = '100svh';

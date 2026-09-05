@@ -465,7 +465,17 @@ a{color:inherit; text-decoration:none}
        começam a cair. Ver o bloco TOPO em app.js. -->
   <section class="dobra-rolagem" id="topo" aria-labelledby="topo-titulo">
     <div class="dobra-rolagem__palco">
-      <video class="topo__video" id="topoVideo" muted playsinline preload="auto" poster="assets/img/topo-poster.jpg" aria-hidden="true">
+      <!-- Duas versões da mesma animação. O vídeo é 16:9; numa tela em pé o
+           `object-fit: cover` descartaria 74% da largura e sobrariam o cesto e
+           a roda dianteira. A versão vertical mantém a cena inteira: a mesma
+           imagem, com o quadro-negro preenchido acima e o piso estendido
+           abaixo até chegar em 9:16.
+           O `media` é lido no carregamento, não na virada de tela — quem
+           redimensiona a janela continua com o arquivo que já baixou, o que é
+           o comportamento certo aqui (trocar de arquivo no meio custaria um
+           novo download e perderia a posição do scrub). -->
+      <video class="topo__video" id="topoVideo" muted playsinline preload="auto" poster="assets/img/topo-poster.jpg" aria-hidden="true" data-poster-estreito="assets/img/topo-poster-vertical.jpg">
+        <source src="assets/video/topo-vertical.mp4" type="video/mp4" media="(max-width: 900px)">
         <source src="assets/video/topo.mp4" type="video/mp4">
       </video>
 

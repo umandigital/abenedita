@@ -87,15 +87,51 @@ recompensa.
 Para refazer com outro ritmo, o comando está no histórico do commit que
 trouxe este corte; os números de `trim` e `setpts` são os únicos que mudam.
 
-### Pendência: o enquadramento no celular
+### O enquadramento no celular — resolvido
 
-O vídeo é 16:9 e o topo o exibe com `object-fit: cover`. Numa tela de
-390×844, isso escala para 1500 px de largura e **descarta 74% dela** —
-sobram o cesto e a roda dianteira, e a bicicleta fica irreconhecível.
+O vídeo é 16:9. Numa tela de 390×844, o `object-fit: cover` escalava para
+1500 px de largura e **descartava 74% dela** — sobravam o cesto e a roda
+dianteira.
 
-Não é ajuste de CSS: falta um corte vertical dedicado do vídeo, servido por
-`<source media="(max-width: 900px)">`. O material fonte é 1920×1080, então dá
-para tirar um 9:16 centrado na bicicleta. Decisão de design, ainda em aberto.
+Existe agora um segundo arquivo, `topo-vertical.mp4` (720×1280), escolhido
+por `<source media="(max-width: 900px)">`. O descarte cai para 18%, e os 18%
+que sobram são margem preta, não bicicleta.
+
+Foram testadas três abordagens:
+
+| | O que faz | Resultado |
+|---|---|---|
+| Corte 9:16 fixo | janela fixa centrada em 66% da largura | bicicleta decepada nos três momentos |
+| Corte que acompanha | janela desliza de 66% para 53% ao longo do vídeo | melhor, mas ainda corta o guidão na florada |
+| **Quadro estendido** | mantém 56% da largura e completa a altura | **bicicleta inteira sempre** |
+
+A escolhida foi a terceira. Ela mantém a faixa central do vídeo e chega em
+9:16 preenchendo o quadro-negro acima e esticando o piso abaixo — nada é
+perdido na horizontal, só a cena fica menor. A folga preta em cima ainda
+serve de leito para o texto do topo.
+
+Duas armadilhas pagas na construção dela:
+
+**Não estique uma faixa que tem conteúdo.** A primeira tentativa esticava os
+80 px do topo em 6,7× para preencher; onde passavam pétalas e ornamentos de
+giz, viravam listras verticais borradas. A faixa é tirada de um quadro limpo
+e fica **estática** — o quadro-negro não se mexe, então não há o que tremer.
+
+**`setsar=1` depois de todo `scale` que muda a proporção do pixel.** Esticar
+`720×60` para `720×400` faz o ffmpeg gravar um *sample aspect ratio* de 0,15
+para "preservar" a proporção de exibição do trecho — e isso contamina o
+arquivo inteiro. O navegador lia um vídeo de 4800×1280 e esticava tudo na
+horizontal. Extrair quadro com ffmpeg **ignora** o SAR, então o arquivo
+parecia correto em toda conferência por imagem; só o navegador mostrou.
+Confira sempre com
+`ffprobe -show_entries stream=sample_aspect_ratio` — tem que dar `1:1`.
+
+### Pendência: o texto sobre a florada no celular
+
+Na tela estreita, o texto do topo cai sobre a cena cheia de flores e o
+subtítulo fica no limite da leitura. O protótipo tinha um scrim (gradiente
+escuro à esquerda) marcado como `display:none`. Vale reativá-lo, ou dar um
+fundo ao bloco de texto no celular. Decisão de design, em aberto.
 
 ### Sobre a taxa de quadros
 
