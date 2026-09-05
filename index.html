@@ -415,6 +415,60 @@ a{color:inherit; text-decoration:none}
 }
 
 /* =====================================================================
+   GALERIA CIRCULAR (áreas Loja e Eventos)
+   A foto que entra cresce da sua miniatura, passa pelo centro e explode num
+   círculo enorme que varre a tela até a metade. Nesse instante ela assume o
+   quadro inteiro e a que sai passa a cobrir a outra metade — as duas desenham
+   a mesma costura, então a troca é invisível. Aí a metade restante encolhe
+   numa bola e quica dentro do seu ponto.
+   ===================================================================== */
+.galeria{position:relative; width:100%; max-width:430px; margin-inline:auto}
+.galeria__palco{
+  position:relative; aspect-ratio:4/5; border-radius:24px; overflow:hidden;
+  background:#e7dcc7; box-shadow:var(--sh-xl);
+}
+.galeria__foto{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  will-change:clip-path;
+}
+.galeria__seta{
+  position:absolute; top:44%; transform:translateY(-50%); z-index:6;
+  width:44px; height:44px; border-radius:50%; border:0; cursor:pointer;
+  background:rgba(255,253,249,.92); color:var(--grafite);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.28); transition:background .25s ease, transform .25s var(--ease);
+}
+.galeria__seta:hover{background:#fff; transform:translateY(-50%) scale(1.08)}
+.galeria__seta--ant{left:12px}
+.galeria__seta--prox{right:12px}
+/* nowrap é obrigatório, não estético: a bola que sai quica até o ponto da
+   miniatura, e uma quebra de linha moveria o alvo no meio da animação. */
+.galeria__minis{
+  position:absolute; left:0; right:0; bottom:14px; z-index:6;
+  display:flex; gap:8px; justify-content:center; align-items:center; padding-inline:12px; flex-wrap:nowrap;
+}
+.galeria__mini{
+  width:34px; height:34px; border-radius:50%; padding:0; cursor:pointer; flex:none;
+  border:2px solid rgba(255,253,249,.7); background-size:cover; background-position:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.35);
+  transition:width .3s ease, height .3s ease, border-color .3s ease;
+}
+.galeria__mini[aria-selected="true"]{width:44px; height:44px; border-color:var(--ouro)}
+
+@media (max-width:900px){
+  /* Oito miniaturas de 34px não cabem num palco de 350px. Encolhem em vez de
+     quebrar a linha. */
+  .galeria__minis{gap:6px; padding-inline:8px}
+  .galeria__mini{width:26px; height:26px; border-width:1.5px}
+  .galeria__mini[aria-selected="true"]{width:34px; height:34px}
+  .galeria__seta{width:38px; height:38px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .galeria__foto{transition:none !important}
+}
+
+/* =====================================================================
    07 · CATÁLOGO
    ===================================================================== */
 .categorias-grade{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px}

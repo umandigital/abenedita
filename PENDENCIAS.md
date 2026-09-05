@@ -49,7 +49,12 @@ Eventos é a galeria da Loja; as duas cestas são a mesma foto).
 
 Falta especificamente:
 
-- as fotos das galerias de Loja e Eventos
+- **as fotos das galerias de Loja e Eventos** (as que estão lá agora são
+  retângulos coloridos numerados, gerados só para testar o mecanismo — vão
+  ser substituídas arquivo por arquivo, mesmos nomes)
+- **o texto alternativo de cada foto de galeria**. Hoje está vazio. Foto de
+  produto não é decoração: quem usa leitor de tela precisa saber o que tem
+  na foto, e o Google também lê isso
 - `cli-4` e `cli-5` — os depoimentos 4 e 5 existem, as fotos não
 - **cinco** vídeos de categoria. Hoje existe um só, usado nas cinco
 - as fotos dos produtos

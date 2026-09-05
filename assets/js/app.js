@@ -341,10 +341,14 @@
     window.scrollTo({ top: topoDaSecao + destino * curso, behavior: 'smooth' });
   }
 
-  var laco = 0;
-  function quadro() {
+  var laco = 0, ultimoQuadro = 0;
+  function quadro(agora) {
+    var dt = ultimoQuadro ? Math.min(agora - ultimoQuadro, 100) : 0;  /* aba em segundo plano não acumula */
+    ultimoQuadro = agora;
     passoTopo();
     passoAreas();
+    passoTweens(agora);
+    passoGalerias(dt);
     laco = requestAnimationFrame(quadro);
   }
 
@@ -426,6 +430,266 @@
   }
 
   /* ===================================================================
+     CURVAS E TWEENS
+     As curvas do GSAP têm forma fechada; não vale carregar 70 KB de
+     biblioteca de terceiro para quatro funções de uma linha.
+     Os tweens rodam no laço único da página, não num rAF próprio.
+     =================================================================== */
+  var curvas = {
+    entraSai3: function (t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; },
+    entra4:    function (t) { return t*t*t*t; },
+    sai4:      function (t) { return 1 - Math.pow(1-t, 4); },
+    quica:     function (t) {
+      var n = 7.5625, d = 2.75;
+      if (t < 1/d)   return n*t*t;
+      if (t < 2/d)   return n*(t -= 1.5/d)*t + .75;
+      if (t < 2.5/d) return n*(t -= 2.25/d)*t + .9375;
+      return n*(t -= 2.625/d)*t + .984375;
+    }
+  };
+
+  var tweens = [];
+  function anima(opcoes) {
+    /* opcoes: { dur, curva, passo(p), fim() }. Devolve um cancelador. */
+    var t = { inicio: null, dur: opcoes.dur, curva: opcoes.curva || function (x) { return x; },
+              passo: opcoes.passo, fim: opcoes.fim, morto: false };
+    tweens.push(t);
+    return function () { t.morto = true; };
+  }
+  function passoTweens(agora) {
+    for (var i = tweens.length - 1; i >= 0; i--) {
+      var t = tweens[i];
+      if (t.morto) { tweens.splice(i, 1); continue; }
+      if (t.inicio === null) t.inicio = agora;
+      var p = t.dur > 0 ? limita((agora - t.inicio) / t.dur, 0, 1) : 1;
+      t.passo(t.curva(p));
+      if (p >= 1) { tweens.splice(i, 1); if (t.fim) t.fim(); }
+    }
+  }
+
+  /* ===================================================================
+     GALERIA CIRCULAR
+     =================================================================== */
+  function galeriaCircular(el, fotos, opcoes) {
+    if (!el || !fotos || !fotos.length) return null;
+    opcoes = opcoes || {};
+    var AUTO = opcoes.autoplay || 4500;
+
+    var palco = document.createElement('div');
+    palco.className = 'galeria__palco';
+    var minis = document.createElement('div');
+    minis.className = 'galeria__minis';
+    minis.setAttribute('role', 'tablist');
+    minis.setAttribute('aria-label', opcoes.rotulo || 'Fotos');
+
+    var imgs = fotos.map(function (f, i) {
+      var img = document.createElement('img');
+      img.className = 'galeria__foto';
+      img.alt = f.alt || '';
+      img.decoding = 'async';
+      if (f.w) img.width = f.w;
+      if (f.h) img.height = f.h;
+      palco.appendChild(img);
+
+      /* A miniatura é um botão de verdade: o componente de origem usava
+         <circle onClick>, que o teclado não alcança. */
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'galeria__mini';
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', 'Foto ' + (i + 1) + ' de ' + fotos.length);
+      b.addEventListener('click', function () { abre(i, true); });
+      minis.appendChild(b);
+      return img;
+    });
+
+    function seta(lado, rotulo, caminho) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'galeria__seta galeria__seta--' + lado;
+      b.setAttribute('aria-label', rotulo);
+      b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="' + caminho + '"/></svg>';
+      palco.appendChild(b);
+      return b;
+    }
+    seta('ant',  'Foto anterior', 'M15 6l-6 6 6 6').addEventListener('click', function () { abre(aberta - 1, true); });
+    seta('prox', 'Próxima foto',  'M9 6l6 6-6 6').addEventListener('click', function () { abre(aberta + 1, true); });
+
+    palco.appendChild(minis);
+    el.appendChild(palco);
+
+    var aberta = 0, noLugar = 0, ocupado = false, relogio = 0, cancelar = null;
+
+    /* Onde a bola nasce e para onde ela volta. Lido do layout real em vez de
+       calculado: o flex já posiciona as miniaturas, e ler evita que a conta
+       e o CSS discordem quando uma quebra de linha acontecer. */
+    function pontoMini(i) {
+      var r = minis.children[i].getBoundingClientRect();
+      var p = palco.getBoundingClientRect();
+      return { x: r.left - p.left + r.width/2, y: r.top - p.top + r.height/2, r: r.width/2 };
+    }
+    function medidas() {
+      var p = palco.getBoundingClientRect();
+      var k = p.width / 400;             /* o componente de origem pensa num espaço de 400 */
+      return { larg: p.width, alt: p.height, cx: p.width/2, cy: p.height/2,
+               rCentro: 49*k, rGrande: 4900*k };
+    }
+    function recorta(img, x, y, r) {
+      var v = 'circle(' + r.toFixed(1) + 'px at ' + x.toFixed(1) + 'px ' + y.toFixed(1) + 'px)';
+      img.style.clipPath = v; img.style.webkitClipPath = v;
+    }
+    function inteira(img) { img.style.clipPath = 'none'; img.style.webkitClipPath = 'none'; }
+
+    function pinta() {
+      imgs.forEach(function (img, i) {
+        if (i === noLugar) { img.style.zIndex = 1; inteira(img); }
+        else {
+          img.style.zIndex = 3;
+          var m = pontoMini(i);
+          recorta(img, m.x, m.y, m.r);
+        }
+      });
+      Array.prototype.forEach.call(minis.children, function (b, i) {
+        b.setAttribute('aria-selected', i === aberta ? 'true' : 'false');
+        b.tabIndex = i === aberta ? 0 : -1;
+      });
+    }
+
+    function abre(i, porGesto) {
+      i = ((i % fotos.length) + fotos.length) % fotos.length;
+      if (ocupado || i === aberta) return;
+      if (porGesto) relogio = 0;                 /* o gesto reinicia a espera */
+      var sai = aberta;
+      aberta = i;
+      Array.prototype.forEach.call(minis.children, function (b, k) {
+        b.setAttribute('aria-selected', k === i ? 'true' : 'false');
+        b.tabIndex = k === i ? 0 : -1;
+      });
+
+      if (poucoMovimento) { noLugar = i; pinta(); return; }
+
+      ocupado = true;
+      var d = medidas(), mIn = pontoMini(i), entra = imgs[i];
+      entra.style.zIndex = 3;
+
+      /* 1. da miniatura até o centro */
+      recorta(entra, mIn.x, mIn.y, mIn.r);
+      cancelar = anima({ dur: 200, curva: curvas.entraSai3, passo: function (p) {
+        recorta(entra, mIn.x + (d.cx - mIn.x)*p, mIn.y + (d.cy - mIn.y)*p, mIn.r + (d.rCentro - mIn.r)*p);
+      }, fim: function () {
+        /* 2. explode para a esquerda. O que importa é a BORDA DIREITA: ela sai
+              de cx+rCentro e termina exatamente em cx, que é onde a costura
+              precisa cair para a troca ser invisível. */
+        cancelar = anima({ dur: 400, curva: curvas.entra4, passo: function (p) {
+          var r = d.rCentro + (d.rGrande - d.rCentro)*p;
+          var bordaDireita = d.cx + d.rCentro*(1 - p);
+          recorta(entra, bordaDireita - r, d.cy, r);
+        }, fim: function () {
+          /* 3. a troca. A nova assume o quadro inteiro e a velha passa a cobrir
+                a metade direita — mesma costura, troca invisível. */
+          noLugar = i; inteira(entra); entra.style.zIndex = 1;
+          saiFoto(sai, d);
+        }});
+      }});
+    }
+
+    function saiFoto(j, d) {
+      var velha = imgs[j], mOut = pontoMini(j);
+      velha.style.zIndex = 3;
+      recorta(velha, d.cx + d.rGrande, d.cy, d.rGrande);
+      /* 4. encolhe da direita até uma bola no centro. Espelho do passo 2: a
+            BORDA ESQUERDA sai de cx — a mesma costura — e recua até cx-rCentro. */
+      cancelar = anima({ dur: 400, curva: curvas.sai4, passo: function (p) {
+        var r = d.rGrande + (d.rCentro - d.rGrande)*p;
+        var bordaEsquerda = d.cx - d.rCentro*p;
+        recorta(velha, bordaEsquerda + r, d.cy, r);
+      }, fim: function () {
+        /* 5. quica até o ponto dela, por uma curva que sai na horizontal e
+              termina caindo — o mesmo desenho do motionPath de origem. */
+        var p0 = { x: d.cx, y: d.cy, r: d.rCentro };
+        var ctrl = { x: mOut.x, y: d.cy, r: mOut.r*2 };
+        var p2 = { x: mOut.x, y: mOut.y, r: mOut.r };
+        cancelar = anima({ dur: 1000, curva: curvas.quica, passo: function (p) {
+          var u = 1 - p;
+          var bx = u*u*p0.x + 2*u*p*ctrl.x + p*p*p2.x;
+          var by = u*u*p0.y + 2*u*p*ctrl.y + p*p*p2.y;
+          var br = u*u*p0.r + 2*u*p*ctrl.r + p*p*p2.r;
+          recorta(velha, bx, by, br);
+        }, fim: function () { ocupado = false; pinta(); }});
+      }});
+    }
+
+    function tique(dt, visivel) {
+      if (poucoMovimento || !AUTO) return;
+      if (!visivel || ocupado || !pronta) { return; }   /* fora de vista, animando ou sem fotos: não conta */
+      relogio += dt;
+      if (relogio >= AUTO) { relogio = 0; abre(aberta + 1, false); }
+    }
+
+    /* teclado: setas percorrem a galeria quando o foco está nas miniaturas */
+    minis.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      abre(aberta + (e.key === 'ArrowRight' ? 1 : -1), true);
+      minis.children[aberta].focus();
+    });
+
+    /* As fotos só começam a baixar quando a galeria se aproxima da tela.
+       `loading="lazy"` sozinho não resolveria: as fotos ficam em inset:0, do
+       tamanho do palco, e a miniatura as pede por background-image — que não
+       é preguiçoso. Sem isto, as dezesseis fotos das duas galerias baixavam
+       no carregamento da home, muito antes de alguém chegar nelas. */
+    var carregada = false, pronta = false;
+    function carrega() {
+      if (carregada) return;
+      carregada = true;
+      fotos.forEach(function (f, i) {
+        imgs[i].src = f.src;
+        minis.children[i].style.backgroundImage = 'url("' + f.src + '")';
+      });
+      if (imgs[0].complete) prepara(); else imgs[0].addEventListener('load', prepara, { once: true });
+    }
+    function prepara() { if (!pronta) { pronta = true; pinta(); } }
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting) { carrega(); obs.disconnect(); }
+      }, { rootMargin: '150% 150%' });
+      obs.observe(el);
+    } else { carrega(); }
+
+    window.addEventListener('resize', function () { if (!ocupado && pronta) pinta(); });
+
+    return { tique: tique, elemento: el, repinta: pinta };
+  }
+
+  var galerias = [];
+  function ligaGalerias() {
+    [['loja', 'loja', 'Fotos da loja'], ['eventos', 'evento', 'Fotos de eventos']].forEach(function (par) {
+      var el = $('[data-galeria="' + par[0] + '"]');
+      if (!el) return;
+      var fotos = [];
+      for (var i = 1; i <= 8; i++) {
+        fotos.push({ src: 'assets/img/' + par[1] + '-g' + i + '.jpg', alt: '', w: 1000, h: 1250 });
+      }
+      var g = galeriaCircular(el, fotos, { autoplay: 4500, rotulo: par[2] });
+      if (g) galerias.push(g);
+    });
+  }
+
+  /* O relógio do autoplay só corre com a galeria à vista. Dentro da seção de
+     Áreas as galerias fora do painel ativo ficam fora da tela na horizontal,
+     então o próprio retângulo já responde — vale com o trilho preso ou solto. */
+  function passoGalerias(dt) {
+    for (var i = 0; i < galerias.length; i++) {
+      var r = galerias[i].elemento.getBoundingClientRect();
+      var visivel = r.bottom > 0 && r.top < window.innerHeight &&
+                    r.right > 0 && r.left < window.innerWidth;
+      galerias[i].tique(dt, visivel);
+    }
+  }
+
+  /* ===================================================================
      PRÓXIMOS BLOCOS — ainda não escritos
      A base para em pé aqui: estrutura, tokens, movimento e o caminho até o
      WhatsApp. O que falta depende de conteúdo real e do Supabase.
@@ -458,6 +722,7 @@
     ligaFormulario();
     preparaTopo();
     preparaAreas();
+    ligaGalerias();
 
     /* Um quadro imediato aplica o estado inicial das Áreas antes de o laço
        entrar em regime — sem isso a primeira pintura mostra tudo montado e
