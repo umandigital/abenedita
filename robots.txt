@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /supabase/
+Disallow: /design_handoff_benedita/
+
+Sitemap: https://abenedita.netlify.app/sitemap.xml

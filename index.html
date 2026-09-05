@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6E4A2C">
+
+<title>a Benedita Floristeria — flores frescas do dia em Porto Alegre</title>
+<meta name="description" content="Floricultura de bairro em Porto Alegre. Buquês, arranjos, caixas e cestas montados à mão com flor fresca do dia. Pedido e entrega combinados direto no WhatsApp.">
+<meta name="author" content="a Benedita Floristeria">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+<!-- O canônico e a URL de compartilhamento saem do endereço real em que a
+     página está sendo servida (ver definirCanonico, em app.js). Um endereço
+     fixo errado aqui tiraria o site do índice, então nada é chutado. -->
+
+<!-- Open Graph — é o que o WhatsApp, o Instagram e o Facebook leem para montar
+     a prévia do link. Como o atendimento todo passa pelo WhatsApp, esta é a
+     parte de SEO social que mais importa aqui. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="a Benedita Floristeria">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="a Benedita Floristeria — flores frescas do dia em Porto Alegre">
+<meta property="og:description" content="Buquês, arranjos, caixas e cestas montados à mão com flor fresca do dia. Pedido direto no WhatsApp.">
+<meta property="og:image" content="assets/img/compartilhar.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo da a Benedita Floristeria">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- As duas faces que desenham a primeira tela: a frase do topo (Caveat) e os
+     CTAs/menu (Space Mono). Sem isto elas só começariam a baixar depois de o
+     CSS inteiro ser lido, e o texto do topo esperaria por elas.
+     `crossorigin` é obrigatório mesmo na mesma origem: fonte sempre viaja em
+     modo CORS. As demais entram pelo @font-face, sem preload. -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fontes/caveat-var.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fontes/space-mono-400.woff2" crossorigin>
+
+<style>
+  /* Subset latin do Google Fonts, servido daqui: cobre todo o português, some
+     com o terceiro no caminho crítico e permite cache de um ano.
+     Fraunces, Caveat e Inter são variáveis — uma face cobre a faixa inteira de
+     peso, e a Fraunces ainda traz o eixo óptico (opsz), que ajusta o desenho
+     da letra ao tamanho em que ela é pintada. */
+  @font-face{font-family:'Fraunces';font-style:normal;font-weight:400 500;font-display:swap;src:url(assets/fontes/fraunces-var.woff2) format('woff2-variations')}
+  @font-face{font-family:'Fraunces';font-style:italic;font-weight:400 500;font-display:swap;src:url(assets/fontes/fraunces-var-italico.woff2) format('woff2-variations')}
+  @font-face{font-family:'Caveat';font-style:normal;font-weight:400 600;font-display:swap;src:url(assets/fontes/caveat-var.woff2) format('woff2-variations')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:300 600;font-display:swap;src:url(assets/fontes/inter-var.woff2) format('woff2-variations')}
+  @font-face{font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fontes/space-mono-400.woff2) format('woff2')}
+  @font-face{font-family:'Space Mono';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fontes/space-mono-700.woff2) format('woff2')}
+
+/* =====================================================================
+   TOKENS — Design System a Benedita Floristeria v1
+   Valores extraídos do protótipo de design (a Benedita.dc.html).
+   ===================================================================== */
+:root{
+  /* ---- FUNDOS ---- */
+  --creme:#F4EEE4;           /* fundo global do body */
+  --creme-alt:#EFE7D8;       /* seção alternada */
+  --marfim:#F7F2EA;          /* fundo mais claro (dobra do ateliê) */
+  --areia:#EAD4BB;           /* fundo quente (hero, transição das sócias) */
+  --areia-funda:#D3B88E;     /* meio do gradiente das sócias */
+  --areia-quente:#E7C9A8;    /* painel Assinaturas */
+
+  /* ---- TEXTO ---- */
+  --grafite:#2A241D;         /* corpo e títulos escuros */
+  --carvao:#1C1A17;          /* texto sobre os CTAs claros */
+  --sepia:#524738;           /* parágrafos */
+  --sepia-claro:#5A5044;     /* parágrafos secundários */
+
+  /* ---- MARCA ---- */
+  --madeira:#6E4A2C;         /* barra de navegação (a textura vem por imagem) */
+  --verde-escuro:#26301C;    /* painel Eventos */
+  --verde-escuro-2:#2E3620;  /* bloco de diferenciais */
+  --magenta:#C0356B;         /* primária de destaque */
+  --rosa:#FFAACB;            /* acento sobre fundo escuro */
+  --ouro:#E9B23A;            /* CTA primário, aro da miniatura ativa */
+  --laranja:#F9A901;         /* CTA alternativo, hover da nav */
+  --terracota:#A9663A;       /* eyebrows, área Assinaturas */
+  --terracota-fundo:#532C17; /* texto sobre superfícies claras quentes */
+  --verde:#5C7A3A;           /* acento Eventos */
+  --laranja-queimado:#E07A2E;
+  --vermelho:#B23A3A;        /* acento (rosas) */
+  --roxo:#8A5AA8;            /* acento (categoria) */
+  --pedra:#B3A794;           /* rótulo de área inativo */
+  --nevoa:#8A7E6C;           /* legendas e dicas */
+  --zap:#25D366;             /* verde do WhatsApp — cor da plataforma, fixa */
+
+  /* ---- VARIANTES SOMENTE-TEXTO (acessibilidade WCAG AA) ----------------
+     Mesmas cores, corrigidas apenas onde viram texto. Os tokens originais
+     seguem intactos em filetes, aros, badges, superfícies e fundos.
+     Medido sobre --creme (#F4EEE4), exceto o laranja (sobre --madeira):
+       --terracota  3.91:1 (reprova) -> --terracota-txt  4.56:1 (AA)
+       --verde      4.23:1 (reprova) -> --verde-txt      4.59:1 (AA)
+       --pedra      2.05:1 (reprova) -> --pedra-txt      4.56:1 (AA)
+       --nevoa      3.45:1 (reprova) -> --nevoa-txt      4.60:1 (AA)
+     O laranja sobre a madeira é o caso inverso: escurecê-lo derrubaria ainda
+     mais o contraste, então ele CLAREIA.
+       --laranja    4.00:1 (reprova) -> --laranja-txt    4.58:1 (AA)
+     Ressalva: a nav tem textura de madeira por imagem, e a razão acima vale
+     para a cor de base. Conferir sobre as partes mais claras da textura. */
+  --terracota-txt:#9A5D35;
+  --verde-txt:#587437;
+  --pedra-txt:#786A55;
+  --nevoa-txt:#746A5B;
+  --laranja-txt:#FEBA2A;
+
+  /* ---- TIPOGRAFIA ---- */
+  --f-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --f-mono:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --f-corpo:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-script:'Caveat','Segoe Script',cursive;
+
+  --fs-gigante:clamp(46px,7vw,104px);  /* LOJA / EVENTOS / ASSINATURAS */
+  --fs-h2:clamp(28px,4vw,52px);
+  --fs-chamada:clamp(22px,2.8vw,38px);
+  --fs-corpo:clamp(15px,1.6vw,17px);
+  --fs-rotulo:clamp(11px,1.2vw,14px);
+
+  /* ---- RAIO ---- */
+  --r-sm:12px; --r-md:20px; --r-lg:26px; --r-xl:48px;
+  --r-pill:100px;
+  --r-topo:80px;             /* topos de seção arredondados */
+
+  /* ---- SOMBRA (quente, sem preto duro) ---- */
+  --sh-sm:0 6px 16px rgba(40,26,12,.12);
+  --sh-md:0 8px 24px rgba(40,26,12,.16);
+  --sh-lg:0 12px 30px rgba(40,26,12,.28);
+  --sh-xl:0 26px 54px rgba(40,26,12,.30);
+
+  /* ---- ESPAÇAMENTO (base 8) ---- */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:68px; --s7:96px;
+
+  /* ---- LAYOUT ---- */
+  --wrap:1240px;
+  --wrap-texto:1080px;
+  --header-h:108px;          /* logo 80px + 14px de folga em cima e embaixo */
+  --tap:44px;                /* área mínima de toque */
+
+  /* ---- CURVAS ---- */
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-gal:cubic-bezier(.4,0,.2,1);    /* revelação da galeria */
+  --ease-card:cubic-bezier(.22,.61,.36,1);/* deck de depoimentos */
+  --ease-pilha:cubic-bezier(.22,.9,.31,1);/* pilha de polaroides */
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+*{box-sizing:border-box}
+/* O atributo hidden perde para qualquer classe que defina display (flex, grid).
+   Sem isto, blocos marcados como ocultos continuam ocupando espaço e recebendo foco. */
+[hidden]{display:none !important}
+html{scroll-behavior:smooth; scroll-padding-top:calc(var(--header-h) + var(--s2))}
+body{
+  margin:0; background:var(--creme); color:var(--grafite);
+  font-family:var(--f-corpo); font-weight:400;
+  font-size:var(--fs-corpo); line-height:1.7; -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+img,video{max-width:100%; display:block}
+h1,h2,h3,h4{font-family:var(--f-display); font-weight:400; color:var(--grafite); margin:0; line-height:1.12; text-wrap:balance}
+p{margin:0; text-wrap:pretty}
+ul,ol{margin:0; padding:0; list-style:none}
+a{color:inherit; text-decoration:none}
+::selection{background:var(--ouro); color:var(--carvao)}
+
+.wrap{width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:5vw}
+.wrap--texto{max-width:var(--wrap-texto)}
+
+.eyebrow{
+  font-family:var(--f-mono); font-weight:700; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--terracota-txt); display:block;
+}
+.eyebrow--claro{color:var(--rosa)}
+.script{font-family:var(--f-script); font-weight:600}
+.destaque{font-style:italic; color:var(--magenta)}
+.lead{color:var(--sepia); max-width:62ch}
+.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+/* Contexto escuro: inverte texto, títulos e foco de uma vez só. Uma regra
+   por painel cobria o h2 e deixava o h3 em grafite sobre verde escuro. */
+.em-escuro{color:var(--creme)}
+.em-escuro h1,.em-escuro h2,.em-escuro h3,.em-escuro h4{color:var(--creme)}
+.em-escuro .lead{color:rgba(244,238,228,.82)}
+
+/* Foco visível e consistente (navegação por teclado) */
+:focus-visible{outline:3px solid var(--magenta); outline-offset:3px; border-radius:4px}
+.em-escuro :focus-visible{outline-color:var(--rosa)}
+
+.pula-link{
+  position:absolute; left:var(--s2); top:-100px; z-index:1000;
+  background:var(--magenta); color:#fff; padding:12px 20px; border-radius:var(--r-pill);
+  font-family:var(--f-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  transition:top .2s var(--ease);
+}
+.pula-link:focus{top:var(--s2)}
+
+/* =====================================================================
+   BOTÕES
+   ===================================================================== */
+.btn{
+  font-family:var(--f-mono); font-weight:400; font-size:12px; letter-spacing:.16em;
+  text-transform:uppercase; padding:14px 24px; border-radius:var(--r-pill);
+  border:1.5px solid transparent; cursor:pointer;
+  transition:background .25s ease, color .25s ease, border-color .25s ease, transform .25s var(--ease), box-shadow .25s ease;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  min-height:var(--tap); line-height:1.2; text-align:center;
+}
+.btn:active{transform:translateY(1px)}
+.btn--ouro{background:var(--ouro); color:var(--carvao)}
+.btn--ouro:hover{background:var(--laranja); box-shadow:var(--sh-md)}
+.btn--laranja{background:var(--laranja); color:var(--carvao); box-shadow:0 12px 28px rgba(249,169,1,.34)}
+.btn--laranja:hover{background:var(--ouro)}
+.btn--contorno{background:transparent; color:var(--terracota-fundo); border-color:rgba(83,44,23,.4)}
+.btn--contorno:hover{border-color:var(--terracota-fundo); background:rgba(83,44,23,.06)}
+.btn--claro{background:rgba(255,255,255,.82); color:var(--terracota-fundo); border-color:rgba(247,242,232,.7)}
+.btn--sm{padding:11px 20px; font-size:11px}
+
+/* =====================================================================
+   CAMPOS
+   ===================================================================== */
+.campo{display:flex; flex-direction:column; gap:8px}
+.campo label{font-family:var(--f-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--nevoa-txt)}
+.campo input,.campo select,.campo textarea{
+  font-family:var(--f-corpo); font-size:1rem; padding:13px 16px;
+  border:1.5px solid rgba(60,40,20,.16); border-radius:var(--r-sm); background:#fff; color:var(--grafite);
+  outline:none; transition:border-color .2s, box-shadow .2s; min-height:var(--tap); width:100%;
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--ouro); box-shadow:0 0 0 3px rgba(233,178,58,.2)}
+
+/* =====================================================================
+   ANIMAÇÕES DE ENTRADA
+   Duas famílias, e a diferença entre elas importa:
+   - .revela  — mão única, disparada por IntersectionObserver. Para as dobras
+     que entram uma vez e ficam.
+   - [data-anim] — REVERSÍVEL, dirigida pelo progresso do scroll dentro da
+     seção de Áreas. Quem escreve opacity/transform ali é o laço de animação
+     em app.js, não o CSS. Por isso ela NÃO começa em opacity:0 aqui: se o
+     script falhar, a seção inteira ficaria invisível. O laço aplica o estado
+     inicial no primeiro quadro.
+   ===================================================================== */
+.revela{opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease); transition-delay:var(--d,0ms)}
+.revela.entrou{opacity:1; transform:none}
+
+@keyframes petalaCai{
+  0%{transform:translateY(-12vh) rotate(0deg); opacity:0}
+  12%{opacity:1}
+  100%{transform:translateY(112vh) rotate(340deg); opacity:.9}
+}
+@keyframes pistaSobeDesce{0%,100%{transform:translateY(0)} 50%{transform:translateY(9px)}}
+@keyframes fluxoTracejado{to{stroke-dashoffset:-60}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important}
+  .revela{opacity:1 !important; transform:none !important; transition:none !important}
+}
+
+/* =====================================================================
+   CABEÇALHO E NAVEGAÇÃO
+   A barra começa recolhida e só entra quando a animação do topo termina —
+   quem move é o laço de animação (ver app.js, bloco TOPO).
+   ===================================================================== */
+.cabecalho{
+  position:fixed; inset:0 0 auto 0; z-index:60; min-height:var(--header-h);
+  display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
+  padding:14px 5vw;
+  background:var(--madeira) url('assets/img/bg_menu_crop.png') center/cover no-repeat;
+  opacity:0; transform:translateY(-100%); pointer-events:none;
+  will-change:transform,opacity; transition:box-shadow .35s ease;
+}
+.cabecalho__logo img{height:80px; width:auto}
+.nav-desktop{display:flex; align-items:center; gap:clamp(18px,2.6vw,37px); flex-wrap:wrap}
+.nav-desktop a{
+  font-family:var(--f-mono); font-size:clamp(13px,1.3vw,16px); letter-spacing:.13em;
+  text-transform:uppercase; color:var(--creme);
+  transition:color .25s ease, text-shadow .25s ease;
+}
+.nav-desktop a:hover{color:var(--laranja-txt); text-shadow:0 0 14px rgba(254,186,42,.85)}
+
+/* Gatilho do menu em tela estreita. O protótipo resolvia sete links com
+   flex-wrap, o que empilhava a barra em três linhas e mudava a altura da
+   nav — e a pílula das Áreas se posiciona a partir dessa altura. */
+.nav-gatilho{display:none; width:var(--tap); height:var(--tap); border:0; background:transparent; color:var(--creme); cursor:pointer}
+.nav-gaveta{
+  position:fixed; inset:0 0 0 auto; width:min(84vw,340px); z-index:70;
+  background:var(--madeira); padding:calc(var(--header-h) + var(--s3)) var(--s4) var(--s4);
+  transform:translateX(100%); transition:transform .35s var(--ease);
+  display:flex; flex-direction:column; gap:var(--s3);
+}
+.nav-gaveta[data-aberta]{transform:none}
+.nav-gaveta a{font-family:var(--f-mono); font-size:15px; letter-spacing:.13em; text-transform:uppercase; color:var(--creme)}
+
+@media (max-width:900px){
+  :root{--header-h:84px}
+  .cabecalho__logo img{height:56px}
+  .nav-desktop,.cabecalho__cta{display:none}
+  .nav-gatilho{display:flex; align-items:center; justify-content:center}
+}
+
+/* Botões flutuantes — sacola e WhatsApp */
+.flutuantes{position:fixed; right:22px; bottom:22px; z-index:55; display:flex; flex-direction:column; gap:10px}
+.flutuante{
+  width:56px; height:56px; border-radius:50%; border:0; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; position:relative;
+  box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+.flutuante--sacola{background:var(--grafite); color:var(--creme)}
+.flutuante--zap{background:var(--zap); color:#0b3d2c}
+.flutuante__contagem{
+  position:absolute; top:-4px; right:-4px; min-width:20px; height:20px; padding:0 5px;
+  border-radius:var(--r-pill); background:var(--magenta); color:#fff;
+  font-family:var(--f-mono); font-size:11px; display:flex; align-items:center; justify-content:center;
+}
+
+/* =====================================================================
+   SEÇÕES — regras compartilhadas
+   ===================================================================== */
+.secao{padding:var(--s6) 0; position:relative}
+@media (min-width:768px){ .secao{padding:var(--s7) 0} }
+.secao--creme{background:var(--creme)}
+.secao--marfim{background:var(--marfim)}
+.secao--areia{background:var(--areia)}
+.secao-cabeca{text-align:center; margin-bottom:var(--s5)}
+.secao-cabeca h2{font-size:var(--fs-h2); margin-top:var(--s2)}
+.secao-cabeca .lead{margin-inline:auto; margin-top:var(--s3)}
+
+/* Dobras dirigidas por rolagem: a altura é o "curso" da animação, e o filho
+   grudado é o que fica na tela enquanto esse curso é percorrido. */
+.dobra-rolagem{position:relative}
+.dobra-rolagem__palco{position:sticky; top:0; height:100svh; overflow:hidden}
+
+/* =====================================================================
+   01 · TOPO (scrub de vídeo)
+   ===================================================================== */
+#topo{height:600vh; background:var(--areia)}
+.topo__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; background:var(--carvao)}
+.topo__conteudo{position:absolute; inset:0; z-index:3; display:flex; flex-direction:column; justify-content:center; padding:var(--s7) 5vw 0}
+.topo__texto{max-width:min(92vw,640px); opacity:0; transform:translateY(28px); will-change:transform,opacity}
+.topo__frase{
+  font-family:var(--f-script); font-weight:600; font-size:clamp(44px,8vw,87px); line-height:.98;
+  color:#FBF7EE; margin:0 0 var(--s4); transform:rotate(-1.5deg);
+  text-shadow:0 2px 6px rgba(0,0,0,.9), 0 4px 18px rgba(0,0,0,.75), 0 0 44px rgba(0,0,0,.6);
+}
+.topo__sub{max-width:460px; margin:0 0 var(--s4); color:#F4EDDF; text-shadow:0 2px 4px rgba(0,0,0,.8)}
+.topo__ctas{display:flex; gap:14px; flex-wrap:wrap}
+.topo__petalas{position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .5s ease}
+.topo__pista{
+  position:absolute; z-index:3; bottom:36px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:6px; color:#5A3A1E;
+  animation:pistaSobeDesce 2.4s ease-in-out infinite;
+}
+.topo__pista span{font-family:var(--f-script); font-size:26px}
+
+/* =====================================================================
+   05 · ÁREAS DE ATUAÇÃO (trilho horizontal)
+   ===================================================================== */
+#pilares{height:360vh; background:var(--creme)}
+.areas__indicador{
+  position:absolute; top:calc(var(--header-h) + 10px); left:50%; transform:translateX(-50%); z-index:40;
+  width:min(92vw,680px); padding:10px 24px; border-radius:var(--r-pill);
+  background:rgba(244,238,228,.9); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  box-shadow:var(--sh-md);
+}
+.areas__rotulos{display:flex; align-items:center; justify-content:space-between; font-family:var(--f-mono); font-weight:700; font-size:var(--fs-rotulo); letter-spacing:.14em; text-transform:uppercase}
+.areas__rotulos button{border:0; background:none; cursor:pointer; font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--pedra-txt); transition:color .4s ease; padding:6px 4px}
+.areas__barra{position:relative; width:100%; height:2px; margin-top:9px; background:rgba(60,40,20,.16); border-radius:2px}
+.areas__barra i{position:absolute; inset:0; background:var(--magenta); border-radius:2px; transform:scaleX(0); transform-origin:left center; transition:background .4s ease}
+.areas__trilho{display:flex; width:300vw; height:100%; will-change:transform}
+.area{width:100vw; height:100%; flex-shrink:0; display:flex; align-items:center; padding:calc(var(--header-h) + var(--s5)) clamp(24px,5vw,80px) var(--s5)}
+.area__grade{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.86fr); gap:clamp(32px,5vw,80px); align-items:center; width:100%; max-width:1280px; margin-inline:auto}
+.area__titulo{font-family:var(--f-mono); font-weight:700; font-size:var(--fs-gigante); line-height:.9; letter-spacing:.01em}
+.area--loja{background:var(--creme)}
+.area--loja .area__titulo{color:var(--magenta)}
+.area--eventos{background:var(--verde-escuro)}
+.area--eventos .area__titulo{color:var(--rosa)}
+.area--assinaturas{background:var(--areia-quente)}
+.area--assinaturas .area__titulo{color:var(--terracota-fundo)}
+
+@media (max-width:900px){
+  /* Sem pin nem trilho: em tela estreita as três áreas viram três dobras
+     empilhadas, que é o que cabe num polegar. O laço de animação detecta e
+     não assume o controle. */
+  #pilares{height:auto}
+  #pilares .dobra-rolagem__palco{position:static; height:auto; overflow:visible}
+  .areas__indicador{display:none}
+  .areas__trilho{display:block; width:100%; height:auto}
+  .area{width:100%; height:auto; padding:var(--s6) 5vw}
+  .area__grade{grid-template-columns:1fr}
+}
+
+/* =====================================================================
+   07 · CATÁLOGO
+   ===================================================================== */
+.categorias-grade{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px}
+.categoria{position:relative; aspect-ratio:9/16; border-radius:var(--r-md); overflow:hidden; cursor:pointer; transition:transform .35s ease}
+.categoria:hover{transform:translateY(-6px)}
+@media (max-width:900px){ .categorias-grade{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* =====================================================================
+   GAVETA DA SACOLA
+   ===================================================================== */
+.sacola{
+  position:fixed; inset:0 0 0 auto; width:min(92vw,420px); z-index:80;
+  background:var(--marfim); box-shadow:var(--sh-xl);
+  transform:translateX(100%); transition:transform .35s var(--ease);
+  display:flex; flex-direction:column;
+}
+.sacola[data-aberta]{transform:none}
+.veu{position:fixed; inset:0; z-index:75; background:rgba(28,20,12,.5); opacity:0; pointer-events:none; transition:opacity .3s ease}
+.veu[data-aberto]{opacity:1; pointer-events:auto}
+</style>
+</head>
+<body>
+
+<a class="pula-link" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- ===================== CABEÇALHO ===================== -->
+<header class="cabecalho" id="cabecalho">
+  <a class="cabecalho__logo" href="#topo" aria-label="a Benedita Floristeria — início">
+    <img src="assets/img/logo-claro.svg" alt="a Benedita Floristeria" width="240" height="80">
+  </a>
+
+  <nav class="nav-desktop" aria-label="Navegação principal">
+    <a href="#socias">Sócias</a>
+    <a href="#sobre">A Benedita</a>
+    <a href="#pilares">Serviços</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#clientes">Clientes</a>
+    <a href="#faq">Dúvidas</a>
+    <a href="#contato">Contato</a>
+  </nav>
+
+  <a class="btn btn--ouro cabecalho__cta" data-zap="topo" href="#contato">WhatsApp</a>
+
+  <button class="nav-gatilho" id="navGatilho" aria-expanded="false" aria-controls="navGaveta" aria-label="Abrir menu">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</header>
+
+<nav class="nav-gaveta" id="navGaveta" aria-label="Navegação principal (tela estreita)" hidden>
+  <a href="#socias">Sócias</a>
+  <a href="#sobre">A Benedita</a>
+  <a href="#pilares">Serviços</a>
+  <a href="#catalogo">Catálogo</a>
+  <a href="#clientes">Clientes</a>
+  <a href="#faq">Dúvidas</a>
+  <a href="#contato">Contato</a>
+</nav>
+
+<main id="conteudo">
+
+  <!-- ===================== 01 · TOPO =====================
+       Dobra de 600vh: a rolagem percorre o vídeo quadro a quadro (scrub). Ao
+       fim, a frase, os CTAs e a barra de navegação entram, e as pétalas
+       começam a cair. Ver o bloco TOPO em app.js. -->
+  <section class="dobra-rolagem" id="topo" aria-labelledby="topo-titulo">
+    <div class="dobra-rolagem__palco">
+      <video class="topo__video" id="topoVideo" muted playsinline preload="auto" poster="assets/img/topo-poster.jpg" aria-hidden="true">
+        <source src="assets/video/anima_final.mp4" type="video/mp4">
+      </video>
+
+      <div class="topo__petalas" id="topoPetalas" aria-hidden="true"></div>
+
+      <div class="topo__conteudo">
+        <div class="topo__texto" id="topoTexto">
+          <h1 class="topo__frase" id="topo-titulo">Qual o sabor<br>de um dia<br>mais colorido!</h1>
+          <p class="topo__sub">Bem-vindo ao site da a Benedita Floristeria.<br>Flor fresca do dia, montada à mão, aqui em Porto Alegre.</p>
+          <div class="topo__ctas">
+            <a class="btn btn--laranja" href="#catalogo">Ver o catálogo</a>
+            <a class="btn btn--claro" data-zap="evento" href="#contato">Orçar um evento</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="topo__pista" id="topoPista" aria-hidden="true">
+        <span>role e veja florescer</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 02 · SÓCIAS ===================== -->
+  <section class="secao revela" id="socias" aria-labelledby="socias-titulo">
+    <div class="wrap wrap--texto">
+      <div class="secao-cabeca">
+        <h2 id="socias-titulo">As mãos por trás da <em class="destaque">Benedita</em>.</h2>
+      </div>
+      <img src="assets/img/retrato-gurias.png" alt="Simone e Ana Paula Castro, sócias da Benedita" width="940" height="620" loading="lazy" decoding="async">
+      <div class="socias__grade">
+        <article>
+          <h3>Simone Castro</h3>
+          <p data-marcacao>Parágrafo de marcação sobre a Simone. Substituir pelo texto final.</p>
+        </article>
+        <article>
+          <h3>Ana Paula Castro</h3>
+          <p data-marcacao>Parágrafo de marcação sobre a Ana Paula. Substituir pelo texto final.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 03 · SEPARADOR DO TOLDO ===================== -->
+  <div class="separador-toldo" aria-hidden="true">
+    <img src="assets/img/awning-sobre-crop.png" alt="" width="1600" height="300" loading="lazy" decoding="async">
+  </div>
+
+  <!-- ===================== 04 · A BENEDITA / ATELIÊ ===================== -->
+  <section class="secao secao--marfim revela" id="sobre" aria-labelledby="sobre-titulo">
+    <div class="wrap">
+      <h2 id="sobre-titulo" class="sr-only">O que é a Benedita</h2>
+      <div class="sobre__grade">
+        <div class="sobre__texto">
+          <p data-marcacao>Texto de marcação sobre a floricultura de bairro. Substituir.</p>
+          <p data-marcacao>Segundo parágrafo de marcação sobre o ateliê. Substituir.</p>
+        </div>
+        <!-- Pilha de polaroides arrastável. Mesmo primitivo do painel de
+             Assinaturas e do deck de depoimentos — ver pilhaDeCartoes(). -->
+        <div class="sobre__pilha" id="pilhaAtelie" data-pilha="atelie"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 05 · ÁREAS DE ATUAÇÃO =====================
+       Trilho de 300vw movido na horizontal pela rolagem vertical, com uma
+       pausa ("dwell") em cada área. Ver o bloco ÁREAS em app.js. -->
+  <section class="dobra-rolagem" id="pilares" aria-labelledby="pilares-titulo">
+    <h2 id="pilares-titulo" class="sr-only">Áreas de atuação</h2>
+    <div class="dobra-rolagem__palco">
+
+      <div class="areas__indicador" id="areasIndicador">
+        <div class="areas__rotulos" role="tablist" aria-label="Áreas de atuação">
+          <button type="button" role="tab" data-area="0" data-cor="#C0356B" aria-selected="true">Loja</button>
+          <button type="button" role="tab" data-area="1" data-cor="#587437" aria-selected="false">Eventos</button>
+          <button type="button" role="tab" data-area="2" data-cor="#9A5D35" aria-selected="false">Assinaturas</button>
+        </div>
+        <div class="areas__barra" aria-hidden="true"><i id="areasBarra"></i></div>
+      </div>
+
+      <div class="areas__trilho" id="areasTrilho">
+
+        <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
+          <div class="area__grade">
+            <div>
+              <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física.</p>
+              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação.</p>
+              <div data-anim data-i="4" class="topo__ctas">
+                <a class="btn btn--ouro" href="#catalogo">Ver o catálogo</a>
+                <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
+              </div>
+            </div>
+            <div data-anim data-i="2" data-galeria="loja"></div>
+          </div>
+        </article>
+
+        <article class="area area--eventos em-escuro" data-painel="1" aria-labelledby="area-eventos">
+          <div class="area__grade">
+            <div>
+              <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Para o dia que <em class="destaque" style="color:var(--rosa)">não se repete</em>.</h3>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos.</p>
+              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação.</p>
+              <div data-anim data-i="4" class="topo__ctas">
+                <a class="btn btn--ouro" data-zap="evento" href="#contato">Orçar um evento</a>
+              </div>
+            </div>
+            <div data-anim data-i="2" data-galeria="eventos"></div>
+          </div>
+        </article>
+
+        <article class="area area--assinaturas" data-painel="2" aria-labelledby="area-assinaturas">
+          <div class="area__grade">
+            <div class="sobre__pilha" data-anim data-i="2" data-pilha="assinatura"></div>
+            <div>
+              <p class="area__titulo" data-anim data-i="0" id="area-assinaturas">ASSINATURAS</p>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor fresca <em class="destaque">toda semana</em>.</h3>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a assinatura.</p>
+              <!-- Sem "assinar agora": a assinatura é fechada na conversa. -->
+              <div data-anim data-i="3" class="topo__ctas">
+                <a class="btn btn--ouro" data-zap="assinaturaComo" href="#contato">Como funciona</a>
+                <a class="btn btn--contorno" data-zap="assinatura" href="#contato">Falar no WhatsApp</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 06 · BANNER DA ESTAÇÃO =====================
+       Arte trocada pelo painel administrativo. O ✕ desliga o bloco e a
+       escolha fica gravada no navegador de quem fechou. -->
+  <section class="secao revela" id="estacao" aria-label="Campanha da estação" hidden>
+    <div class="wrap">
+      <div class="estacao__moldura">
+        <a data-zap="evento" href="#contato"><img id="estacaoArte" src="assets/img/banner-campanha.png" alt="" width="2048" height="768" loading="lazy" decoding="async"></a>
+        <button type="button" id="estacaoFechar" aria-label="Desligar este bloco">✕</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 07 · CATÁLOGO ===================== -->
+  <section class="secao" id="catalogo" aria-labelledby="catalogo-titulo">
+    <div class="wrap">
+      <div class="secao-cabeca">
+        <h2 id="catalogo-titulo" style="color:var(--terracota-txt)">Faça seu pedido online!<br>Escolha uma categoria para começar.</h2>
+      </div>
+      <!-- Estado 1: blocos de categoria (vídeo no hover) -->
+      <div class="categorias-grade" id="categoriasGrade"></div>
+      <!-- Estado 2: filtros + grade de produtos da categoria escolhida -->
+      <div id="produtosVista" hidden>
+        <div class="catalogo__filtros" id="catalogoFiltros" role="tablist" aria-label="Categorias"></div>
+        <div class="produtos-grade" id="produtosGrade"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 08 · COMO PEDIR ===================== -->
+  <section class="secao secao--marfim revela" id="como-pedir" aria-labelledby="como-titulo">
+    <div class="wrap">
+      <div class="secao-cabeca">
+        <span class="eyebrow">Como pedir</span>
+        <h2 id="como-titulo">Quatro passos, nenhum cadastro.</h2>
+      </div>
+      <ol class="passos">
+        <li><span class="passos__num">01</span><h3>Escolhe</h3><p>Monta a sacola com o que quiser.</p></li>
+        <li><span class="passos__num">02</span><h3>Preenche</h3><p>Nome, endereço, ocasião e data.</p></li>
+        <li><span class="passos__num">03</span><h3>Envia</h3><p>O pedido chega pronto no nosso WhatsApp.</p></li>
+        <li><span class="passos__num">04</span><h3>Recebe</h3><p>Combinamos entrega e pagamento na conversa.</p></li>
+      </ol>
+      <p class="lead" style="text-align:center; margin-inline:auto">Ninguém paga no site. O pagamento é combinado direto com a loja.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 08b · DIFERENCIAIS ===================== -->
+  <section class="secao em-escuro revela" id="diferenciais" aria-labelledby="dif-titulo" style="background:var(--verde-escuro-2)">
+    <div class="wrap">
+      <div class="secao-cabeca">
+        <span class="eyebrow eyebrow--claro">Por que a Benedita</span>
+        <h2 id="dif-titulo">O cuidado aparece na flor.</h2>
+      </div>
+      <ul class="diferenciais" id="diferenciais"></ul>
+    </div>
+  </section>
+
+  <!-- ===================== 09 · CLIENTES ===================== -->
+  <section class="secao revela" id="clientes" aria-labelledby="clientes-titulo">
+    <div class="wrap">
+      <div class="secao-cabeca">
+        <span class="eyebrow">Clientes</span>
+        <h2 id="clientes-titulo">O que dizem nossos clientes</h2>
+      </div>
+      <div class="depoimentos">
+        <!-- Deck de cartões-foto empilhados — mesmo primitivo da pilha do ateliê. -->
+        <div class="depoimentos__deck" id="depoimentosDeck" data-pilha="clientes"></div>
+        <div class="depoimentos__corpo" id="depoimentosCorpo" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 10 · DÚVIDAS ===================== -->
+  <section class="secao secao--marfim revela" id="faq" aria-labelledby="faq-titulo">
+    <div class="wrap wrap--texto">
+      <div class="secao-cabeca">
+        <span class="eyebrow">Dúvidas</span>
+        <h2 id="faq-titulo">Perguntas que sempre chegam.</h2>
+      </div>
+      <div class="acordeao" id="acordeao"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 11 · CHAMADA FINAL ===================== -->
+  <section class="secao secao--areia revela" id="chamada" aria-labelledby="chamada-titulo">
+    <div class="wrap wrap--texto" style="text-align:center">
+      <h2 id="chamada-titulo">Manda uma mensagem. A gente monta junto.</h2>
+      <div class="topo__ctas" style="justify-content:center; margin-top:var(--s4)">
+        <a class="btn btn--ouro" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 12 · CONTATO =====================
+       O formulário não envia para servidor nenhum: ele MONTA a mensagem de
+       WhatsApp com o que foi preenchido e com a sacola. -->
+  <section class="secao revela" id="contato" aria-labelledby="contato-titulo">
+    <div class="wrap wrap--texto">
+      <div class="secao-cabeca">
+        <span class="eyebrow">Contato</span>
+        <h2 id="contato-titulo">Conta pra gente o que você precisa.</h2>
+      </div>
+      <form class="formulario" id="formulario" novalidate>
+        <div class="campo"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name"></div>
+        <div class="campo"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+        <div class="campo"><label for="f-endereco">Endereço de entrega</label><input id="f-endereco" name="endereco" autocomplete="street-address"></div>
+        <div class="campo"><label for="f-ocasiao">Ocasião</label><input id="f-ocasiao" name="ocasiao"></div>
+        <div class="campo"><label for="f-data">Data</label><input id="f-data" name="data" type="date"></div>
+        <button class="btn btn--ouro" type="submit">Enviar pelo WhatsApp</button>
+      </form>
+      <p class="lead">Ninguém paga no site. O pagamento é combinado na conversa.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape em-escuro" style="background:var(--madeira); padding:var(--s6) 0">
+  <div class="wrap">
+    <img src="assets/img/logo-claro.svg" alt="a Benedita Floristeria" width="200" height="66" loading="lazy">
+    <nav aria-label="Canais de atendimento">
+      <a data-zap="flutuante" href="#contato">WhatsApp</a>
+    </nav>
+    <p><small>a Benedita Floristeria · Porto Alegre, RS</small></p>
+  </div>
+</footer>
+
+<!-- ===================== FLUTUANTES ===================== -->
+<div class="flutuantes">
+  <button class="flutuante flutuante--sacola" id="sacolaAbrir" aria-controls="sacola" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    <span class="flutuante__contagem" id="sacolaContagem">0</span>
+    <span class="sr-only">Abrir a sacola de desejos</span>
+  </button>
+  <a class="flutuante flutuante--zap" data-zap="flutuante" href="#contato">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.9 5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/></svg>
+    <span class="sr-only">Falar no WhatsApp</span>
+  </a>
+</div>
+
+<div class="veu" id="veu"></div>
+
+<!-- ===================== GAVETA DA SACOLA ===================== -->
+<aside class="sacola" id="sacola" role="dialog" aria-modal="true" aria-labelledby="sacola-titulo" hidden>
+  <header>
+    <h2 id="sacola-titulo">Sua sacola</h2>
+    <button type="button" id="sacolaFechar" aria-label="Fechar a sacola">✕</button>
+  </header>
+  <ul id="sacolaItens"></ul>
+  <footer>
+    <p id="sacolaTotal"></p>
+    <a class="btn btn--ouro" id="sacolaEnviar" href="#">Enviar pelo WhatsApp</a>
+  </footer>
+</aside>
+
+<!-- ===================== PAINEL DO PRODUTO ===================== -->
+<aside class="painel" id="painelProduto" role="dialog" aria-modal="true" aria-labelledby="painel-titulo" hidden></aside>
+
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

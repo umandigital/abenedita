@@ -1,0 +1,14 @@
+{
+  "name": "a Benedita Floristeria",
+  "short_name": "a Benedita",
+  "description": "Flores frescas do dia em Porto Alegre. Pedido pelo WhatsApp.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4EEE4",
+  "theme_color": "#6E4A2C",
+  "icons": [
+    { "src": "assets/img/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/img/icone-512-mascara.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

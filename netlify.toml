@@ -1,0 +1,109 @@
+# Publicação — a Benedita Floristeria
+# O site é estático (um index.html, assets/ e nada mais), então não há build:
+# o Netlify apenas serve os arquivos da raiz do repositório.
+
+[build]
+  publish = "."
+  command = ""
+
+# ---------------------------------------------------------------------
+# Material interno fora do ar
+# O repositório guarda o handoff de design e o script do banco. Nada disso
+# tem senha, mas também não precisa ficar acessível pela URL.
+# ---------------------------------------------------------------------
+[[redirects]]
+  from = "/supabase/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/design_handoff_benedita/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/assets/LEIA-ME.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/assets/originais/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ---------------------------------------------------------------------
+# Rotas do catálogo
+# Cada categoria tem endereço próprio (/catalogo/aneis), mas o site é um
+# arquivo só: o servidor entrega sempre o index.html e o JavaScript abre a
+# vista certa. Precisa vir DEPOIS dos 404 acima e ANTES de qualquer coisa
+# que capture tudo, senão engoliria os arquivos reais.
+# ---------------------------------------------------------------------
+[[redirects]]
+  from = "/catalogo/*"
+  to = "/index.html"
+  status = 200
+
+# ---------------------------------------------------------------------
+# Cabeçalhos
+# ---------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# O HTML carrega conteúdo do Supabase, então não pode ficar em cache longo.
+# Precisa valer para "/" também: é esse o endereço que as pessoas abrem, e a
+# regra casa com o caminho pedido, não com o arquivo entregue. Só
+# "/index.html" deixaria a home de fora — e uma home em cache faz a pessoa
+# jurar que a alteração não subiu.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/catalogo/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Imagens e vídeos podem ficar em cache: mudam de nome quando trocam.
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/assets/video/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# As fontes vivem fora do HTML para poderem ser cacheadas por um ano e
+# baixadas em paralelo. `immutable` evita até a revalidação condicional.
+[[headers]]
+  for = "/assets/fontes/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/xml; charset=utf-8"
