@@ -24,17 +24,49 @@ lá não há token para ele.
 ## O vídeo do topo
 
 `anima_final.mp4` tem **20,8 MB**, e o protótipo baixava o arquivo inteiro
-(`fetch` → `blob`) antes de o topo funcionar. Isso existe porque percorrer
-um vídeo por `currentTime` engasga quando ele chega em streaming.
+(`fetch` → `blob`) antes de o topo funcionar. A ideia era que ter tudo em
+memória deixaria o scrub fluido.
 
-**Não subir assim.** O caminho é reencodar com keyframe a cada quadro
-(`ffmpeg -g 1`), com resolução e bitrate cortados, mirando 2–3 MB. Com
-keyframes densos o arquivo fica percorrível em streaming e o `fetch` do blob
-deixa de ser necessário — que é o que hoje segura a primeira tela por
-dezenas de segundos numa conexão móvel.
+**Medimos. Não deixa.**
 
-Regere também o `img/topo-poster.jpg` a partir do primeiro quadro: é ele que
-aparece enquanto o vídeo não está pronto.
+O banco de provas está em `ferramentas/medir-scrub/`: 120 buscas do início ao
+fim do vídeo, como a rolagem faria, três rodadas por variante.
+
+| Arquivo | Latência mediana por busca |
+|---|---|
+| Um quadro-chave só (GOP longo), transmitido | **162,3 ms** |
+| O mesmo arquivo, baixado inteiro como blob | **161,0 ms** |
+| Quadro-chave a cada 5 quadros, transmitido | **14,4 ms** |
+
+O blob compra 1,3 ms — menos que a dispersão entre rodadas do próprio blob
+(156 a 168 ms). Ou seja: os 20,8 MB de espera na primeira tela **não compram
+fluidez nenhuma**. O gargalo nunca foi a rede; é decodificar do quadro-chave
+até o quadro pedido. Um arquivo com quadros-chave densos resolve, e resolve
+transmitindo.
+
+A 60 quadros por segundo o orçamento é de 16 ms por quadro. Com 162 ms por
+busca o scrub anda a uns seis quadros por segundo — é exatamente o engasgo
+que o blob tentava mascarar.
+
+### A receita
+
+```bash
+ffmpeg -i anima_final.mp4 -vf scale=1280:-2 \
+       -c:v libx264 -preset slow -crf 28 -g 5 -an topo.mp4
+```
+
+**`-g 5`, não `-g 1`.** Todo-quadro-chave parece a resposta óbvia e é pior
+nos dois eixos: gera arquivo 3,3× maior e a busca fica mais *lenta* (19,6 ms
+contra 14,3 ms), porque cada busca precisa ler e demuxar mais bytes. Em
+1080p, `-g 1` chegou a gerar arquivo **maior que o original**.
+
+Depois de reencodar, rode `ferramentas/medir-scrub/` outra vez e confirme a
+mediana abaixo de ~16 ms. E regere o `img/topo-poster.jpg` a partir do
+primeiro quadro: é ele que aparece enquanto o vídeo não está pronto.
+
+Os números acima saíram de VP9/WebM — o Chromium do Playwright não traz
+H.264. A relação entre quadro-chave e latência é a mesma nos dois codecs, mas
+confirme em H.264 num Chrome de verdade antes de fechar.
 
 ## Peso
 

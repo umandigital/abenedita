@@ -1,0 +1,29 @@
+<!DOCTYPE html><meta charset="utf-8"><body>
+<video id="v" muted playsinline preload="auto"></video>
+<script>
+window.medir = async function (src, modo) {
+  const v = document.getElementById('v');
+  const t0 = performance.now();
+  if (modo === 'blob') {
+    const b = await (await fetch(src)).blob();
+    v.src = URL.createObjectURL(b);
+  } else {
+    v.src = src;
+  }
+  await new Promise(r => v.addEventListener('loadedmetadata', r, {once:true}));
+  const prontoEm = performance.now() - t0;          // ate poder comecar o scrub
+  const dur = v.duration;
+  const lat = [];
+  // Varre a linha do tempo como a rolagem faria: 120 buscas do inicio ao fim.
+  for (let i = 0; i < 120; i++) {
+    const alvo = (i / 119) * dur * 0.999;
+    const s = performance.now();
+    v.currentTime = alvo;
+    await new Promise(r => v.addEventListener('seeked', r, {once:true}));
+    lat.push(performance.now() - s);
+  }
+  lat.sort((a,b) => a-b);
+  const q = p => lat[Math.floor(p * (lat.length-1))];
+  return { prontoEm: Math.round(prontoEm), p50: +q(.5).toFixed(1), p95: +q(.95).toFixed(1), max: +lat[lat.length-1].toFixed(1) };
+};
+</script></body>

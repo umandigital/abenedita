@@ -204,6 +204,12 @@
     var FIM_DO_SCRUB = 0.8;
     var pv = Math.min(1, p / FIM_DO_SCRUB);
 
+    /* Sem `fetch` do arquivo inteiro para um blob antes de comecar. O
+       prototipo fazia isso na esperanca de deixar a busca fluida, e medimos
+       que nao deixa: 161 ms por busca via blob contra 162 ms transmitindo, num
+       arquivo de quadro-chave esparso. O gargalo e decodificar do quadro-chave
+       ate o quadro pedido, nao a rede — quem resolve e o encode (quadro-chave
+       a cada 5, e a busca cai para 14 ms). Ver assets/LEIA-ME.md. */
     var v = topo.video;
     if (v && v.duration) {
       var alvo = pv * v.duration;
