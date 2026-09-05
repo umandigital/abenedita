@@ -339,7 +339,10 @@ a{color:inherit; text-decoration:none}
 /* =====================================================================
    01 · TOPO (scrub de vídeo)
    ===================================================================== */
-#topo{height:600vh; background:var(--areia)}
+/* A altura e o curso da animacao: 400vh sao 3 alturas de tela de rolagem
+   para atravessar os 19,8s do video. Mexer aqui muda o ritmo do topo e
+   nada mais — o mapeamento e proporcional. */
+#topo{height:400vh; background:var(--areia)}
 .topo__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; background:var(--carvao)}
 .topo__conteudo{position:absolute; inset:0; z-index:3; display:flex; flex-direction:column; justify-content:center; padding:var(--s7) 5vw 0}
 .topo__texto{max-width:min(92vw,640px); opacity:0; transform:translateY(28px); will-change:transform,opacity}

@@ -61,6 +61,42 @@ até o quadro pedido, não a rede.
 
 A 60 quadros por segundo o orçamento é de 16 ms. Os 13,5 ms cabem.
 
+### O corte
+
+O original tinha 30s e começava com o quadro-negro vazio, a bicicleta sendo
+desenhada do zero. O corte publicado começa com ela **já desenhada e
+pedalando**, anda um pouco, e só então se transforma.
+
+| Trecho | No original | Velocidade | Resulta em |
+|---|---|---|---|
+| Giz já desenhado, pedalando | 2,6 → 11,0s | 3,5× | 2,4s |
+| Transformação em pétalas | 11,0 → 17,5s | normal | 6,5s |
+| Pausa morta (nada acontece) | 17,5 → 20,5s | 2,5× | 1,2s |
+| Florada até a cena cheia | 20,5 → 30,0s | normal | 9,5s |
+
+Total: **19,5s**, contra 30s. O trecho de giz ocupa uns 320 px de rolagem —
+um terço de tela, que é o "anda um pouco".
+
+Dois cortes têm razão específica. O começo é 2,6s e não 1,8s porque antes
+disso a bicicleta encosta na borda direita do quadro e o `object-fit: cover`
+a decepa: medido, o giz vai até 99,8% da largura em 1,8s contra 90,4% em
+2,6s. E o trecho 17,5 → 20,5s foi acelerado porque nele a bicicleta já está
+formada e absolutamente nada acontece — três segundos de rolagem sem
+recompensa.
+
+Para refazer com outro ritmo, o comando está no histórico do commit que
+trouxe este corte; os números de `trim` e `setpts` são os únicos que mudam.
+
+### Pendência: o enquadramento no celular
+
+O vídeo é 16:9 e o topo o exibe com `object-fit: cover`. Numa tela de
+390×844, isso escala para 1500 px de largura e **descarta 74% dela** —
+sobram o cesto e a roda dianteira, e a bicicleta fica irreconhecível.
+
+Não é ajuste de CSS: falta um corte vertical dedicado do vídeo, servido por
+`<source media="(max-width: 900px)">`. O material fonte é 1920×1080, então dá
+para tirar um 9:16 centrado na bicicleta. Decisão de design, ainda em aberto.
+
 ### Sobre a taxa de quadros
 
 Caiu de 30 para 15 fps de propósito. Num vídeo percorrido pela rolagem, a taxa
