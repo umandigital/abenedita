@@ -663,13 +663,139 @@
     return { tique: tique, elemento: el, repinta: pinta };
   }
 
+  /* ===================================================================
+     DEPOIMENTOS
+     Três fotos à vista: a ativa de frente, a anterior e a próxima recuadas,
+     levantadas e giradas. Quem anima é o CSS — só trocamos o transform e
+     deixamos a mola da transição fazer o resto.
+     =================================================================== */
+  function depoimentosCirculares(elDeck, elCorpo, lista, opcoes) {
+    if (!elDeck || !elCorpo || !lista || !lista.length) return null;
+    opcoes = opcoes || {};
+    var AUTO = opcoes.autoplay || 5000;
+    var ativo = 0, relogio = 0;
+
+    /* O afastamento cresce com a largura do bloco: o mesmo recuo em pixels
+       que respira num desktop empilha as três fotos num celular. */
+    function afastamento() {
+      var l = elDeck.getBoundingClientRect().width;
+      if (l <= 320) return 34;
+      if (l >= 560) return 86;
+      return 34 + (86 - 34) * ((l - 320) / 240);
+    }
+
+    var fotos = lista.map(function (d, i) {
+      var img = document.createElement('img');
+      img.className = 'depoimentos__foto';
+      img.alt = 'Retrato de ' + d.nome;
+      img.loading = 'lazy'; img.decoding = 'async';
+      img.width = 900; img.height = 900;
+      img.src = d.foto;
+      elDeck.appendChild(img);
+      return img;
+    });
+
+    var nome = document.createElement('h3');    nome.className = 'depoimentos__nome';
+    var ctx  = document.createElement('p');     ctx.className  = 'depoimentos__contexto';
+    var cit  = document.createElement('blockquote'); cit.className = 'depoimentos__citacao';
+    var setas = document.createElement('div');  setas.className = 'depoimentos__setas';
+    function seta(rotulo, caminho, delta) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'depoimentos__seta';
+      b.setAttribute('aria-label', rotulo);
+      b.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + caminho + '"/></svg>';
+      b.addEventListener('click', function () { vai(ativo + delta, true); });
+      setas.appendChild(b);
+    }
+    seta('Depoimento anterior', 'M19 12H5M12 19l-7-7 7-7', -1);
+    seta('Próximo depoimento',  'M5 12h14M12 5l7 7-7 7',   1);
+    elCorpo.appendChild(nome); elCorpo.appendChild(ctx);
+    elCorpo.appendChild(cit);  elCorpo.appendChild(setas);
+
+    function posiciona() {
+      var g = afastamento(), sobe = g * 0.8, n = lista.length;
+      fotos.forEach(function (img, i) {
+        var esq = (ativo - 1 + n) % n === i, dir = (ativo + 1) % n === i;
+        if (i === ativo) {
+          img.style.zIndex = 3; img.style.opacity = 1;
+          img.style.transform = 'translateX(0) translateY(0) scale(1) rotateY(0deg)';
+        } else if (esq) {
+          img.style.zIndex = 2; img.style.opacity = 1;
+          img.style.transform = 'translateX(' + (-g) + 'px) translateY(' + (-sobe) + 'px) scale(.85) rotateY(15deg)';
+        } else if (dir) {
+          img.style.zIndex = 2; img.style.opacity = 1;
+          img.style.transform = 'translateX(' + g + 'px) translateY(' + (-sobe) + 'px) scale(.85) rotateY(-15deg)';
+        } else {
+          img.style.zIndex = 1; img.style.opacity = 0;
+        }
+      });
+    }
+
+    function escreve() {
+      var d = lista[ativo];
+      nome.textContent = d.nome;
+      ctx.textContent = d.contexto || '';
+      /* Recria os spans a cada troca: é o que rearma a transição de entrada.
+         textContent em cada um, nunca innerHTML — a citação é conteúdo do
+         cliente, vinda do banco. */
+      cit.classList.remove('entrou');
+      cit.textContent = '';
+      d.citacao.split(' ').forEach(function (palavra, i) {
+        var sp = document.createElement('span');
+        sp.className = 'depoimentos__palavra';
+        sp.style.setProperty('--d', (i * 25) + 'ms');
+        sp.textContent = palavra;
+        cit.appendChild(sp);
+        cit.appendChild(document.createTextNode(' '));
+      });
+      /* dois quadros: o navegador precisa pintar o estado inicial antes de
+         a classe disparar a transição */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { cit.classList.add('entrou'); });
+      });
+    }
+
+    function vai(i, porGesto) {
+      var n = lista.length;
+      ativo = ((i % n) + n) % n;
+      if (porGesto) relogio = 0;
+      posiciona(); escreve();
+    }
+
+    elDeck.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); vai(ativo - 1, true); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); vai(ativo + 1, true); }
+    });
+    window.addEventListener('resize', posiciona);
+    vai(0, false);
+
+    function tique(dt, visivel) {
+      if (poucoMovimento || !AUTO || !visivel) return;
+      relogio += dt;
+      if (relogio >= AUTO) { relogio = 0; vai(ativo + 1, false); }
+    }
+    return { tique: tique, elemento: elDeck };
+  }
+
+  var depoimentos = null;
+  function ligaDepoimentos() {
+    var lista = [
+      { nome:'Camila Rossi',   contexto:'Recebe todo mês · Bela Vista',            foto:'assets/img/cli-1.jpg', citacao:'As flores da Benedita mudaram o clima da minha casa. Chegam vivas e perfumam o dia inteiro.' },
+      { nome:'João Peixoto',   contexto:'Presente de Dia das Mães · Menino Deus',  foto:'assets/img/cli-2.jpg', citacao:'Pedi um arranjo pra minha mãe pelo WhatsApp e foi tudo simples. Ela amou de verdade.' },
+      { nome:'Marina & Téo',   contexto:'Casamento · Moinhos de Vento',            foto:'assets/img/cli-3.jpg', citacao:'Fizeram a decoração do nosso casamento. Cada detalhe pensado com muito carinho.' },
+      { nome:'Beatriz Nunes',  contexto:'Assinante quinzenal · Cidade Baixa',      foto:'assets/img/cli-4.jpg', citacao:'Assino o plano quinzenal há um ano. Nunca mais minha sala ficou sem flor fresca.' },
+      { nome:'Rafael Antunes', contexto:'Entrega expressa · Petrópolis',           foto:'assets/img/cli-5.jpg', citacao:'Precisava de flores no mesmo dia pra um pedido de desculpas. Salvaram meu dia — e a relação.' }
+    ];
+    depoimentos = depoimentosCirculares($('#depoimentosDeck'), $('#depoimentosCorpo'), lista, { autoplay: 5000 });
+  }
+
   var galerias = [];
   function ligaGalerias() {
     [['loja', 'loja', 'Fotos da loja'], ['eventos', 'evento', 'Fotos de eventos']].forEach(function (par) {
       var el = $('[data-galeria="' + par[0] + '"]');
       if (!el) return;
       var fotos = [];
-      for (var i = 1; i <= 8; i++) {
+      for (var i = 1; i <= 5; i++) {
         fotos.push({ src: 'assets/img/' + par[1] + '-g' + i + '.jpg', alt: '', w: 1000, h: 1250 });
       }
       var g = galeriaCircular(el, fotos, { autoplay: 4500, rotulo: par[2] });
@@ -686,6 +812,10 @@
       var visivel = r.bottom > 0 && r.top < window.innerHeight &&
                     r.right > 0 && r.left < window.innerWidth;
       galerias[i].tique(dt, visivel);
+    }
+    if (depoimentos) {
+      var d = depoimentos.elemento.getBoundingClientRect();
+      depoimentos.tique(dt, d.bottom > 0 && d.top < window.innerHeight);
     }
   }
 
@@ -723,6 +853,7 @@
     preparaTopo();
     preparaAreas();
     ligaGalerias();
+    ligaDepoimentos();
 
     /* Um quadro imediato aplica o estado inicial das Áreas antes de o laço
        entrar em regime — sem isso a primeira pintura mostra tudo montado e

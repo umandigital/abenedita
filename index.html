@@ -477,6 +477,55 @@ a{color:inherit; text-decoration:none}
 @media (max-width:900px){ .categorias-grade{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
 /* =====================================================================
+   DEPOIMENTOS
+   Três fotos em perspectiva: a do meio de frente, as vizinhas recuadas,
+   levantadas e giradas em Y. A curva cubic-bezier(.4,2,.3,1) passa de 1 —
+   é uma mola, e o exagero no fim é o efeito. A citação entra palavra por
+   palavra, saindo do desfoque.
+   ===================================================================== */
+.depoimentos{display:grid; gap:var(--s6); align-items:center}
+@media (min-width:768px){ .depoimentos{grid-template-columns:1fr 1fr; gap:var(--s7)} }
+
+.depoimentos__deck{position:relative; width:100%; height:clamp(280px,38vw,384px); perspective:1000px}
+.depoimentos__foto{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  border-radius:24px; box-shadow:0 10px 30px rgba(40,26,12,.28);
+  transition:transform .8s cubic-bezier(.4,2,.3,1), opacity .8s cubic-bezier(.4,2,.3,1);
+  backface-visibility:hidden;
+}
+.depoimentos__corpo{display:flex; flex-direction:column; justify-content:space-between; min-height:100%}
+.depoimentos__nome{font-family:var(--f-display); font-weight:500; font-size:clamp(24px,2.6vw,30px); margin:0 0 6px}
+.depoimentos__contexto{
+  font-family:var(--f-mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--terracota-txt); margin:0 0 var(--s4);
+}
+.depoimentos__citacao{
+  font-family:var(--f-display); font-style:italic; font-size:clamp(19px,2vw,24px);
+  line-height:1.6; color:var(--sepia); margin:0;
+}
+/* Cada palavra é um alvo de transição próprio; o atraso escalonado vem do
+   --d escrito na marcação, não de um temporizador em JavaScript. */
+.depoimentos__palavra{
+  display:inline-block; opacity:0; filter:blur(10px); transform:translateY(5px);
+  transition:opacity .22s ease-in-out, filter .22s ease-in-out, transform .22s ease-in-out;
+  transition-delay:var(--d,0ms);
+}
+.depoimentos__citacao.entrou .depoimentos__palavra{opacity:1; filter:blur(0); transform:none}
+.depoimentos__setas{display:flex; gap:var(--s3); padding-top:var(--s5)}
+.depoimentos__seta{
+  width:44px; height:44px; border-radius:50%; border:0; cursor:pointer;
+  background:var(--grafite); color:var(--creme);
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s ease, transform .3s var(--ease);
+}
+.depoimentos__seta:hover{background:var(--magenta); transform:translateY(-2px)}
+
+@media (prefers-reduced-motion:reduce){
+  .depoimentos__foto,.depoimentos__palavra{transition:none !important}
+  .depoimentos__palavra{opacity:1 !important; filter:none !important; transform:none !important}
+}
+
+/* =====================================================================
    GAVETA DA SACOLA
    ===================================================================== */
 .sacola{
@@ -745,7 +794,7 @@ a{color:inherit; text-decoration:none}
       </div>
       <div class="depoimentos">
         <!-- Deck de cartões-foto empilhados — mesmo primitivo da pilha do ateliê. -->
-        <div class="depoimentos__deck" id="depoimentosDeck" data-pilha="clientes"></div>
+        <div class="depoimentos__deck" id="depoimentosDeck"></div>
         <div class="depoimentos__corpo" id="depoimentosCorpo" aria-live="polite"></div>
       </div>
     </div>

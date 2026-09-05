@@ -49,9 +49,13 @@ Eventos é a galeria da Loja; as duas cestas são a mesma foto).
 
 Falta especificamente:
 
-- **as fotos das galerias de Loja e Eventos** (as que estão lá agora são
-  retângulos coloridos numerados, gerados só para testar o mecanismo — vão
-  ser substituídas arquivo por arquivo, mesmos nomes)
+- **as fotos das galerias de Loja e Eventos.** Chegaram 27 (loja) e 23
+  (eventos) capturas de tela no Drive, fotos reais do cliente. Serão
+  escolhidas cinco de cada para a demonstração. Falta um jeito de trazê-las
+  para cá: o conector do Drive devolve base64, o que não escala para
+  cinquenta arquivos — o caminho é um `.zip` das pastas subido no chat.
+- **as fotos dos depoimentos** (`cli-1` a `cli-5`). As atuais são retratos
+  coloridos gerados aqui.
 - **o texto alternativo de cada foto de galeria**. Hoje está vazio. Foto de
   produto não é decoração: quem usa leitor de tela precisa saber o que tem
   na foto, e o Google também lê isso
