@@ -72,9 +72,24 @@ Falta especificamente:
 - **cinco** vídeos de categoria. Hoje existe um só, usado nas cinco
 - as fotos dos produtos
 
-### 4. Os textos
+### 4. Os textos e as fotos das sócias
 
-Sócias, "o que é a Benedita", as três áreas, diferenciais — tudo marcação.
+A seção das Sócias cresceu e agora pede, **para cada uma**:
+
+- função na loja (o rótulo curto acima do texto)
+- a história — como chegou à floricultura, o que fazia antes
+- uma frase sobre o que a move (entra destacada, com filete dourado)
+- **retrato individual**, proporção 4:5, mínimo 700×875
+
+Mais o **retrato das duas juntas** que abre a seção: mínimo 1400×930, porque
+ele ocupa a largura inteira do bloco.
+
+Os três arquivos hoje são retângulos coloridos gerados aqui. Existem
+`socia-1.png` e `socia-2.png` na pasta `img` do Drive — pode ser que sirvam,
+mas eu não os vi.
+
+Faltam também os textos das três áreas (Loja, Eventos, Assinaturas) e dos
+diferenciais.
 
 ---
 

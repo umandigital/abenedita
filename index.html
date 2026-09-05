@@ -337,6 +337,41 @@ a{color:inherit; text-decoration:none}
 .dobra-rolagem__palco{position:sticky; top:0; height:100svh; overflow:hidden}
 
 /* =====================================================================
+   02 · SÓCIAS
+   ===================================================================== */
+.socias__juntas{margin:0 0 var(--s7)}
+.socias__juntas img{width:100%; height:auto; border-radius:var(--r-lg); box-shadow:var(--sh-lg)}
+
+.socia{
+  display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1fr);
+  gap:clamp(28px,5vw,64px); align-items:center; margin-bottom:var(--s7);
+}
+.socia:last-child{margin-bottom:0}
+/* A segunda sócia espelha a primeira: o retrato troca de lado e a leitura
+   ganha ritmo em vez de repetir a mesma linha duas vezes. */
+.socia--invertida .socia__retrato{order:2}
+.socia__retrato img{width:100%; height:auto; border-radius:var(--r-lg); box-shadow:var(--sh-lg); display:block}
+.socia__texto h3{font-size:clamp(26px,3vw,38px); margin-bottom:10px}
+.socia__funcao{
+  font-family:var(--f-mono); font-weight:700; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--terracota-txt); margin-bottom:var(--s3);
+}
+.socia__texto p{color:var(--sepia); max-width:56ch}
+.socia__paixao{
+  font-family:var(--f-display); font-style:italic; font-size:clamp(19px,2vw,24px);
+  line-height:1.5; color:var(--grafite); margin-top:var(--s3);
+  padding-left:var(--s3); border-left:2px solid var(--ouro);
+}
+@media (max-width:760px){
+  .socia{grid-template-columns:1fr; gap:var(--s4)}
+  .socia--invertida .socia__retrato{order:0}   /* empilhado, inverter só confundiria */
+}
+
+/* Respiro entre seções — filete de giz, no idioma da marca */
+.respiro{display:flex; justify-content:center; padding:var(--s6) 5vw; color:var(--nevoa-txt)}
+.respiro svg{width:min(320px,70vw); height:auto}
+
+/* =====================================================================
    01 · TOPO (scrub de vídeo)
    ===================================================================== */
 /* A altura e o curso da animacao: 400vh sao 3 alturas de tela de rolagem
@@ -551,7 +586,6 @@ a{color:inherit; text-decoration:none}
 
   <nav class="nav-desktop" aria-label="Navegação principal">
     <a href="#socias">Sócias</a>
-    <a href="#sobre">A Benedita</a>
     <a href="#pilares">Serviços</a>
     <a href="#catalogo">Catálogo</a>
     <a href="#clientes">Clientes</a>
@@ -568,7 +602,6 @@ a{color:inherit; text-decoration:none}
 
 <nav class="nav-gaveta" id="navGaveta" aria-label="Navegação principal (tela estreita)" hidden>
   <a href="#socias">Sócias</a>
-  <a href="#sobre">A Benedita</a>
   <a href="#pilares">Serviços</a>
   <a href="#catalogo">Catálogo</a>
   <a href="#clientes">Clientes</a>
@@ -619,46 +652,65 @@ a{color:inherit; text-decoration:none}
     </div>
   </section>
 
-  <!-- ===================== 02 · SÓCIAS ===================== -->
+  <!-- ===================== 02 · SÓCIAS =====================
+       A dobra do ateliê saiu daqui. Ela contava "o que é a Benedita" com as
+       mesmas fotos que hoje alimentam a galeria da Loja — o visitante veria a
+       parede de lousa em polaroide e, uma tela depois, a mesma parede na
+       galeria. Esta seção herdou o espaço e ganhou profundidade: cada sócia
+       com retrato, função e história. -->
   <section class="secao revela" id="socias" aria-labelledby="socias-titulo">
-    <div class="wrap wrap--texto">
+    <div class="wrap">
       <div class="secao-cabeca">
+        <span class="eyebrow">Quem faz</span>
         <h2 id="socias-titulo">As mãos por trás da <em class="destaque">Benedita</em>.</h2>
       </div>
-      <img src="assets/img/retrato-gurias.png" alt="Simone e Ana Paula Castro, sócias da Benedita" width="940" height="620" loading="lazy" decoding="async">
-      <div class="socias__grade">
-        <article>
-          <h3>Simone Castro</h3>
-          <p data-marcacao>Parágrafo de marcação sobre a Simone. Substituir pelo texto final.</p>
-        </article>
-        <article>
-          <h3>Ana Paula Castro</h3>
-          <p data-marcacao>Parágrafo de marcação sobre a Ana Paula. Substituir pelo texto final.</p>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===================== 03 · SEPARADOR DO TOLDO ===================== -->
-  <div class="separador-toldo" aria-hidden="true">
-    <img src="assets/img/awning-sobre-crop.png" alt="" width="1600" height="300" loading="lazy" decoding="async">
-  </div>
+      <figure class="socias__juntas">
+        <img src="assets/img/retrato-gurias.webp" alt="Simone e Ana Paula Castro, sócias da Benedita, na loja"
+             width="940" height="620" loading="lazy" decoding="async">
+      </figure>
 
-  <!-- ===================== 04 · A BENEDITA / ATELIÊ ===================== -->
-  <section class="secao secao--marfim revela" id="sobre" aria-labelledby="sobre-titulo">
-    <div class="wrap">
-      <h2 id="sobre-titulo" class="sr-only">O que é a Benedita</h2>
-      <div class="sobre__grade">
-        <div class="sobre__texto">
-          <p data-marcacao>Texto de marcação sobre a floricultura de bairro. Substituir.</p>
-          <p data-marcacao>Segundo parágrafo de marcação sobre o ateliê. Substituir.</p>
+      <article class="socia">
+        <div class="socia__retrato">
+          <img src="assets/img/socia-1.webp" alt="Retrato de Simone Castro" width="700" height="875" loading="lazy" decoding="async">
         </div>
-        <!-- Pilha de polaroides arrastável. Mesmo primitivo do painel de
-             Assinaturas e do deck de depoimentos — ver pilhaDeCartoes(). -->
-        <div class="sobre__pilha" id="pilhaAtelie" data-pilha="atelie"></div>
-      </div>
+        <div class="socia__texto">
+          <h3>Simone Castro</h3>
+          <p class="socia__funcao" data-marcacao>Função dela na loja</p>
+          <p data-marcacao>História da Simone: como chegou à floricultura, o que fazia antes, o que a trouxe até aqui. Substituir pelo texto final.</p>
+          <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
+        </div>
+      </article>
+
+      <article class="socia socia--invertida">
+        <div class="socia__retrato">
+          <img src="assets/img/socia-2.webp" alt="Retrato de Ana Paula Castro" width="700" height="875" loading="lazy" decoding="async">
+        </div>
+        <div class="socia__texto">
+          <h3>Ana Paula Castro</h3>
+          <p class="socia__funcao" data-marcacao>Função dela na loja</p>
+          <p data-marcacao>História da Ana Paula: a trajetória, a paixão pela montagem e pelos eventos, o que faz o trabalho das duas juntas funcionar. Substituir pelo texto final.</p>
+          <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
+        </div>
+      </article>
     </div>
   </section>
+
+  <!-- ===================== 03 · RESPIRO =====================
+       O toldo que ficava aqui era o único objeto fotorrealista da página, e
+       sangrava 125vw de marrom escuro entre duas seções claras — outro idioma
+       visual. No lugar dele, um filete de giz: a página já tem scrub de vídeo,
+       rolagem horizontal, varredura de galeria e baralho de depoimentos. Aqui
+       o que falta é respiro, não mais um número. -->
+  <div class="respiro" aria-hidden="true">
+    <svg viewBox="0 0 320 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 22c34-9 62 5 92-1 26-5 40-12 62-12s38 9 62 12c28 6 56-8 92 1"
+            stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+      <path d="M160 8c3.4 0 6 2.7 6 6s-2.6 6-6 6-6-2.7-6-6 2.6-6 6-6z" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M160 8V2M160 26v6M154 14l-5-3M171 14l5-3M154 20l-5 3M171 20l5 3"
+            stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+  </div>
 
   <!-- ===================== 05 · ÁREAS DE ATUAÇÃO =====================
        Trilho de 300vw movido na horizontal pela rolagem vertical, com uma
@@ -711,7 +763,7 @@ a{color:inherit; text-decoration:none}
 
         <article class="area area--assinaturas" data-painel="2" aria-labelledby="area-assinaturas">
           <div class="area__grade">
-            <div class="sobre__pilha" data-anim data-i="2" data-pilha="assinatura"></div>
+            <div class="polaroides" data-anim data-i="2" data-pilha="assinatura"></div>
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-assinaturas">ASSINATURAS</p>
               <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor fresca <em class="destaque">toda semana</em>.</h3>
