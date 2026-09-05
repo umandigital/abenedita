@@ -338,22 +338,18 @@ a{color:inherit; text-decoration:none}
 
 /* =====================================================================
    02 · SÓCIAS
-   Retrato de cada uma num quadro pendurado por um cordão — como no
-   protótipo original — em vez do bloco alternado que estava aqui. Duas
-   colunas lado a lado, cada uma com seu quadro, nome e texto embaixo.
+   Os dois quadros pendurados vêm de uma imagem só (assets/img/socias-
+   -molduras.webp) — recorte com transparência mandado pronto, sem CSS
+   tentando reconstruir moldura/cordão/prego. Embaixo, nome e texto de
+   cada uma, na mesma largura de cada quadro.
    ===================================================================== */
+.socias__molduras{grid-column:1/-1; margin:0 0 var(--s3); text-align:center}
+.socias__molduras img{width:100%; max-width:640px; height:auto; margin-inline:auto}
 .socias-grade{
   display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,72px);
   margin-top:var(--s3);
 }
 .socia{text-align:center}
-.socia__moldura{position:relative; margin:0 auto var(--s4); max-width:340px; padding-top:22px}
-.socia__cordao{position:absolute; top:0; left:0; width:100%; height:34px}
-.socia__moldura img{
-  width:100%; height:auto; display:block; aspect-ratio:4/5; object-fit:cover;
-  border:14px solid var(--cor-moldura,var(--terracota)); border-radius:4px;
-  box-shadow:var(--sh-lg), inset 0 0 0 1.5px rgba(255,255,255,.5);
-}
 .socia__texto h3{font-size:clamp(24px,2.6vw,32px); margin-bottom:6px}
 .socia__funcao{
   font-family:var(--f-mono); font-weight:700; font-size:11px; letter-spacing:.22em;
@@ -824,15 +820,12 @@ a{color:inherit; text-decoration:none}
       </div>
 
       <div class="socias-grade">
+        <figure class="socias__molduras">
+          <img src="assets/img/socias-molduras.webp" alt="Retratos de Simone e Ana Paula Castro, cada uma num quadro pendurado"
+               width="1536" height="1024" loading="lazy" decoding="async">
+        </figure>
+
         <article class="socia">
-          <div class="socia__moldura" style="--cor-moldura:var(--verde)">
-            <svg class="socia__cordao" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
-              <line x1="50" y1="4" x2="18" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
-              <line x1="50" y1="4" x2="82" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="50" cy="4" r="4.5" fill="#b08d57" stroke="#7a5a35" stroke-width="1"/>
-            </svg>
-            <img src="assets/img/socia-1.webp" alt="Retrato de Simone Castro" width="700" height="875" loading="lazy" decoding="async">
-          </div>
           <div class="socia__texto">
             <h3>Simone Castro</h3>
             <p class="socia__funcao" data-marcacao>Função dela na loja</p>
@@ -842,14 +835,6 @@ a{color:inherit; text-decoration:none}
         </article>
 
         <article class="socia">
-          <div class="socia__moldura" style="--cor-moldura:var(--terracota)">
-            <svg class="socia__cordao" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
-              <line x1="50" y1="4" x2="18" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
-              <line x1="50" y1="4" x2="82" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="50" cy="4" r="4.5" fill="#b08d57" stroke="#7a5a35" stroke-width="1"/>
-            </svg>
-            <img src="assets/img/socia-2.webp" alt="Retrato de Ana Paula Castro" width="700" height="875" loading="lazy" decoding="async">
-          </div>
           <div class="socia__texto">
             <h3>Ana Paula Castro</h3>
             <p class="socia__funcao" data-marcacao>Função dela na loja</p>
