@@ -338,33 +338,34 @@ a{color:inherit; text-decoration:none}
 
 /* =====================================================================
    02 · SÓCIAS
+   Retrato de cada uma num quadro pendurado por um cordão — como no
+   protótipo original — em vez do bloco alternado que estava aqui. Duas
+   colunas lado a lado, cada uma com seu quadro, nome e texto embaixo.
    ===================================================================== */
-.socias__juntas{margin:0 0 var(--s7)}
-.socias__juntas img{width:100%; height:auto; border-radius:var(--r-lg); box-shadow:var(--sh-lg)}
-
-.socia{
-  display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1fr);
-  gap:clamp(28px,5vw,64px); align-items:center; margin-bottom:var(--s7);
+.socias-grade{
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,72px);
+  margin-top:var(--s3);
 }
-.socia:last-child{margin-bottom:0}
-/* A segunda sócia espelha a primeira: o retrato troca de lado e a leitura
-   ganha ritmo em vez de repetir a mesma linha duas vezes. */
-.socia--invertida .socia__retrato{order:2}
-.socia__retrato img{width:100%; height:auto; border-radius:var(--r-lg); box-shadow:var(--sh-lg); display:block}
-.socia__texto h3{font-size:clamp(26px,3vw,38px); margin-bottom:10px}
+.socia{text-align:center}
+.socia__moldura{position:relative; margin:0 auto var(--s4); max-width:340px; padding-top:22px}
+.socia__cordao{position:absolute; top:0; left:0; width:100%; height:34px}
+.socia__moldura img{
+  width:100%; height:auto; display:block; aspect-ratio:4/5; object-fit:cover;
+  border:14px solid var(--cor-moldura,var(--terracota)); border-radius:4px;
+  box-shadow:var(--sh-lg), inset 0 0 0 1.5px rgba(255,255,255,.5);
+}
+.socia__texto h3{font-size:clamp(24px,2.6vw,32px); margin-bottom:6px}
 .socia__funcao{
   font-family:var(--f-mono); font-weight:700; font-size:11px; letter-spacing:.22em;
   text-transform:uppercase; color:var(--terracota-txt); margin-bottom:var(--s3);
 }
-.socia__texto p{color:var(--sepia); max-width:56ch}
+.socia__texto p{color:var(--sepia); max-width:44ch; margin-inline:auto}
 .socia__paixao{
-  font-family:var(--f-display); font-style:italic; font-size:clamp(19px,2vw,24px);
+  font-family:var(--f-display); font-style:italic; font-size:clamp(18px,1.9vw,22px);
   line-height:1.5; color:var(--grafite); margin-top:var(--s3);
-  padding-left:var(--s3); border-left:2px solid var(--ouro);
 }
 @media (max-width:760px){
-  .socia{grid-template-columns:1fr; gap:var(--s4)}
-  .socia--invertida .socia__retrato{order:0}   /* empilhado, inverter só confundiria */
+  .socias-grade{grid-template-columns:1fr; gap:var(--s6)}
 }
 
 /* Respiro entre seções — filete de giz, no idioma da marca.
@@ -385,7 +386,10 @@ a{color:inherit; text-decoration:none}
    nada mais — o mapeamento e proporcional. */
 #topo{height:400vh; background:var(--areia)}
 .topo__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; background:var(--carvao)}
-.topo__conteudo{position:absolute; inset:0; z-index:3; display:flex; flex-direction:column; justify-content:center; padding:var(--s7) 5vw 0}
+/* Ancorado no alto, não centralizado: o vídeo transforma no giz num quadro
+   parado onde o buquê ocupa a metade inferior esquerda. Centralizado, o
+   texto acabava caindo em cima da foto colorida em vez do quadro-negro. */
+.topo__conteudo{position:absolute; inset:0; z-index:3; display:flex; flex-direction:column; justify-content:flex-start; padding:calc(var(--header-h) + var(--s3)) 5vw 0}
 .topo__texto{max-width:min(92vw,640px); opacity:0; transform:translateY(28px); will-change:transform,opacity}
 .topo__frase{
   font-family:var(--f-script); font-weight:600; font-size:clamp(44px,8vw,87px); line-height:.98;
@@ -810,11 +814,8 @@ a{color:inherit; text-decoration:none}
   </section>
 
   <!-- ===================== 02 · SÓCIAS =====================
-       A dobra do ateliê saiu daqui. Ela contava "o que é a Benedita" com as
-       mesmas fotos que hoje alimentam a galeria da Loja — o visitante veria a
-       parede de lousa em polaroide e, uma tela depois, a mesma parede na
-       galeria. Esta seção herdou o espaço e ganhou profundidade: cada sócia
-       com retrato, função e história. -->
+       Volta ao layout original do protótipo: cada sócia num quadro
+       pendurado por um cordão, nome e texto embaixo, os dois lado a lado. -->
   <section class="secao revela" id="socias" aria-labelledby="socias-titulo">
     <div class="wrap">
       <div class="secao-cabeca">
@@ -822,34 +823,41 @@ a{color:inherit; text-decoration:none}
         <h2 id="socias-titulo">As mãos por trás da <em class="destaque">Benedita</em>.</h2>
       </div>
 
-      <figure class="socias__juntas">
-        <img src="assets/img/retrato-gurias.webp" alt="Simone e Ana Paula Castro, sócias da Benedita, na loja"
-             width="940" height="620" loading="lazy" decoding="async">
-      </figure>
+      <div class="socias-grade">
+        <article class="socia">
+          <div class="socia__moldura" style="--cor-moldura:var(--verde)">
+            <svg class="socia__cordao" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="50" y1="4" x2="18" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
+              <line x1="50" y1="4" x2="82" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="50" cy="4" r="4.5" fill="#b08d57" stroke="#7a5a35" stroke-width="1"/>
+            </svg>
+            <img src="assets/img/socia-1.webp" alt="Retrato de Simone Castro" width="700" height="875" loading="lazy" decoding="async">
+          </div>
+          <div class="socia__texto">
+            <h3>Simone Castro</h3>
+            <p class="socia__funcao" data-marcacao>Função dela na loja</p>
+            <p data-marcacao>História da Simone: como chegou à floricultura, o que fazia antes, o que a trouxe até aqui. Substituir pelo texto final.</p>
+            <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
+          </div>
+        </article>
 
-      <article class="socia">
-        <div class="socia__retrato">
-          <img src="assets/img/socia-1.webp" alt="Retrato de Simone Castro" width="700" height="875" loading="lazy" decoding="async">
-        </div>
-        <div class="socia__texto">
-          <h3>Simone Castro</h3>
-          <p class="socia__funcao" data-marcacao>Função dela na loja</p>
-          <p data-marcacao>História da Simone: como chegou à floricultura, o que fazia antes, o que a trouxe até aqui. Substituir pelo texto final.</p>
-          <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
-        </div>
-      </article>
-
-      <article class="socia socia--invertida">
-        <div class="socia__retrato">
-          <img src="assets/img/socia-2.webp" alt="Retrato de Ana Paula Castro" width="700" height="875" loading="lazy" decoding="async">
-        </div>
-        <div class="socia__texto">
-          <h3>Ana Paula Castro</h3>
-          <p class="socia__funcao" data-marcacao>Função dela na loja</p>
-          <p data-marcacao>História da Ana Paula: a trajetória, a paixão pela montagem e pelos eventos, o que faz o trabalho das duas juntas funcionar. Substituir pelo texto final.</p>
-          <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
-        </div>
-      </article>
+        <article class="socia">
+          <div class="socia__moldura" style="--cor-moldura:var(--terracota)">
+            <svg class="socia__cordao" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="50" y1="4" x2="18" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
+              <line x1="50" y1="4" x2="82" y2="32" stroke="#8a6a45" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="50" cy="4" r="4.5" fill="#b08d57" stroke="#7a5a35" stroke-width="1"/>
+            </svg>
+            <img src="assets/img/socia-2.webp" alt="Retrato de Ana Paula Castro" width="700" height="875" loading="lazy" decoding="async">
+          </div>
+          <div class="socia__texto">
+            <h3>Ana Paula Castro</h3>
+            <p class="socia__funcao" data-marcacao>Função dela na loja</p>
+            <p data-marcacao>História da Ana Paula: a trajetória, a paixão pela montagem e pelos eventos, o que faz o trabalho das duas irmãs juntas tão especial no dia a dia. Substituir pelo texto final.</p>
+            <p class="socia__paixao" data-marcacao>“A frase dela sobre o que a move.”</p>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
