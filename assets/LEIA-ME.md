@@ -21,52 +21,81 @@ O marrom do logo **não corresponde a nenhum token** do handoff — o "marrom
 madeira" de lá é `#6E4A2C`, bem mais claro. O valor exato sai do vetor; até
 lá não há token para ele.
 
-## O vídeo do topo
+## O vídeo do topo — resolvido
 
-`anima_final.mp4` tem **20,8 MB**, e o protótipo baixava o arquivo inteiro
-(`fetch` → `blob`) antes de o topo funcionar. A ideia era que ter tudo em
-memória deixaria o scrub fluido.
+O arquivo original tinha três problemas, e o pior não era o peso.
 
-**Medimos. Não deixa.**
+| | Como veio | Como está |
+|---|---|---|
+| Codec | **HEVC / H.265** | H.264 |
+| Tamanho | 19,87 MB | **4,86 MB** |
+| `moov` | depois do `mdat` | no início (faststart) |
+| Quadros-chave | 6 em 900 (1 a cada 5s) | 90 em 450 (1 a cada 5 quadros) |
+| Faixa de áudio | AAC (o vídeo entra mudo) | removida |
+| Resolução / taxa | 1920×1080 a 30 fps | 1280×720 a 15 fps |
 
-O banco de provas está em `ferramentas/medir-scrub/`: 120 buscas do início ao
-fim do vídeo, como a rolagem faria, três rodadas por variante.
+**O codec era o problema grave.** HEVC em `<video>` só toca no Safari e em
+alguns Chrome com decodificação por hardware. No Firefox, não toca. O topo do
+site simplesmente não aparecia para boa parte de quem entrasse — não era
+lentidão, era tela preta.
 
-| Arquivo | Latência mediana por busca |
-|---|---|
-| Um quadro-chave só (GOP longo), transmitido | **162,3 ms** |
-| O mesmo arquivo, baixado inteiro como blob | **161,0 ms** |
-| Quadro-chave a cada 5 quadros, transmitido | **14,4 ms** |
-
-O blob compra 1,3 ms — menos que a dispersão entre rodadas do próprio blob
-(156 a 168 ms). Ou seja: os 20,8 MB de espera na primeira tela **não compram
-fluidez nenhuma**. O gargalo nunca foi a rede; é decodificar do quadro-chave
-até o quadro pedido. Um arquivo com quadros-chave densos resolve, e resolve
+**O `moov` no fim explica o blob.** Esse átomo é o índice do arquivo: sem ele,
+o navegador não sabe onde cada quadro começa, então não consegue buscar sem
+antes baixar quase tudo. Era isso que forçava o `fetch` inteiro. Com
+`-movflags +faststart` o índice vai para o começo e a busca passa a funcionar
 transmitindo.
 
-A 60 quadros por segundo o orçamento é de 16 ms por quadro. Com 162 ms por
-busca o scrub anda a uns seis quadros por segundo — é exatamente o engasgo
-que o blob tentava mascarar.
+### O blob não comprava nada
+
+Medido no material real, em `ferramentas/medir-scrub`:
+
+| | Mediana por busca |
+|---|---|
+| Quadro-chave a cada 150, transmitido | 102,8 ms |
+| O mesmo arquivo, baixado inteiro como blob | **107,4 ms** — pior |
+| Quadro-chave a cada 5, transmitido | **13,5 ms** |
+
+O blob é 1,05× **mais lento** que transmitir. Os 20 MB de espera na primeira
+tela não compravam fluidez nenhuma: o gargalo é decodificar do quadro-chave
+até o quadro pedido, não a rede.
+
+A 60 quadros por segundo o orçamento é de 16 ms. Os 13,5 ms cabem.
+
+### Sobre a taxa de quadros
+
+Caiu de 30 para 15 fps de propósito. Num vídeo percorrido pela rolagem, a taxa
+de quadros é **resolução de busca**, não fluidez de reprodução — quem rola
+está buscando quadro a quadro, não assistindo. Com 4500 px de curso e 450
+quadros, dá um quadro a cada 10 px de rolagem, que é mais fino do que o olho
+acompanha. Metade do peso, mesma sensação.
 
 ### A receita
 
 ```bash
-ffmpeg -i anima_final.mp4 -vf scale=1280:-2 \
-       -c:v libx264 -preset slow -crf 28 -g 5 -an topo.mp4
+ffmpeg -i original.mp4 -vf "scale=1280:-2,fps=15" \
+       -c:v libx264 -preset slow -crf 28 -g 5 \
+       -pix_fmt yuv420p -movflags +faststart -an topo.mp4
 ```
 
-**`-g 5`, não `-g 1`.** Todo-quadro-chave parece a resposta óbvia e é pior
-nos dois eixos: gera arquivo 3,3× maior e a busca fica mais *lenta* (19,6 ms
-contra 14,3 ms), porque cada busca precisa ler e demuxar mais bytes. Em
-1080p, `-g 1` chegou a gerar arquivo **maior que o original**.
+**`-g 5`, não `-g 1`.** Todo-quadro-chave parece a resposta óbvia e é pior nos
+dois eixos: arquivo 3,3× maior e busca mais lenta (19,6 ms contra 14,3 ms),
+porque cada busca lê e demuxa mais bytes. Em 1080p, `-g 1` chegou a gerar
+arquivo maior que o original.
 
-Depois de reencodar, rode `ferramentas/medir-scrub/` outra vez e confirme a
+Depois de reencodar, rode `ferramentas/medir-scrub` outra vez e confirme a
 mediana abaixo de ~16 ms. E regere o `img/topo-poster.jpg` a partir do
-primeiro quadro: é ele que aparece enquanto o vídeo não está pronto.
+primeiro quadro — é ele que aparece antes de o vídeo estar pronto, e precisa
+ser o mesmo quadro que o vídeo mostra parado, senão há um salto.
 
-Os números acima saíram de VP9/WebM — o Chromium do Playwright não traz
-H.264. A relação entre quadro-chave e latência é a mesma nos dois codecs, mas
-confirme em H.264 num Chrome de verdade antes de fechar.
+As medições de latência saíram em VP9, porque o Chromium do Playwright não
+decodifica H.264. A relação entre quadro-chave e latência é a mesma nos dois
+codecs, mas vale confirmar num Chrome de verdade.
+
+### Uma pergunta de design, não técnica
+
+O vídeo tem **30 segundos** e o topo reserva 600vh — cinco alturas de tela de
+rolagem só para atravessá-lo. É bastante rolagem antes de o site começar. Vale
+decidir se é isso mesmo; encurtar o vídeo derruba o peso na mesma proporção.
 
 ## Peso
 
@@ -74,7 +103,7 @@ O pacote original soma **68,7 MB**. Alvo:
 
 | | Hoje | Alvo |
 |---|---|---|
-| Vídeo do topo | 20,8 MB | 2–3 MB |
+| Vídeo do topo | ~~20,8 MB~~ | **4,86 MB — feito** |
 | Vídeos de categoria | 4,3 MB (um arquivo, cinco usos) | 5 × ~800 KB |
 | Fotos | ~43 MB em PNG | WebP a ~1200px, ~200 KB cada |
 

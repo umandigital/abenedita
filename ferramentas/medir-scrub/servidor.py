@@ -48,4 +48,4 @@ class H(http.server.SimpleHTTPRequestHandler):
 
 
 socketserver.ThreadingTCPServer.allow_reuse_address = True
-socketserver.ThreadingTCPServer(('127.0.0.1', 8097), H).serve_forever()
+socketserver.ThreadingTCPServer(('127.0.0.1', int(__import__('sys').argv[1]) if len(__import__('sys').argv)>1 else 8097), H).serve_forever()
