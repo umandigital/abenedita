@@ -100,8 +100,15 @@ diferenciais.
 | **Domínio final** | o canônico, o Open Graph e o sitemap saem dele. Hoje está `abenedita.netlify.app` como suposição |
 | **WhatsApp** | confirmar `5551985054194` como número de produção |
 | **Preços** | os doze produtos do protótipo têm preço inventado |
-| **Supabase** | criar o projeto e ligar a integração com o GitHub, para as migrações rodarem no merge |
+| **Supabase** | projeto criado (`abenedita`, `dldyizoyrkvaijskzqzc.supabase.co`) e a chave já está no `index.html`. **Falta aplicar a migração**: cole `supabase/migrations/20260905120000_estrutura.sql` no SQL Editor do painel e rode — o proxy deste ambiente bloqueia `*.supabase.co`, então isso só se faz de lá. Depois, para as próximas migrações aplicarem sozinhas a cada merge, conecte o GitHub em Settings → Integrations (o painel mostra "No repository connected") |
 | **Quem administra** | quem recebe o acesso de admin para editar produtos, banner e dúvidas |
+
+**Como confirmar que a migração pegou**, sem depender de mim: abra **Table
+Editor** no painel — devem existir as sete tabelas (`categorias`, `produtos`,
+`galerias`, `depoimentos`, `faq`, `config`, `perfis`), e `config` já vem com
+duas linhas (`whatsapp`, `estacao`). Se as tabelas não existirem, a página
+continua funcionando normalmente com o conteúdo local — ela não quebra, só não
+usa o banco ainda.
 
 ---
 

@@ -957,10 +957,17 @@ a{color:inherit; text-decoration:none}
 <!-- ===================== PAINEL DO PRODUTO ===================== -->
 <aside class="painel" id="painelProduto" role="dialog" aria-modal="true" aria-labelledby="painel-titulo" hidden></aside>
 
-<!-- Ligação com o Supabase. Vazio = o site roda no conteúdo local, que é o
-     estado de hoje. A chave anônima é pública por natureza: o que protege os
-     dados é o RLS na migração, não escondê-la. -->
-<script>window.BENEDITA_SUPABASE = { url: '', chave: '' };</script>
+<!-- Ligação com o Supabase. A chave publishable é pública por natureza — o
+     formato novo do que antes se chamava "anon key". O que protege os dados
+     é o RLS da migração, não escondê-la; por isso ela vai direto aqui, e não
+     precisa de variável de ambiente nem de build.
+     Se a migração ainda não foi aplicada neste projeto, as tabelas não
+     existem e toda leitura falha — o site cai no conteúdo local sozinho,
+     sem quebrar. -->
+<script>window.BENEDITA_SUPABASE = {
+  url: 'https://dldyizoyrkvaijskzqzc.supabase.co',
+  chave: 'sb_publishable_e8mzshbK5JvuIkimHpX9oQ_ZlLWG-Vf'
+};</script>
 <script src="assets/js/app.js" defer></script>
 </body>
 </html>
