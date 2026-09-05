@@ -353,10 +353,41 @@
   }
 
   /* ===================================================================
+     VÉU COMPARTILHADO
+     A gaveta de navegação, a sacola e o painel do produto escurecem o mesmo
+     fundo. Cada uma escrevia `data-aberto` no véu por conta própria — o que
+     parecia inofensivo até a sacola: ela nunca registrava um clique no véu
+     para fechar a si mesma (só Escape e o ✕ fechavam), porque não havia um
+     lugar central que soubesse de todas as sobreposições ao mesmo tempo.
+     Centralizado aqui: um estado computado a partir do que está aberto de
+     verdade, e um clique no véu fecha todas.
+     =================================================================== */
+  var fechaNavGaveta = function () {};
+  var abreSacolaGaveta = function () {}, fechaSacolaGaveta = function () {};
+  function atualizaVeu() {
+    var veu = $('#veu');
+    if (!veu) return;
+    var aberto = ['#navGaveta', '#sacola', '#painelProduto'].some(function (sel) {
+      var el = $(sel);
+      return el && !el.hidden;
+    });
+    veu.toggleAttribute('data-aberto', aberto);
+  }
+  function ligaVeu() {
+    var veu = $('#veu');
+    if (!veu) return;
+    veu.addEventListener('click', function () {
+      fechaNavGaveta();
+      fechaSacolaGaveta();
+      fechaPainelProduto();
+    });
+  }
+
+  /* ===================================================================
      NAVEGAÇÃO
      =================================================================== */
   function ligaNavegacao() {
-    var gatilho = $('#navGatilho'), gaveta = $('#navGaveta'), veu = $('#veu');
+    var gatilho = $('#navGatilho'), gaveta = $('#navGaveta');
     if (!gatilho || !gaveta) return;
 
     function abre(sim) {
@@ -364,11 +395,11 @@
       if (sim) requestAnimationFrame(function () { gaveta.setAttribute('data-aberta', ''); });
       else gaveta.removeAttribute('data-aberta');
       gatilho.setAttribute('aria-expanded', sim ? 'true' : 'false');
-      if (veu) veu.toggleAttribute('data-aberto', sim);
+      atualizaVeu();
       if (sim) { var l = $('a', gaveta); if (l) l.focus(); } else gatilho.focus();
     }
     gatilho.addEventListener('click', function () { abre(gaveta.hidden); });
-    if (veu) veu.addEventListener('click', function () { abre(false); });
+    fechaNavGaveta = function () { if (!gaveta.hidden) abre(false); };
     $$('a', gaveta).forEach(function (a) { a.addEventListener('click', function () { abre(false); }); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !gaveta.hidden) abre(false); });
   }
@@ -377,25 +408,69 @@
      SACOLA
      =================================================================== */
   function ligaSacola() {
-    var abrir = $('#sacolaAbrir'), fechar = $('#sacolaFechar'), gaveta = $('#sacola'), veu = $('#veu');
+    var abrir = $('#sacolaAbrir'), fechar = $('#sacolaFechar'), gaveta = $('#sacola');
     if (!abrir || !gaveta) return;
     function abre(sim) {
       gaveta.hidden = !sim;
       if (sim) requestAnimationFrame(function () { gaveta.setAttribute('data-aberta', ''); });
       else gaveta.removeAttribute('data-aberta');
       abrir.setAttribute('aria-expanded', sim ? 'true' : 'false');
-      if (veu) veu.toggleAttribute('data-aberto', sim);
+      atualizaVeu();
       if (!sim) abrir.focus();
     }
     abrir.addEventListener('click', function () { abre(true); });
     if (fechar) fechar.addEventListener('click', function () { abre(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !gaveta.hidden) abre(false); });
+    abreSacolaGaveta = function () { abre(true); };
+    fechaSacolaGaveta = function () { if (!gaveta.hidden) abre(false); };
     pintaSacola();
   }
 
   function pintaSacola() {
     var contagem = $('#sacolaContagem');
     if (contagem) contagem.textContent = estado.sacola.length;
+
+    var lista = $('#sacolaItens');
+    if (lista) {
+      lista.innerHTML = '';
+      if (!estado.sacola.length) {
+        var vazio = document.createElement('li');
+        vazio.className = 'sacola__vazio';
+        vazio.textContent = 'Sua sacola está vazia por enquanto ✿';
+        lista.appendChild(vazio);
+      } else {
+        estado.sacola.forEach(function (item, i) {
+          var li = document.createElement('li');
+          li.className = 'sacola__item';
+          var nome = document.createElement('span'); nome.className = 'sacola__itemNome'; nome.textContent = item.nome;
+          var detalhe = document.createElement('span'); detalhe.className = 'sacola__itemDetalhe';
+          detalhe.textContent = item.tamanho + ' · R$ ' + item.preco;
+          var textos = document.createElement('span');
+          textos.appendChild(nome); textos.appendChild(detalhe);
+          var remover = document.createElement('button');
+          remover.type = 'button'; remover.className = 'sacola__remover'; remover.textContent = 'remover';
+          remover.setAttribute('aria-label', 'Remover ' + item.nome + ' da sacola');
+          remover.addEventListener('click', function () {
+            estado.sacola.splice(i, 1);
+            gravaEstado();
+            pintaSacola();
+          });
+          li.appendChild(textos); li.appendChild(remover);
+          lista.appendChild(li);
+        });
+      }
+    }
+
+    var total = $('#sacolaTotal');
+    if (total) {
+      total.innerHTML = '';
+      if (estado.sacola.length) {
+        var soma = estado.sacola.reduce(function (a, b) { return a + b.preco; }, 0);
+        var rotulo = document.createElement('span'); rotulo.textContent = 'Total';
+        var valor = document.createElement('span'); valor.textContent = 'R$ ' + soma;
+        total.appendChild(rotulo); total.appendChild(valor);
+      }
+    }
     var enviar = $('#sacolaEnviar');
     if (enviar) { enviar.href = linkZap(mensagemDoPedido()); enviar.target = '_blank'; enviar.rel = 'noopener'; }
   }
@@ -745,7 +820,31 @@
       { pergunta:'Como funciona a assinatura?', resposta:'Você escolhe a frequência (semanal ou quinzenal) e recebe flores frescas da estação sem precisar pedir toda vez.' },
       { pergunta:'E para eventos?', resposta:'Casamento, aniversário, formatura ou empresa: chame no WhatsApp que montamos um orçamento sob medida.' },
       { pergunta:'Como cuido das flores?', resposta:'Troque a água a cada dois dias, corte os talos na diagonal e fuja do sol forte. A gente manda as dicas junto.' }
-    ]
+    ],
+    catalogo: {
+      categorias: [
+        { slug:'arranjos',       nome:'Arranjos',        acento:'#C0356B', capa:'assets/img/cat-arranjos.webp', video:'' },
+        { slug:'buques',         nome:'Buquês',          acento:'#E9B23A', capa:'assets/img/cat-buques.webp',   video:'' },
+        { slug:'caixas-prontas', nome:'Caixas prontas',  acento:'#B23A3A', capa:'assets/img/cat-caixas.webp',   video:'' },
+        { slug:'cestas',         nome:'Cestas',          acento:'#5C7A3A', capa:'assets/img/cat-cestas.webp',   video:'' },
+        { slug:'cachepos',       nome:'Cachepôs',        acento:'#8A5AA8', capa:'assets/img/cat-cachepos.webp', video:'' }
+      ],
+      /* Preços de marcação — ver PENDENCIAS.md. */
+      produtos: [
+        { slug:'arr-ben',  nome:'Arranjo Benedita',       categoriaSlug:'arranjos',       acento:'#C0356B', foto:'assets/img/p-arr-ben.webp',  descricao:'Nosso arranjo assinatura: flores da estação em vaso de cerâmica, montado no dia.', tamanhos:[{rotulo:'P',preco:149},{rotulo:'M',preco:189},{rotulo:'G',preco:259}] },
+        { slug:'arr-camp', nome:'Arranjo Campestre',      categoriaSlug:'arranjos',       acento:'#E07A2E', foto:'assets/img/p-arr-camp.webp', descricao:'Mistura solta e silvestre, como se colhida no caminho de casa.', tamanhos:[{rotulo:'P',preco:139},{rotulo:'M',preco:179},{rotulo:'G',preco:239}] },
+        { slug:'arr-taca', nome:'Arranjo Taça',           categoriaSlug:'arranjos',       acento:'#8A5AA8', foto:'assets/img/p-arr-taca.webp', descricao:'Composição alta e escultural em taça de vidro. Faz presença.', tamanhos:[{rotulo:'M',preco:229},{rotulo:'G',preco:299}] },
+        { slug:'buq-dia',  nome:'Buquê do Dia',           categoriaSlug:'buques',         acento:'#E9B23A', foto:'assets/img/p-buq-dia.webp',  descricao:'O que chegou mais fresco hoje, embrulhado em papel kraft e laço.', tamanhos:[{rotulo:'Único',preco:129}] },
+        { slug:'buq-gir',  nome:'Buquê de Girassóis',     categoriaSlug:'buques',         acento:'#E9B23A', foto:'assets/img/p-buq-gir.webp',  descricao:'Sol em forma de flor. Alegria imediata pra qualquer dia.', tamanhos:[{rotulo:'P',preco:139},{rotulo:'M',preco:179}] },
+        { slug:'buq-rom',  nome:'Buquê Romântico',        categoriaSlug:'buques',         acento:'#C0356B', foto:'assets/img/p-buq-rom.webp',  descricao:'Rosas e flores em tons de rosa e vinho, pra dizer o que importa.', tamanhos:[{rotulo:'P',preco:159},{rotulo:'M',preco:209},{rotulo:'G',preco:279}] },
+        { slug:'cx-ben',   nome:'Caixa Bendita',          categoriaSlug:'caixas-prontas', acento:'#C0356B', foto:'assets/img/p-cx-ben.webp',   descricao:'Flores em caixa rígida, prontas pra presentear sem preocupação.', tamanhos:[{rotulo:'M',preco:199},{rotulo:'G',preco:269}] },
+        { slug:'cx-ros',   nome:'Caixa de Rosas',         categoriaSlug:'caixas-prontas', acento:'#B23A3A', foto:'assets/img/p-cx-ros.webp',   descricao:'Rosas colombianas dispostas à mão, uma a uma.', tamanhos:[{rotulo:'P',preco:179},{rotulo:'G',preco:299}] },
+        { slug:'ce-caf',   nome:'Cesta Café da Manhã',    categoriaSlug:'cestas',         acento:'#E07A2E', foto:'assets/img/p-ce-caf.webp',   descricao:'Flores com pães, geleia e frutas da estação. Acorda bem.', tamanhos:[{rotulo:'Única',preco:249}] },
+        { slug:'ce-bem',   nome:'Cesta Boas-Vindas',      categoriaSlug:'cestas',         acento:'#5C7A3A', foto:'assets/img/p-ce-bem.webp',   descricao:'Pra receber bem: planta, flores e um cartão escrito à mão.', tamanhos:[{rotulo:'Única',preco:289}] },
+        { slug:'pl-suc',   nome:'Suculenta em Cachepô',   categoriaSlug:'cachepos',       acento:'#5C7A3A', foto:'assets/img/p-pl-suc.webp',   descricao:'Pouca água, muito charme. Vem em cachepô de cerâmica.', tamanhos:[{rotulo:'P',preco:79},{rotulo:'M',preco:119}] },
+        { slug:'pl-orq',   nome:'Orquídea em Cachepô',    categoriaSlug:'cachepos',       acento:'#C86FA0', foto:'assets/img/p-pl-orq.webp',   descricao:'Elegante e duradoura, em cachepô. Um clássico que dura semanas.', tamanhos:[{rotulo:'Única',preco:159}] }
+      ]
+    }
   };
 
   /* Uma volta ao banco por seção, todas em paralelo. O que falhar fica com o
@@ -754,9 +853,11 @@
     return Promise.all([
       buscaTabela('galerias', 'select=area,foto,alt,ordem&order=ordem.asc'),
       buscaTabela('depoimentos', 'select=nome,contexto,citacao,foto,ordem&ativo=eq.true&order=ordem.asc'),
-      buscaTabela('faq', 'select=pergunta,resposta,ordem&ativa=eq.true&order=ordem.asc')
+      buscaTabela('faq', 'select=pergunta,resposta,ordem&ativa=eq.true&order=ordem.asc'),
+      buscaTabela('categorias', 'select=id,nome,slug,acento,video,capa,ordem&ativa=eq.true&order=ordem.asc'),
+      buscaTabela('produtos', 'select=slug,nome,categoria_id,descricao,acento,foto,tamanhos,ordem&ativo=eq.true&order=ordem.asc')
     ]).then(function (r) {
-      var gal = r[0], dep = r[1], faq = r[2];
+      var gal = r[0], dep = r[1], faq = r[2], cat = r[3], prod = r[4];
       if (gal) {
         var caixas = { loja: [], eventos: [] };
         gal.forEach(function (l) {
@@ -771,6 +872,29 @@
         });
       }
       if (faq) CONTEUDO.faq = faq;
+
+      /* categorias e produtos são um par: um produto referencia a categoria
+         pelo id. Só trocam os dois juntos — se o banco já tem categorias
+         cadastradas mas ainda nenhum produto, buscaTabela('produtos') devolve
+         null (tabela vazia = ausência), e trocar só as categorias deixaria
+         produtos do padrão local (que usam outros slugs) órfãos de categoria. */
+      if (cat && prod) {
+        var porId = {};
+        var categorias = cat.map(function (c) {
+          porId[c.id] = c.slug;
+          return { slug: c.slug, nome: c.nome, acento: c.acento, video: caminhoMidia(c.video), capa: caminhoMidia(c.capa) };
+        });
+        var produtos = prod.map(function (p) {
+          return {
+            slug: p.slug, nome: p.nome, categoriaSlug: porId[p.categoria_id] || '',
+            acento: p.acento, foto: caminhoMidia(p.foto), descricao: p.descricao || '',
+            tamanhos: Array.isArray(p.tamanhos) ? p.tamanhos.map(function (t) {
+              return { rotulo: t.rotulo, preco: t.preco };
+            }) : []
+          };
+        });
+        CONTEUDO.catalogo = { categorias: categorias, produtos: produtos };
+      }
     }).catch(function () { /* fica tudo no padrão */ });
   }
 
@@ -965,23 +1089,219 @@
   }
 
   /* ===================================================================
-     PRÓXIMOS BLOCOS — ainda não escritos
-     A base para em pé aqui: estrutura, tokens, movimento e o caminho até o
-     WhatsApp. O que falta depende de conteúdo real e do Supabase.
-
-     RENDER — CATEGORIAS      grade 9/16 com vídeo no hover, um por categoria
-     RENDER — PRODUTOS        grade filtrada + painel com tamanhos e preços
-     RENDER — DÚVIDAS         acordeão a partir da tabela `faq`
-     RENDER — DEPOIMENTOS     deck de cartões, tabela `depoimentos`
-     RENDER — DIFERENCIAIS    grade 2x2, tabela `config`
-     pilhaDeCartoes()         primitivo único usado em três lugares:
-                              polaroides do ateliê, painel de Assinaturas e
-                              deck de depoimentos — muda só o layout
-     galeriaCircular()        revelação por clip-path circular, miniaturas
-                              redondas, usada em Loja e Eventos
-     SUPABASE                 REST via fetch, sem SDK
-     ÁREA ADMINISTRATIVA      produtos, categorias, dúvidas, banner
+     CATÁLOGO
+     Dois estados na mesma seção: a grade de categorias (vídeo no hover,
+     como as galerias) e a grade de produtos da categoria escolhida, cada
+     produto abrindo o painel lateral com os tamanhos.
      =================================================================== */
+  function nomeDaCategoria(slug) {
+    var c = CONTEUDO.catalogo.categorias.filter(function (x) { return x.slug === slug; })[0];
+    return c ? c.nome : '';
+  }
+
+  function criaCategoriaBloco(c) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'categoria';
+    b.style.setProperty('--acento', c.acento || 'var(--magenta)');
+    b.setAttribute('aria-label', 'Ver categoria ' + c.nome);
+
+    if (c.capa) {
+      var img = document.createElement('img');
+      img.className = 'categoria__capa'; img.src = c.capa; img.alt = '';
+      img.loading = 'lazy'; img.decoding = 'async';
+      b.appendChild(img);
+    }
+    var video = null;
+    if (c.video) {
+      /* Sem vídeo cadastrado, fica só a capa parada — mesmo padrão das
+         galerias de Loja e Eventos: a foto é o que aparece se o vídeo
+         faltar, não uma segunda opção pior. */
+      video = document.createElement('video');
+      video.className = 'categoria__video'; video.muted = true; video.loop = true;
+      video.playsInline = true; video.preload = 'none';
+      if (c.capa) video.poster = c.capa;
+      var fonte = document.createElement('source'); fonte.src = c.video; fonte.type = 'video/mp4';
+      video.appendChild(fonte);
+      b.appendChild(video);
+    }
+    var veuImg = document.createElement('span'); veuImg.className = 'categoria__veu'; veuImg.setAttribute('aria-hidden', 'true');
+    b.appendChild(veuImg);
+
+    var rotulo = document.createElement('span'); rotulo.className = 'categoria__rotulo';
+    var eyebrow = document.createElement('span'); eyebrow.className = 'categoria__eyebrow';
+    eyebrow.appendChild(document.createElement('i'));
+    eyebrow.appendChild(document.createTextNode('Categoria'));
+    var nome = document.createElement('span'); nome.className = 'categoria__nome'; nome.textContent = c.nome;
+    rotulo.appendChild(eyebrow); rotulo.appendChild(nome);
+    b.appendChild(rotulo);
+
+    b.addEventListener('click', function () { abreCategoria(c.slug); });
+    if (video) {
+      b.addEventListener('mouseenter', function () {
+        if (poucoMovimento) return;
+        var p = video.play(); if (p && p.catch) p.catch(function () {});
+      });
+      b.addEventListener('mouseleave', function () {
+        video.pause(); try { video.currentTime = 0; } catch (e) {}
+      });
+    }
+    return b;
+  }
+
+  function criaProdutoCard(p) {
+    var precos = p.tamanhos.map(function (t) { return t.preco; });
+    var min = precos.length ? Math.min.apply(null, precos) : 0;
+    var card = document.createElement('button');
+    card.type = 'button'; card.className = 'produto';
+    card.setAttribute('aria-label', 'Ver ' + p.nome);
+
+    var fotoWrap = document.createElement('span'); fotoWrap.className = 'produto__foto';
+    var img = document.createElement('img'); img.src = p.foto || ''; img.alt = '';
+    img.loading = 'lazy'; img.decoding = 'async';
+    fotoWrap.appendChild(img); card.appendChild(fotoWrap);
+
+    var corpo = document.createElement('span'); corpo.className = 'produto__corpo';
+    var eyebrow = document.createElement('span'); eyebrow.className = 'produto__eyebrow';
+    var ponto = document.createElement('i'); ponto.style.background = p.acento || 'var(--magenta)';
+    eyebrow.appendChild(ponto);
+    eyebrow.appendChild(document.createTextNode(nomeDaCategoria(p.categoriaSlug)));
+    var nome = document.createElement('span'); nome.className = 'produto__nome'; nome.textContent = p.nome;
+    var preco = document.createElement('span'); preco.className = 'produto__preco';
+    preco.textContent = precos.length > 1 ? 'a partir de R$ ' + min : 'R$ ' + min;
+    corpo.appendChild(eyebrow); corpo.appendChild(nome); corpo.appendChild(preco);
+    card.appendChild(corpo);
+
+    card.addEventListener('click', function () { abreProduto(p, card); });
+    return card;
+  }
+
+  function renderCategoriasGrade() {
+    var grade = $('#categoriasGrade');
+    if (!grade) return;
+    grade.innerHTML = '';
+    CONTEUDO.catalogo.categorias.forEach(function (c) { grade.appendChild(criaCategoriaBloco(c)); });
+  }
+
+  function renderProdutosVista() {
+    var bloco1 = $('#categoriasGrade'), vista = $('#produtosVista');
+    var filtros = $('#catalogoFiltros'), grade = $('#produtosGrade');
+    if (!bloco1 || !vista || !filtros || !grade) return;
+
+    var aberta = estado.categoriaAberta;
+    bloco1.hidden = !!aberta;
+    vista.hidden = !aberta;
+    if (!aberta) return;
+
+    filtros.innerHTML = '';
+    CONTEUDO.catalogo.categorias.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'catalogo__filtro'; b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', c.slug === aberta ? 'true' : 'false');
+      b.textContent = c.nome;
+      b.addEventListener('click', function () { abreCategoria(c.slug); });
+      filtros.appendChild(b);
+    });
+
+    grade.innerHTML = '';
+    var itens = CONTEUDO.catalogo.produtos.filter(function (p) { return p.categoriaSlug === aberta; });
+    if (!itens.length) {
+      var vazio = document.createElement('p');
+      vazio.className = 'catalogo__vazio';
+      var forte = document.createElement('strong'); forte.textContent = 'Ainda estamos colhendo por aqui 🌿';
+      var sub = document.createElement('small'); sub.textContent = 'Essa categoria fica pronta em breve. Fala com a gente no WhatsApp que a Benedita monta pra você.';
+      vazio.appendChild(forte); vazio.appendChild(sub);
+      grade.appendChild(vazio);
+      return;
+    }
+    itens.forEach(function (p) { grade.appendChild(criaProdutoCard(p)); });
+  }
+
+  function abreCategoria(slug) {
+    estado.categoriaAberta = slug || null;
+    renderProdutosVista();
+    if (slug) {
+      var vista = $('#produtosVista');
+      if (vista) vista.scrollIntoView({ behavior: poucoMovimento ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+
+  /* ===================================================================
+     PAINEL DO PRODUTO
+     =================================================================== */
+  var painelProdutoAtual = null, painelTamanhoIdx = 0, focoAntesDoPainel = null;
+
+  function pintaPainelProduto() {
+    var p = painelProdutoAtual;
+    if (!p) return;
+    var foto = $('#painelFoto');
+    foto.src = p.foto || ''; foto.alt = p.nome;
+    $('#painelCategoria').textContent = nomeDaCategoria(p.categoriaSlug);
+    $('#painel-nome').textContent = p.nome;
+    $('#painelDescricao').textContent = p.descricao || '';
+
+    var caixa = $('#painelTamanhos');
+    caixa.innerHTML = '';
+    p.tamanhos.forEach(function (t, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'painel__tamanho';
+      b.setAttribute('aria-pressed', i === painelTamanhoIdx ? 'true' : 'false');
+      var rot = document.createElement('span'); rot.textContent = t.rotulo;
+      var preco = document.createElement('span'); preco.textContent = 'R$ ' + t.preco;
+      b.appendChild(rot); b.appendChild(preco);
+      b.addEventListener('click', function () { painelTamanhoIdx = i; pintaPainelProduto(); });
+      caixa.appendChild(b);
+    });
+
+    var sel = p.tamanhos[painelTamanhoIdx];
+    $('#painelAdicionar').textContent = 'Adicionar à sacola' + (sel ? ' · R$ ' + sel.preco : '');
+  }
+
+  function abreProduto(p, elClicado) {
+    focoAntesDoPainel = elClicado || document.activeElement;
+    painelProdutoAtual = p; painelTamanhoIdx = 0;
+    pintaPainelProduto();
+    var painel = $('#painelProduto');
+    painel.hidden = false;
+    requestAnimationFrame(function () { painel.setAttribute('data-aberta', ''); });
+    atualizaVeu();
+    var fechar = $('#painelFechar'); if (fechar) fechar.focus();
+  }
+
+  function fechaPainelProduto() {
+    var painel = $('#painelProduto');
+    if (!painel || painel.hidden) return;
+    painel.hidden = true;
+    painel.removeAttribute('data-aberta');
+    atualizaVeu();
+    painelProdutoAtual = null;
+    if (focoAntesDoPainel && focoAntesDoPainel.focus) focoAntesDoPainel.focus();
+  }
+
+  function adicionaAoSacola() {
+    var p = painelProdutoAtual;
+    var sel = p && p.tamanhos[painelTamanhoIdx];
+    if (!p || !sel) return;
+    estado.sacola.push({ nome: p.nome, tamanho: sel.rotulo, preco: sel.preco });
+    gravaEstado();
+    fechaPainelProduto();
+    pintaSacola();
+    abreSacolaGaveta();
+  }
+
+  function ligaCatalogo() {
+    renderCategoriasGrade();
+    renderProdutosVista();
+    var voltar = $('#catalogoVoltar');
+    if (voltar) voltar.addEventListener('click', function () { abreCategoria(null); });
+    var fechar = $('#painelFechar');
+    if (fechar) fechar.addEventListener('click', fechaPainelProduto);
+    var adicionar = $('#painelAdicionar');
+    if (adicionar) adicionar.addEventListener('click', adicionaAoSacola);
+    document.addEventListener('keydown', function (e) {
+      var painel = $('#painelProduto');
+      if (e.key === 'Escape' && painel && !painel.hidden) fechaPainelProduto();
+    });
+  }
 
   /* ===================================================================
      BOOT
@@ -993,6 +1313,7 @@
     ligaRevelacao();
     ligaNavegacao();
     ligaSacola();
+    ligaVeu();
     ligaEstacao();
     ligaFormulario();
     preparaTopo();
@@ -1006,6 +1327,7 @@
       ligaGalerias();
       ligaDepoimentos();
       ligaFaq();
+      ligaCatalogo();
     });
 
     /* Um quadro imediato aplica o estado inicial das Áreas antes de o laço

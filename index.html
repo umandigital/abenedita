@@ -505,11 +505,112 @@ a{color:inherit; text-decoration:none}
 
 /* =====================================================================
    07 · CATÁLOGO
+   Estado 1 — grade de categorias. O CSS assume cinco (as cinco linhas de
+   produto da loja: Arranjos, Buquês, Caixas prontas, Cestas, Cachepôs); se um
+   dia o painel administrativo permitir uma sexta, esta grade de 5 colunas
+   precisa ser revisitada — ela não se ajusta sozinha.
    ===================================================================== */
 .categorias-grade{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px}
-.categoria{position:relative; aspect-ratio:9/16; border-radius:var(--r-md); overflow:hidden; cursor:pointer; transition:transform .35s ease}
+.categoria{
+  position:relative; aspect-ratio:9/16; border-radius:var(--r-md); overflow:hidden;
+  cursor:pointer; transition:transform .35s ease;
+  display:block; width:100%; border:0; padding:0; margin:0; background:transparent;
+  font:inherit; text-align:left; -webkit-tap-highlight-color:transparent;
+}
 .categoria:hover{transform:translateY(-6px)}
+.categoria__capa,.categoria__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
+.categoria__video{opacity:0; transition:opacity .35s ease}
+.categoria:hover .categoria__video{opacity:1}
+.categoria__veu{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(18,11,4,.78), rgba(18,11,4,.14) 55%, rgba(18,11,4,.05));
+}
+.categoria__rotulo{position:absolute; left:20px; right:20px; bottom:18px; pointer-events:none}
+.categoria__eyebrow{
+  display:flex; align-items:center; gap:9px; margin-bottom:8px;
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(247,242,232,.82);
+}
+.categoria__eyebrow i{width:10px; height:10px; border-radius:50%; background:var(--acento,var(--magenta)); flex:none}
+.categoria__nome{
+  display:block; font-family:var(--f-display); font-weight:500; font-size:clamp(20px,2.6vw,30px);
+  line-height:1.05; color:#FBF7EE; text-shadow:0 2px 12px rgba(0,0,0,.5);
+}
 @media (max-width:900px){ .categorias-grade{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (prefers-reduced-motion:reduce){ .categoria,.categoria__video{transition:none} }
+
+/* Estado 2 — filtros, grade de produtos, vazio */
+.catalogo__filtros{display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:var(--s2)}
+.catalogo__filtro{
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  padding:11px 20px; border-radius:var(--r-pill); cursor:pointer;
+  border:1px solid rgba(60,40,20,.28); background:transparent; color:var(--sepia);
+  transition:background .25s ease, border-color .25s ease, color .25s ease;
+}
+.catalogo__filtro[aria-selected="true"]{border-color:var(--laranja); background:var(--laranja); color:var(--carvao)}
+.catalogo__voltar{
+  display:block; margin:0 auto var(--s5); font-family:var(--f-mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--sepia); background:none; border:0; cursor:pointer; padding:6px 4px;
+  transition:color .25s ease;
+}
+.catalogo__voltar:hover{color:var(--laranja-txt)}
+.produtos-grade{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:var(--s3)}
+.produto{
+  display:block; width:100%; border:0; padding:0; margin:0; background:#FFFDF9; text-align:left; cursor:pointer;
+  border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--sh-md);
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.produto:hover{transform:translateY(-6px); box-shadow:var(--sh-lg)}
+.produto__foto{display:block; aspect-ratio:4/5; overflow:hidden; background:#e7dcc7}
+.produto__foto img{width:100%; height:100%; object-fit:cover; display:block}
+.produto__corpo{display:block; padding:18px 18px 22px}
+.produto__eyebrow{display:flex; align-items:center; gap:8px; margin-bottom:8px; font-family:var(--f-mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--nevoa-txt)}
+.produto__eyebrow i{width:9px; height:9px; border-radius:50%; flex:none}
+.produto__nome{display:block; font-family:var(--f-display); font-weight:500; font-size:20px; margin-bottom:6px; color:var(--grafite)}
+.produto__preco{display:block; font-size:14px; color:var(--terracota-txt)}
+@media (prefers-reduced-motion:reduce){ .produto{transition:none} }
+
+.catalogo__vazio{grid-column:1/-1; text-align:center; padding:60px 5vw; color:var(--sepia)}
+.catalogo__vazio strong{display:block; font-family:var(--f-display); font-style:italic; font-size:26px; color:var(--grafite); margin-bottom:8px; font-weight:400}
+.catalogo__vazio small{font-size:15px}
+
+/* =====================================================================
+   PAINEL DO PRODUTO
+   Mesma mecânica de gaveta lateral da sacola, veu compartilhado.
+   ===================================================================== */
+.painel{
+  position:fixed; inset:0 0 0 auto; width:min(460px,100%); z-index:82;
+  background:var(--creme); color:var(--grafite); overflow-y:auto;
+  transform:translateX(100%); transition:transform .35s var(--ease); box-shadow:var(--sh-xl);
+}
+.painel[data-aberta]{transform:none}
+.painel__fechar{
+  position:absolute; top:18px; right:18px; z-index:2; width:38px; height:38px; border-radius:50%;
+  border:0; background:rgba(28,20,12,.08); cursor:pointer; font-size:16px; color:var(--grafite);
+}
+.painel__foto{display:block; height:340px; background:#e7dcc7; overflow:hidden}
+.painel__foto img{width:100%; height:100%; object-fit:cover; display:block}
+.painel__corpo{padding:30px 32px 40px}
+.painel__categoria{
+  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--terracota-txt); margin-bottom:10px;
+}
+.painel__nome{font-size:clamp(24px,2.6vw,30px); margin-bottom:14px}
+.painel__descricao{color:var(--sepia); line-height:1.7; margin-bottom:26px}
+.painel__rotuloTamanho{
+  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--terracota-txt); margin-bottom:12px;
+}
+.painel__tamanhos{display:flex; flex-direction:column; gap:10px; margin-bottom:var(--s4)}
+.painel__tamanho{
+  display:flex; justify-content:space-between; align-items:center; width:100%; cursor:pointer;
+  padding:14px 18px; border-radius:12px; font-family:var(--f-corpo); font-size:14px;
+  border:1.5px solid rgba(60,40,20,.16); background:#fff; color:var(--grafite);
+  transition:border-color .2s ease, background .2s ease;
+}
+.painel__tamanho[aria-pressed="true"]{border-color:var(--grafite); background:rgba(60,40,20,.05)}
+.painel__adicionar{width:100%}
+@media (prefers-reduced-motion:reduce){ .painel{transition:none} }
 
 /* =====================================================================
    DÚVIDAS (acordeão)
@@ -590,8 +691,23 @@ a{color:inherit; text-decoration:none}
   display:flex; flex-direction:column;
 }
 .sacola[data-aberta]{transform:none}
+.sacola header{display:flex; align-items:center; justify-content:space-between; padding:24px 28px; border-bottom:1px solid rgba(60,40,20,.12); flex:none}
+.sacola header h2{font-size:24px}
+.sacola header button{width:36px; height:36px; border-radius:50%; border:0; background:rgba(28,20,12,.08); cursor:pointer; font-size:15px; color:var(--grafite)}
+.sacola ul{flex:1; overflow-y:auto; padding:8px 28px; margin:0}
+.sacola__vazio{
+  font-family:var(--f-script); font-size:24px; color:var(--nevoa-txt); text-align:center; padding:30px 0;
+}
+.sacola__item{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid rgba(60,40,20,.08)}
+.sacola__itemNome{display:block; font-family:var(--f-display); font-size:17px}
+.sacola__itemDetalhe{display:block; font-size:12px; color:var(--nevoa-txt); font-family:var(--f-mono)}
+.sacola__remover{background:none; border:0; color:var(--magenta); cursor:pointer; font-size:12px; font-family:var(--f-mono); flex:none}
+.sacola footer{padding:20px 28px 28px; flex:none}
+.sacola footer p{display:flex; justify-content:space-between; font-family:var(--f-display); font-size:20px; padding-bottom:var(--s2)}
+.sacola footer a{display:block; text-align:center}
 .veu{position:fixed; inset:0; z-index:75; background:rgba(28,20,12,.5); opacity:0; pointer-events:none; transition:opacity .3s ease}
 .veu[data-aberto]{opacity:1; pointer-events:auto}
+@media (prefers-reduced-motion:reduce){ .sacola,.veu{transition:none} }
 </style>
 </head>
 <body>
@@ -824,6 +940,7 @@ a{color:inherit; text-decoration:none}
       <!-- Estado 2: filtros + grade de produtos da categoria escolhida -->
       <div id="produtosVista" hidden>
         <div class="catalogo__filtros" id="catalogoFiltros" role="tablist" aria-label="Categorias"></div>
+        <button type="button" class="catalogo__voltar" id="catalogoVoltar">← voltar às categorias</button>
         <div class="produtos-grade" id="produtosGrade"></div>
       </div>
     </div>
@@ -954,8 +1071,21 @@ a{color:inherit; text-decoration:none}
   </footer>
 </aside>
 
-<!-- ===================== PAINEL DO PRODUTO ===================== -->
-<aside class="painel" id="painelProduto" role="dialog" aria-modal="true" aria-labelledby="painel-titulo" hidden></aside>
+<!-- ===================== PAINEL DO PRODUTO =====================
+     Conteúdo reconstruído a cada produto aberto por pintaPainelProduto(),
+     em app.js — a estrutura fica fixa aqui, como na gaveta da sacola. -->
+<aside class="painel" id="painelProduto" role="dialog" aria-modal="true" aria-labelledby="painel-nome" hidden>
+  <button type="button" class="painel__fechar" id="painelFechar" aria-label="Fechar">✕</button>
+  <div class="painel__foto"><img id="painelFoto" src="" alt="" width="700" height="620"></div>
+  <div class="painel__corpo">
+    <span class="painel__categoria" id="painelCategoria"></span>
+    <h3 class="painel__nome" id="painel-nome"></h3>
+    <p class="painel__descricao" id="painelDescricao"></p>
+    <span class="painel__rotuloTamanho">Tamanho</span>
+    <div class="painel__tamanhos" id="painelTamanhos" role="group" aria-label="Tamanho"></div>
+    <button type="button" class="btn btn--ouro painel__adicionar" id="painelAdicionar">Adicionar à sacola</button>
+  </div>
+</aside>
 
 <!-- Ligação com o Supabase. A chave publishable é pública por natureza — o
      formato novo do que antes se chamava "anon key". O que protege os dados

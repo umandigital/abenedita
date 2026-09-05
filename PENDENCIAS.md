@@ -69,8 +69,18 @@ Falta especificamente:
   depoimento inventado, apresentado como cliente de verdade, é outra coisa.
   Precisa de foto e depoimento reais, com autorização de quem aparece.
 
-- **cinco** vídeos de categoria. Hoje existe um só, usado nas cinco
-- as fotos dos produtos
+- **capa de cada categoria** (Arranjos, Buquês, Caixas prontas, Cestas,
+  Cachepôs). Hoje são retângulos coloridos gerados aqui, 540×960 (9:16). É
+  a foto que aparece parada — o vídeo é opcional, ela é obrigatória: sem
+  vídeo cadastrado, é só ela que mostra.
+
+- **vídeo por categoria**, opcional mas recomendado — é o que faz a grade
+  do catálogo comportar como a das áreas de Loja/Eventos: toca no hover, no
+  celular fica só a capa. Nenhum vídeo de categoria existe ainda (nem
+  sequer um placeholder, diferente da capa).
+
+- **as doze fotos de produto**. Hoje são retângulos coloridos gerados aqui,
+  800×1000. Cada produto pede uma.
 
 ### 4. Os textos e as fotos das sócias
 
@@ -100,15 +110,15 @@ diferenciais.
 | **Domínio final** | o canônico, o Open Graph e o sitemap saem dele. Hoje está `abenedita.netlify.app` como suposição |
 | **WhatsApp** | confirmar `5551985054194` como número de produção |
 | **Preços** | os doze produtos do protótipo têm preço inventado |
-| **Supabase** | projeto criado (`abenedita`, `dldyizoyrkvaijskzqzc.supabase.co`) e a chave já está no `index.html`. **Falta aplicar a migração**: cole `supabase/migrations/20260905120000_estrutura.sql` no SQL Editor do painel e rode — o proxy deste ambiente bloqueia `*.supabase.co`, então isso só se faz de lá. Depois, para as próximas migrações aplicarem sozinhas a cada merge, conecte o GitHub em Settings → Integrations (o painel mostra "No repository connected") |
+| **Supabase** | ✅ projeto criado, chave no `index.html`, migração aplicada pelo SQL Editor ("Success. No rows returned"). Ainda falta: conectar o GitHub em Settings → Integrations, para as próximas migrações aplicarem sozinhas a cada merge (o painel mostrava "No repository connected") |
 | **Quem administra** | quem recebe o acesso de admin para editar produtos, banner e dúvidas |
 
-**Como confirmar que a migração pegou**, sem depender de mim: abra **Table
-Editor** no painel — devem existir as sete tabelas (`categorias`, `produtos`,
-`galerias`, `depoimentos`, `faq`, `config`, `perfis`), e `config` já vem com
-duas linhas (`whatsapp`, `estacao`). Se as tabelas não existirem, a página
-continua funcionando normalmente com o conteúdo local — ela não quebra, só não
-usa o banco ainda.
+O banco está no ar, mas segue vazio de conteúdo real — as sete tabelas
+existem e `config` tem as duas linhas de fábrica (`whatsapp`, `estacao`), o
+resto (`produtos`, `categorias`, `galerias`, `depoimentos`, `faq`) só ganha
+linhas quando alguém cadastrar pelo painel administrativo, que ainda não foi
+construído. Até lá o site mostra o conteúdo local — é o comportamento
+esperado, não uma falha.
 
 ---
 
