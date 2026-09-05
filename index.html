@@ -512,6 +512,26 @@ a{color:inherit; text-decoration:none}
 @media (max-width:900px){ .categorias-grade{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
 /* =====================================================================
+   DÚVIDAS (acordeão)
+   ===================================================================== */
+.acordeao__item{border-bottom:1px solid rgba(60,40,20,.16)}
+.acordeao__pergunta{
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
+  padding:var(--s3) 0; border:0; background:none; cursor:pointer; text-align:left;
+  font-family:var(--f-display); font-weight:400; font-size:clamp(19px,2vw,24px);
+  color:var(--grafite); transition:color .25s ease;
+}
+.acordeao__pergunta:hover{color:var(--magenta)}
+.acordeao__sinal{font-family:var(--f-mono); font-size:22px; color:var(--terracota-txt); flex:none; line-height:1}
+.acordeao__resposta{
+  overflow:hidden; max-height:0;
+  transition:max-height .35s ease, opacity .3s ease; opacity:0;
+}
+.acordeao__pergunta[aria-expanded="true"] + .acordeao__resposta{opacity:1}
+.acordeao__resposta p{color:var(--sepia); padding-bottom:var(--s3); max-width:64ch}
+@media (prefers-reduced-motion:reduce){ .acordeao__resposta{transition:none} }
+
+/* =====================================================================
    DEPOIMENTOS
    Três fotos em perspectiva: a do meio de frente, as vizinhas recuadas,
    levantadas e giradas em Y. A curva cubic-bezier(.4,2,.3,1) passa de 1 —
@@ -937,6 +957,10 @@ a{color:inherit; text-decoration:none}
 <!-- ===================== PAINEL DO PRODUTO ===================== -->
 <aside class="painel" id="painelProduto" role="dialog" aria-modal="true" aria-labelledby="painel-titulo" hidden></aside>
 
+<!-- Ligação com o Supabase. Vazio = o site roda no conteúdo local, que é o
+     estado de hoje. A chave anônima é pública por natureza: o que protege os
+     dados é o RLS na migração, não escondê-la. -->
+<script>window.BENEDITA_SUPABASE = { url: '', chave: '' };</script>
 <script src="assets/js/app.js" defer></script>
 </body>
 </html>

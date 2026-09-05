@@ -665,6 +665,157 @@
   }
 
   /* ===================================================================
+     SUPABASE — leitura por REST, sem SDK
+     Uma tabela por chamada, com tempo limite. Qualquer falha devolve null e
+     quem chamou usa o conteúdo local: o site nunca fica em branco porque o
+     banco não respondeu.
+     =================================================================== */
+  /* O endereço e a chave vêm de um bloco no index.html, não daqui: trocar de
+     projeto no Supabase não deve exigir editar o script. Vazio desliga a
+     busca e o site roda inteiro no conteúdo local.
+     A chave anônima é pública por natureza — quem protege os dados é o RLS
+     da migração, não escondê-la. */
+  var SUPABASE = window.BENEDITA_SUPABASE || { url: '', chave: '' };
+  var ESPERA = 2500;
+
+  function buscaTabela(tabela, consulta) {
+    if (!SUPABASE.url || !SUPABASE.chave) return Promise.resolve(null);
+    if (!window.fetch || !window.AbortController) return Promise.resolve(null);
+    var freio = new AbortController();
+    var relogio = setTimeout(function () { freio.abort(); }, ESPERA);
+    return fetch(SUPABASE.url + '/rest/v1/' + tabela + '?' + consulta, {
+      headers: {
+        apikey: SUPABASE.chave,
+        Authorization: 'Bearer ' + SUPABASE.chave,
+        Accept: 'application/json'
+      },
+      signal: freio.signal
+    }).then(function (r) {
+      clearTimeout(relogio);
+      if (!r.ok) return null;
+      return r.json();
+    }).then(function (linhas) {
+      /* Uma tabela vazia não é resposta melhor que o conteúdo local — trata
+         como ausência, senão publicar o banco antes de povoá-lo apaga a
+         página. */
+      return (Array.isArray(linhas) && linhas.length) ? linhas : null;
+    }).catch(function () {
+      clearTimeout(relogio);
+      return null;
+    });
+  }
+
+  /* Caminho da mídia: o painel grava só o nome do arquivo no bucket, e o
+     endereço público é montado aqui. Um caminho que já venha absoluto ou
+     apontando para assets/ passa direto. */
+  function caminhoMidia(valor) {
+    if (!valor) return '';
+    if (/^(https?:)?\/\//.test(valor) || valor.indexOf('assets/') === 0) return valor;
+    if (!SUPABASE.url) return 'assets/img/' + valor;
+    return SUPABASE.url + '/storage/v1/object/public/midia/' + valor;
+  }
+
+  /* ===================================================================
+     CONTEÚDO
+     O que está aqui é o padrão de fábrica: o que o site mostra antes de
+     alguém cadastrar qualquer coisa, e o que ele volta a mostrar se o banco
+     não responder.
+     =================================================================== */
+  var CONTEUDO = {
+    galerias: {
+      loja: [1,2,3,4,5].map(function (i) {
+        return { foto: 'assets/img/loja-g' + i + '.webp', alt: '' };
+      }),
+      eventos: [1,2,3,4,5].map(function (i) {
+        return { foto: 'assets/img/evento-g' + i + '.webp', alt: '' };
+      })
+    },
+    depoimentos: [
+      { nome:'Camila Rossi',   contexto:'Recebe todo mês · Bela Vista',           foto:'assets/img/cli-1.webp', citacao:'As flores da Benedita mudaram o clima da minha casa. Chegam vivas e perfumam o dia inteiro.' },
+      { nome:'João Peixoto',   contexto:'Presente de Dia das Mães · Menino Deus', foto:'assets/img/cli-2.webp', citacao:'Pedi um arranjo pra minha mãe pelo WhatsApp e foi tudo simples. Ela amou de verdade.' },
+      { nome:'Marina & Téo',   contexto:'Casamento · Moinhos de Vento',           foto:'assets/img/cli-3.webp', citacao:'Fizeram a decoração do nosso casamento. Cada detalhe pensado com muito carinho.' },
+      { nome:'Beatriz Nunes',  contexto:'Assinante quinzenal · Cidade Baixa',     foto:'assets/img/cli-4.webp', citacao:'Assino o plano quinzenal há um ano. Nunca mais minha sala ficou sem flor fresca.' },
+      { nome:'Rafael Antunes', contexto:'Entrega expressa · Petrópolis',          foto:'assets/img/cli-5.webp', citacao:'Precisava de flores no mesmo dia pra um pedido de desculpas. Salvaram meu dia — e a relação.' }
+    ],
+    faq: [
+      { pergunta:'Vocês entregam?', resposta:'Sim, entregamos em Porto Alegre e região. O valor da entrega depende do bairro e a gente combina certinho no WhatsApp.' },
+      { pergunta:'Qual o prazo?', resposta:'Pedidos até as 14h saem no mesmo dia sempre que possível. Para datas especiais, peça com um pouco de antecedência.' },
+      { pergunta:'Como faço o pagamento?', resposta:'O pagamento é combinado direto com a loja pelo WhatsApp: Pix, cartão ou dinheiro na entrega. Ninguém paga no site.' },
+      { pergunta:'Posso mandar um cartãozinho?', resposta:'Claro. É só escrever a mensagem na conversa que a gente escreve à mão pra você.' },
+      { pergunta:'Como funciona a assinatura?', resposta:'Você escolhe a frequência (semanal ou quinzenal) e recebe flores frescas da estação sem precisar pedir toda vez.' },
+      { pergunta:'E para eventos?', resposta:'Casamento, aniversário, formatura ou empresa: chame no WhatsApp que montamos um orçamento sob medida.' },
+      { pergunta:'Como cuido das flores?', resposta:'Troque a água a cada dois dias, corte os talos na diagonal e fuja do sol forte. A gente manda as dicas junto.' }
+    ]
+  };
+
+  /* Uma volta ao banco por seção, todas em paralelo. O que falhar fica com o
+     padrão de fábrica; o resto sobe assim mesmo. */
+  function carregaConteudo() {
+    return Promise.all([
+      buscaTabela('galerias', 'select=area,foto,alt,ordem&order=ordem.asc'),
+      buscaTabela('depoimentos', 'select=nome,contexto,citacao,foto,ordem&ativo=eq.true&order=ordem.asc'),
+      buscaTabela('faq', 'select=pergunta,resposta,ordem&ativa=eq.true&order=ordem.asc')
+    ]).then(function (r) {
+      var gal = r[0], dep = r[1], faq = r[2];
+      if (gal) {
+        var caixas = { loja: [], eventos: [] };
+        gal.forEach(function (l) {
+          if (caixas[l.area]) caixas[l.area].push({ foto: caminhoMidia(l.foto), alt: l.alt || '' });
+        });
+        if (caixas.loja.length)    CONTEUDO.galerias.loja = caixas.loja;
+        if (caixas.eventos.length) CONTEUDO.galerias.eventos = caixas.eventos;
+      }
+      if (dep) {
+        CONTEUDO.depoimentos = dep.map(function (l) {
+          return { nome: l.nome, contexto: l.contexto || '', citacao: l.citacao, foto: caminhoMidia(l.foto) };
+        });
+      }
+      if (faq) CONTEUDO.faq = faq;
+    }).catch(function () { /* fica tudo no padrão */ });
+  }
+
+  /* ===================================================================
+     DÚVIDAS
+     =================================================================== */
+  function ligaFaq() {
+    var caixa = $('#acordeao');
+    if (!caixa) return;
+    caixa.innerHTML = '';
+    CONTEUDO.faq.forEach(function (d, i) {
+      var item = document.createElement('div');
+      item.className = 'acordeao__item';
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'acordeao__pergunta';
+      b.setAttribute('aria-expanded', 'false');
+      b.setAttribute('aria-controls', 'resposta-' + i);
+      b.id = 'pergunta-' + i;
+      var texto = document.createElement('span'); texto.textContent = d.pergunta;
+      var sinal = document.createElement('span'); sinal.className = 'acordeao__sinal'; sinal.setAttribute('aria-hidden','true'); sinal.textContent = '+';
+      b.appendChild(texto); b.appendChild(sinal);
+      var resp = document.createElement('div');
+      resp.className = 'acordeao__resposta'; resp.id = 'resposta-' + i;
+      resp.setAttribute('role', 'region'); resp.setAttribute('aria-labelledby', 'pergunta-' + i);
+      resp.hidden = true;
+      var p = document.createElement('p'); p.textContent = d.resposta; resp.appendChild(p);
+      b.addEventListener('click', function () {
+        var abrindo = b.getAttribute('aria-expanded') !== 'true';
+        /* uma por vez, como no protótipo */
+        $$('.acordeao__pergunta', caixa).forEach(function (o) { o.setAttribute('aria-expanded','false'); });
+        $$('.acordeao__resposta', caixa).forEach(function (o) { o.hidden = true; o.style.maxHeight = '0px'; });
+        $$('.acordeao__sinal', caixa).forEach(function (o) { o.textContent = '+'; });
+        if (abrindo) {
+          b.setAttribute('aria-expanded','true');
+          sinal.textContent = '–';
+          resp.hidden = false;
+          resp.style.maxHeight = resp.scrollHeight + 'px';
+        }
+      });
+      item.appendChild(b); item.appendChild(resp);
+      caixa.appendChild(item);
+    });
+  }
+
+  /* ===================================================================
      DEPOIMENTOS
      Três fotos à vista: a ativa de frente, a anterior e a próxima recuadas,
      levantadas e giradas. Quem anima é o CSS — só trocamos o transform e
@@ -780,26 +931,19 @@
 
   var depoimentos = null;
   function ligaDepoimentos() {
-    var lista = [
-      { nome:'Camila Rossi',   contexto:'Recebe todo mês · Bela Vista',            foto:'assets/img/cli-1.webp', citacao:'As flores da Benedita mudaram o clima da minha casa. Chegam vivas e perfumam o dia inteiro.' },
-      { nome:'João Peixoto',   contexto:'Presente de Dia das Mães · Menino Deus',  foto:'assets/img/cli-2.webp', citacao:'Pedi um arranjo pra minha mãe pelo WhatsApp e foi tudo simples. Ela amou de verdade.' },
-      { nome:'Marina & Téo',   contexto:'Casamento · Moinhos de Vento',            foto:'assets/img/cli-3.webp', citacao:'Fizeram a decoração do nosso casamento. Cada detalhe pensado com muito carinho.' },
-      { nome:'Beatriz Nunes',  contexto:'Assinante quinzenal · Cidade Baixa',      foto:'assets/img/cli-4.webp', citacao:'Assino o plano quinzenal há um ano. Nunca mais minha sala ficou sem flor fresca.' },
-      { nome:'Rafael Antunes', contexto:'Entrega expressa · Petrópolis',           foto:'assets/img/cli-5.webp', citacao:'Precisava de flores no mesmo dia pra um pedido de desculpas. Salvaram meu dia — e a relação.' }
-    ];
-    depoimentos = depoimentosCirculares($('#depoimentosDeck'), $('#depoimentosCorpo'), lista, { autoplay: 5000 });
+    depoimentos = depoimentosCirculares($('#depoimentosDeck'), $('#depoimentosCorpo'),
+                                        CONTEUDO.depoimentos, { autoplay: 5000 });
   }
 
   var galerias = [];
   function ligaGalerias() {
-    [['loja', 'loja', 'Fotos da loja'], ['eventos', 'evento', 'Fotos de eventos']].forEach(function (par) {
+    [['loja', 'Fotos da loja'], ['eventos', 'Fotos de eventos']].forEach(function (par) {
       var el = $('[data-galeria="' + par[0] + '"]');
       if (!el) return;
-      var fotos = [];
-      for (var i = 1; i <= 5; i++) {
-        fotos.push({ src: 'assets/img/' + par[1] + '-g' + i + '.webp', alt: '' });
-      }
-      var g = galeriaCircular(el, fotos, { autoplay: 4500, rotulo: par[2] });
+      var fotos = (CONTEUDO.galerias[par[0]] || []).map(function (f) {
+        return { src: f.foto, alt: f.alt || '' };
+      });
+      var g = galeriaCircular(el, fotos, { autoplay: 4500, rotulo: par[1] });
       if (g) galerias.push(g);
     });
   }
@@ -853,8 +997,16 @@
     ligaFormulario();
     preparaTopo();
     preparaAreas();
-    ligaGalerias();
-    ligaDepoimentos();
+
+    /* O topo, o menu e a rolagem sobem já: são a primeira tela. As seções que
+       dependem de conteúdo esperam a volta do banco — que resolve na hora
+       quando não há banco configurado, e no pior caso espera o tempo limite
+       de 2,5s. Todas estão bem abaixo da dobra. */
+    carregaConteudo().then(function () {
+      ligaGalerias();
+      ligaDepoimentos();
+      ligaFaq();
+    });
 
     /* Um quadro imediato aplica o estado inicial das Áreas antes de o laço
        entrar em regime — sem isso a primeira pintura mostra tudo montado e
