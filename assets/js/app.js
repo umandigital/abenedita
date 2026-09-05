@@ -475,6 +475,7 @@
     opcoes = opcoes || {};
     var AUTO = opcoes.autoplay || 4500;
 
+    el.classList.add('galeria');   /* o slot no HTML só traz data-galeria */
     var palco = document.createElement('div');
     palco.className = 'galeria__palco';
     var minis = document.createElement('div');
@@ -780,11 +781,11 @@
   var depoimentos = null;
   function ligaDepoimentos() {
     var lista = [
-      { nome:'Camila Rossi',   contexto:'Recebe todo mês · Bela Vista',            foto:'assets/img/cli-1.jpg', citacao:'As flores da Benedita mudaram o clima da minha casa. Chegam vivas e perfumam o dia inteiro.' },
-      { nome:'João Peixoto',   contexto:'Presente de Dia das Mães · Menino Deus',  foto:'assets/img/cli-2.jpg', citacao:'Pedi um arranjo pra minha mãe pelo WhatsApp e foi tudo simples. Ela amou de verdade.' },
-      { nome:'Marina & Téo',   contexto:'Casamento · Moinhos de Vento',            foto:'assets/img/cli-3.jpg', citacao:'Fizeram a decoração do nosso casamento. Cada detalhe pensado com muito carinho.' },
-      { nome:'Beatriz Nunes',  contexto:'Assinante quinzenal · Cidade Baixa',      foto:'assets/img/cli-4.jpg', citacao:'Assino o plano quinzenal há um ano. Nunca mais minha sala ficou sem flor fresca.' },
-      { nome:'Rafael Antunes', contexto:'Entrega expressa · Petrópolis',           foto:'assets/img/cli-5.jpg', citacao:'Precisava de flores no mesmo dia pra um pedido de desculpas. Salvaram meu dia — e a relação.' }
+      { nome:'Camila Rossi',   contexto:'Recebe todo mês · Bela Vista',            foto:'assets/img/cli-1.webp', citacao:'As flores da Benedita mudaram o clima da minha casa. Chegam vivas e perfumam o dia inteiro.' },
+      { nome:'João Peixoto',   contexto:'Presente de Dia das Mães · Menino Deus',  foto:'assets/img/cli-2.webp', citacao:'Pedi um arranjo pra minha mãe pelo WhatsApp e foi tudo simples. Ela amou de verdade.' },
+      { nome:'Marina & Téo',   contexto:'Casamento · Moinhos de Vento',            foto:'assets/img/cli-3.webp', citacao:'Fizeram a decoração do nosso casamento. Cada detalhe pensado com muito carinho.' },
+      { nome:'Beatriz Nunes',  contexto:'Assinante quinzenal · Cidade Baixa',      foto:'assets/img/cli-4.webp', citacao:'Assino o plano quinzenal há um ano. Nunca mais minha sala ficou sem flor fresca.' },
+      { nome:'Rafael Antunes', contexto:'Entrega expressa · Petrópolis',           foto:'assets/img/cli-5.webp', citacao:'Precisava de flores no mesmo dia pra um pedido de desculpas. Salvaram meu dia — e a relação.' }
     ];
     depoimentos = depoimentosCirculares($('#depoimentosDeck'), $('#depoimentosCorpo'), lista, { autoplay: 5000 });
   }
@@ -796,7 +797,7 @@
       if (!el) return;
       var fotos = [];
       for (var i = 1; i <= 5; i++) {
-        fotos.push({ src: 'assets/img/' + par[1] + '-g' + i + '.jpg', alt: '', w: 1000, h: 1250 });
+        fotos.push({ src: 'assets/img/' + par[1] + '-g' + i + '.webp', alt: '' });
       }
       var g = galeriaCircular(el, fotos, { autoplay: 4500, rotulo: par[2] });
       if (g) galerias.push(g);

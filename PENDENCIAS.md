@@ -49,17 +49,26 @@ Eventos é a galeria da Loja; as duas cestas são a mesma foto).
 
 Falta especificamente:
 
-- **as fotos das galerias de Loja e Eventos.** Chegaram 27 (loja) e 23
-  (eventos) capturas de tela no Drive, fotos reais do cliente. Serão
-  escolhidas cinco de cada para a demonstração. Falta um jeito de trazê-las
-  para cá: o conector do Drive devolve base64, o que não escala para
-  cinquenta arquivos — o caminho é um `.zip` das pastas subido no chat.
-- **as fotos dos depoimentos** (`cli-1` a `cli-5`). As atuais são retratos
-  coloridos gerados aqui.
-- **o texto alternativo de cada foto de galeria**. Hoje está vazio. Foto de
-  produto não é decoração: quem usa leitor de tela precisa saber o que tem
-  na foto, e o Google também lê isso
-- `cli-4` e `cli-5` — os depoimentos 4 e 5 existem, as fotos não
+- **fotos das galerias em tamanho de verdade.** As dez que estão no site
+  saíram das capturas que você mandou, e são pequenas: a maioria tem cerca de
+  275×320 pixels. O palco da galeria tem 430×538 na tela, então a foto é
+  ampliada 1,7× — dá para demonstrar, mas fica visivelmente mole numa tela
+  retina, onde a ampliação vira 3,4×.
+
+  As duas de evento que vieram maiores (486×617) entram sem ampliação
+  nenhuma e ficam nítidas. A diferença entre elas e as outras é o que se
+  perde.
+
+  Essas capturas são recorte de alguma coisa — Instagram, celular, WhatsApp.
+  **Os arquivos originais existem em algum lugar**, e é deles que a galeria
+  precisa. Mínimo confortável: 900×1125 (proporção 4:5).
+
+- **os retratos dos depoimentos são gerados por IA.** Os cinco arquivos
+  `cli-*.webp` vieram de imagens do ChatGPT. Servem de marcação e estão
+  ótimos de resolução, mas **não podem ir ao ar**: rosto gerado ao lado de
+  depoimento inventado, apresentado como cliente de verdade, é outra coisa.
+  Precisa de foto e depoimento reais, com autorização de quem aparece.
+
 - **cinco** vídeos de categoria. Hoje existe um só, usado nas cinco
 - as fotos dos produtos
 
