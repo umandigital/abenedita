@@ -764,6 +764,22 @@ a{color:inherit; text-decoration:none}
 @media (prefers-reduced-motion:reduce){ .acordeao__resposta{transition:none} }
 
 /* =====================================================================
+   INSTAGRAM — grade de marcação à espera do widget (Elfsight/Juicer/etc).
+   ===================================================================== */
+.instagram-grade{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s3)}
+.instagram-post{
+  position:relative; display:block; aspect-ratio:1/1; border-radius:var(--r-lg); overflow:hidden;
+  background:linear-gradient(155deg, var(--areia-funda), var(--madeira) 140%);
+  box-shadow:var(--sh-sm); pointer-events:none;
+}
+.instagram-post__marcacao{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:rgba(244,238,228,.45);
+}
+@media (max-width:900px){ .instagram-grade{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .instagram-grade{grid-template-columns:1fr} }
+
+/* =====================================================================
    DEPOIMENTOS
    Três fotos em perspectiva: a do meio de frente, as vizinhas recuadas,
    levantadas e giradas em Y. A curva cubic-bezier(.4,2,.3,1) passa de 1 —
@@ -1230,12 +1246,29 @@ a{color:inherit; text-decoration:none}
     </div>
   </section>
 
-  <!-- ===================== 11 · CHAMADA FINAL ===================== -->
-  <section class="secao secao--areia revela" id="chamada" aria-labelledby="chamada-titulo">
-    <div class="wrap wrap--texto" style="text-align:center">
-      <h2 id="chamada-titulo">Manda uma mensagem. A gente monta junto.</h2>
-      <div class="topo__ctas" style="justify-content:center; margin-top:var(--s4)">
-        <a class="btn btn--ouro" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
+  <!-- ===================== 11 · INSTAGRAM ===================== -->
+  <section class="secao secao--areia revela" id="instagram" aria-labelledby="instagram-titulo">
+    <div class="wrap">
+      <div class="secao-cabeca">
+        <span class="eyebrow">Instagram</span>
+        <h2 id="instagram-titulo">O dia a dia da floricultura.</h2>
+      </div>
+
+      <!--
+        Feed do Instagram — plugue aqui o widget do Elfsight, do Juicer ou
+        equivalente. O script da ferramenta escolhida substitui o conteúdo
+        de #instagram-embed; os oito cartões abaixo são só marcação, pra
+        a seção não aparecer vazia enquanto o widget não é instalado.
+      -->
+      <div class="instagram-grade" id="instagram-embed">
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
+        <a class="instagram-post" href="#" aria-hidden="true" tabindex="-1"><span class="instagram-post__marcacao"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></span></a>
       </div>
     </div>
   </section>
