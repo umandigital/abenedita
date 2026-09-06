@@ -418,9 +418,9 @@ a{color:inherit; text-decoration:none}
 .areas__indicador{
   position:absolute; top:calc(var(--header-h) + 10px); left:50%; transform:translateX(-50%); z-index:40;
   width:min(58vw,420px); padding:7px 18px; border-radius:var(--r-pill);
-  background:rgba(255,253,249,.4); backdrop-filter:blur(20px) saturate(140%); -webkit-backdrop-filter:blur(20px) saturate(140%);
-  border:1px solid rgba(255,255,255,.5);
-  box-shadow:0 6px 20px rgba(40,26,12,.1);
+  background:rgba(246,250,244,.62); backdrop-filter:blur(20px) saturate(120%); -webkit-backdrop-filter:blur(20px) saturate(120%);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 6px 20px rgba(40,26,12,.14);
 }
 .areas__rotulos{display:flex; align-items:center; justify-content:space-between; font-family:var(--f-mono); font-weight:700; font-size:clamp(9px,1vw,11px); letter-spacing:.1em; text-transform:uppercase}
 .areas__rotulos button{border:0; background:none; cursor:pointer; font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--pedra-txt); transition:color .4s ease; padding:4px 3px}
@@ -442,11 +442,22 @@ a{color:inherit; text-decoration:none}
    mesa de evento) e o grid larga o teto de 1280px pra virar de ponta a
    ponta, como no arquivo original. */
 .area--loja, .area--eventos{position:relative; overflow:hidden}
-.area--loja .area__grade, .area--eventos .area__grade{max-width:none; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); align-items:start}
-.area--loja .area__grade > div:first-child, .area--eventos .area__grade > div:first-child{position:relative; z-index:2}
-.area--loja .area__grade > div:first-child :is(h3,p,.area__recursos li),
-.area--eventos .area__grade > div:first-child :is(h3,p,.area__recursos li){
+.area--loja .area__grade, .area--eventos .area__grade{
+  max-width:none; align-items:start;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"cabeca vitrine" "corpo vitrine";
+}
+.area--loja .area__cabeca, .area--eventos .area__cabeca{grid-area:cabeca}
+.area--loja .area__corpo,  .area--eventos .area__corpo {grid-area:corpo}
+.area--loja .area__vitrine, .area--eventos .area__vitrine{grid-area:vitrine}
+.area--loja .area__cabeca, .area--loja .area__corpo,
+.area--eventos .area__cabeca, .area--eventos .area__corpo{position:relative; z-index:2}
+.area--loja .area__corpo :is(h3,p,.area__recursos li),
+.area--eventos .area__corpo :is(h3,p,.area__recursos li){
   text-shadow:0 1px 2px rgba(255,251,244,.85), 0 2px 18px rgba(255,251,244,.7);
+}
+.area--loja .area__corpo .btn--contorno, .area--eventos .area__corpo .btn--contorno{
+  background:rgba(255,253,249,.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
 
 .area__recursos{
@@ -457,7 +468,7 @@ a{color:inherit; text-decoration:none}
 .area__recursos li{padding:0 22px; border-left:1px solid rgba(60,40,20,.16)}
 .area__recursos li:first-child{border-left:0; padding-left:0}
 
-.area__vitrine{position:relative; z-index:3}
+.area__vitrine{position:relative; z-index:3; width:100%; max-width:620px; align-self:center}
 .area__vitrine .galeria{max-width:none; width:100%}
 .area__vitrine .galeria__palco{aspect-ratio:8/5; border-radius:clamp(20px,3vw,40px)}
 .area__vitrine .galeria__seta{width:52px; height:52px}
@@ -470,7 +481,10 @@ a{color:inherit; text-decoration:none}
 }
 
 @media (max-width:900px){
-  .area--loja .area__grade, .area--eventos .area__grade{grid-template-columns:1fr}
+  .area--loja .area__grade, .area--eventos .area__grade{
+    grid-template-columns:1fr; grid-template-areas:"cabeca" "vitrine" "corpo";
+  }
+  .area--loja .area__vitrine, .area--eventos .area__vitrine{max-width:100%; justify-self:stretch}
 }
 
 .polaroides{position:relative; height:min(62vh,500px)}
@@ -493,8 +507,20 @@ a{color:inherit; text-decoration:none}
   .areas__indicador{display:none}
   .areas__trilho{display:block; width:100%; height:auto}
   .area{width:100%; height:auto; padding:var(--s6) 5vw}
-  .area__grade{grid-template-columns:1fr}
+  .area__grade{grid-template-columns:1fr; gap:var(--s4)}
   .polaroides{height:min(70vw,340px); margin-bottom:var(--s3)}
+
+  /* Loja/Eventos com foto de fundo: tudo um pouco menor no celular pra não
+     brigar com a imagem por trás — título, texto e o carrossel. */
+  :root{ --fs-gigante:clamp(26px,8vw,40px); --fs-chamada:clamp(18px,5.6vw,26px); }
+  .area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:14px}
+  .area__vitrine .galeria__palco{border-radius:16px}
+  .area__vitrine .galeria__seta{width:36px; height:36px}
+  .area__vitrine .galeria__minis{bottom:10px; gap:6px}
+  .area__vitrine .galeria__mini{width:30px; height:30px; border-width:2px}
+  .area__vitrine .galeria__mini[aria-selected="true"]{width:38px; height:38px}
+  .area__recursos{font-size:9.5px; gap:0}
+  .area__recursos li{padding:0 12px}
 }
 
 /* =====================================================================
@@ -986,9 +1012,14 @@ a{color:inherit; text-decoration:none}
 
         <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
           <div class="area__grade">
-            <div>
+            <div class="area__cabeca">
               <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
               <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
+            </div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="loja"></div>
+            </div>
+            <div class="area__corpo">
               <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física. Aqui entra um parágrafo maior contando o que a pessoa encontra na Benedita: buquês do dia, arranjos montados na hora, caixas, cestas e plantas.</p>
               <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: horário de funcionamento, endereço, opções de retirada e como fechar o pedido pelo WhatsApp. Troque por conteúdo real depois.</p>
               <div data-anim data-i="4" class="topo__ctas">
@@ -996,17 +1027,19 @@ a{color:inherit; text-decoration:none}
                 <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
               </div>
             </div>
-            <div class="area__vitrine" data-anim data-i="2">
-              <div data-galeria="loja"></div>
-            </div>
           </div>
         </article>
 
         <article class="area area--eventos" data-painel="1" aria-labelledby="area-eventos">
           <div class="area__grade">
-            <div>
+            <div class="area__cabeca">
               <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
               <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
+            </div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="eventos"></div>
+            </div>
+            <div class="area__corpo">
               <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
               <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: como funciona o orçamento, prazo de montagem, atendimento em toda a região. Troque por conteúdo real depois.</p>
               <div data-anim data-i="4" class="topo__ctas">
@@ -1017,9 +1050,6 @@ a{color:inherit; text-decoration:none}
                 <li>Atendimento<br>especializado</li>
                 <li>Em toda<br>a região</li>
               </ul>
-            </div>
-            <div class="area__vitrine" data-anim data-i="2">
-              <div data-galeria="eventos"></div>
             </div>
           </div>
         </article>
