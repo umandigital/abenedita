@@ -887,7 +887,11 @@ a{color:inherit; text-decoration:none}
   display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em;
   text-transform:uppercase; color:rgba(244,238,228,.55);
 }
-.rodape__logo-uman{height:34px; width:auto; display:block}
+.rodape__logo-uman-chip{
+  display:inline-flex; align-items:center; background:var(--creme); border-radius:12px;
+  padding:8px 14px; box-shadow:var(--sh-sm);
+}
+.rodape__logo-uman{height:26px; width:auto; display:block}
 .rodape a{color:rgba(244,238,228,.7)}
 .rodape a:hover{color:var(--creme)}
 .rodape__baixo{
@@ -1258,7 +1262,7 @@ a{color:inherit; text-decoration:none}
     </div>
     <div class="rodape__coluna rodape__coluna--uman">
       <span class="rodape__criado-por">Criado por:</span>
-      <a href="https://umandigital.com.br" target="_blank" rel="noopener" aria-label="Uman — Presença e Performance Digital">
+      <a class="rodape__logo-uman-chip" href="https://umandigital.com.br" target="_blank" rel="noopener" aria-label="Uman — Presença e Performance Digital">
         <img class="rodape__logo-uman" src="assets/img/logo-uman.webp" alt="Uman — Presença e Performance Digital">
       </a>
     </div>
