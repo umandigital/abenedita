@@ -77,19 +77,24 @@ Eventos é a galeria da Loja; as duas cestas são a mesma foto).
 
 Falta especificamente:
 
-- **fotos das galerias em tamanho de verdade.** As dez que estão no site
-  saíram das capturas que você mandou, e são pequenas: a maioria tem cerca de
-  275×320 pixels. O palco da galeria tem 430×538 na tela, então a foto é
-  ampliada 1,7× — dá para demonstrar, mas fica visivelmente mole numa tela
-  retina, onde a ampliação vira 3,4×.
+- ✅ **dobras da Loja e dos Eventos refeitas iguais ao arquivo do handoff**
+  (`a_loja_nova.rar` e `eventos-novo.rar`, recebidos pelo Drive): fachada de
+  verdade da loja com o carrossel de 8 fotos, a pilha de 3 fotos com fita
+  adesiva, as ilustrações e frases nos cantos (tudo recortado do próprio
+  arquivo que veio do Claude Design); e a mesa de evento com o carrossel de
+  7 fotos, sobre o fundo floral rosa do handoff. As setas e os "cartões
+  fantasmas" que apareciam duplicados atrás do carrossel foram apagados da
+  arte de fundo.
 
-  As duas de evento que vieram maiores (486×617) entram sem ampliação
-  nenhuma e ficam nítidas. A diferença entre elas e as outras é o que se
-  perde.
-
-  Essas capturas são recorte de alguma coisa — Instagram, celular, WhatsApp.
-  **Os arquivos originais existem em algum lugar**, e é deles que a galeria
-  precisa. Mínimo confortável: 900×1125 (proporção 4:5).
+- **fotos das galerias em tamanho de verdade.** As fotos dos dois carrosséis
+  novos (Loja e Eventos) saíram recortadas do arquivo de design que vocês
+  mandaram, e ele já tinha essas fotos em tamanho pequeno — a foto principal
+  de cada carrossel ficou em boa resolução (762×474 e 505×452), mas as
+  miniaturas circulares (7 ou 8 por carrossel) são só ~92×92 pixels, porque
+  foi o tamanho que existia no arquivo de origem. Dá pra usar — aparecem só
+  em círculos pequenos —, mas se abrir mais que isso vai ficar mole. Se
+  existirem os arquivos originais dessas fotos (a mesma fachada, os mesmos
+  momentos da festa) em tamanho maior, é só me mandar que eu troco.
 
 - **os retratos dos depoimentos são gerados por IA.** Os cinco arquivos
   `cli-*.webp` vieram de imagens do ChatGPT. Servem de marcação e estão

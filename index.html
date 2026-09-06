@@ -431,10 +431,63 @@ a{color:inherit; text-decoration:none}
 .area__titulo{font-family:var(--f-mono); font-weight:700; font-size:var(--fs-gigante); line-height:.9; letter-spacing:.01em}
 .area--loja{background:var(--creme)}
 .area--loja .area__titulo{color:var(--magenta)}
-.area--eventos{background:var(--verde-escuro)}
-.area--eventos .area__titulo{color:var(--rosa)}
+.area--eventos{background:#F3E1DA no-repeat center/cover; background-image:url('assets/img/evento-fundo.webp')}
+.area--eventos .area__titulo{color:var(--magenta)}
+.area--eventos .destaque{color:var(--magenta)}
 .area--assinaturas{background:var(--areia-quente)}
 .area--assinaturas .area__titulo{color:var(--terracota-fundo)}
+
+/* Loja/Eventos: painel recebe as artes recortadas do handoff (fotos reais da
+   fachada e da mesa de evento) soltas ao redor do conteúdo, então o grid
+   larga o teto de 1280px e vira de ponta a ponta como no arquivo original. */
+.area--loja, .area--eventos{position:relative; overflow:hidden}
+.area--loja .area__grade, .area--eventos .area__grade{max-width:none; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); align-items:start}
+.area--loja .area__grade > div:first-child, .area--eventos .area__grade > div:first-child{position:relative; z-index:2}
+
+.area__recursos{
+  display:flex; list-style:none; margin:var(--s4) 0 0; padding:0;
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--nevoa-txt); line-height:1.5;
+}
+.area__recursos li{padding:0 22px; border-left:1px solid rgba(60,40,20,.16)}
+.area__recursos li:first-child{border-left:0; padding-left:0}
+
+.area__deco{position:absolute; z-index:1; pointer-events:none; display:block; max-width:none; height:auto}
+.area__deco--loja-topo-esq{top:0; left:0; width:min(28vw,410px); border-bottom-right-radius:24px}
+.area__deco--loja-inferior-esq{bottom:0; left:0; width:min(40vw,590px); border-top-right-radius:24px}
+.area__deco--loja-topo-dir{top:0; right:0; width:min(30vw,440px); z-index:5}
+.area__deco--loja-direita{top:9%; right:0; width:min(11vw,160px)}
+
+.area__texto-vertical{
+  position:absolute; left:2px; top:56%; z-index:2; transform:translateY(-50%) rotate(180deg);
+  writing-mode:vertical-rl; font-family:var(--f-mono); font-size:10px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--nevoa-txt); white-space:nowrap;
+}
+.area__texto-vertical::after{content:'→'; display:block; margin-top:6px}
+
+.area__vitrine{position:relative; z-index:3}
+.area__vitrine .galeria{max-width:none; width:100%}
+.area__vitrine .galeria__palco{aspect-ratio:8/5; border-radius:clamp(20px,3vw,40px)}
+.area__vitrine .galeria__seta{width:52px; height:52px}
+.area__vitrine .galeria__minis{bottom:20px; gap:12px}
+.area__vitrine .galeria__mini{width:58px; height:58px; border-width:3px}
+.area__vitrine .galeria__mini[aria-selected="true"]{width:70px; height:70px; border-color:var(--ouro)}
+@media (max-width:1300px){
+  .area__vitrine .galeria__mini{width:44px; height:44px}
+  .area__vitrine .galeria__mini[aria-selected="true"]{width:54px; height:54px}
+}
+
+.polaroides-loja{position:relative; z-index:3; display:flex; align-items:flex-start; margin-top:clamp(18px,2.6vw,32px)}
+.polaroide-solto{width:26%; flex:none; border-radius:4px; box-shadow:0 16px 34px rgba(40,26,12,.24)}
+.polaroide-solto--2, .polaroide-solto--3{margin-left:-9%}
+.polaroide-solto--2{z-index:2}
+.loja-detalhes{width:19%; flex:none; margin-left:10px; border-radius:14px; object-fit:cover; align-self:stretch}
+
+@media (max-width:900px){
+  .area--loja .area__grade, .area--eventos .area__grade{grid-template-columns:1fr}
+  .area__deco, .area__texto-vertical{display:none}
+  .polaroides-loja{display:none}
+}
 
 .polaroides{position:relative; height:min(62vh,500px)}
 .polaroide{
@@ -948,6 +1001,11 @@ a{color:inherit; text-decoration:none}
       <div class="areas__trilho" id="areasTrilho">
 
         <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
+          <img class="area__deco area__deco--loja-topo-esq" src="assets/img/loja-deco-topo-esq.webp" alt="" aria-hidden="true">
+          <img class="area__deco area__deco--loja-inferior-esq" src="assets/img/loja-deco-inferior-esq.webp" alt="" aria-hidden="true">
+          <img class="area__deco area__deco--loja-topo-dir" src="assets/img/loja-deco-topo-dir.webp" alt="" aria-hidden="true">
+          <img class="area__deco area__deco--loja-direita" src="assets/img/loja-deco-direita.webp" alt="" aria-hidden="true">
+          <span class="area__texto-vertical" aria-hidden="true">Beleza para realidade</span>
           <div class="area__grade">
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
@@ -959,22 +1017,37 @@ a{color:inherit; text-decoration:none}
                 <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
               </div>
             </div>
-            <div data-anim data-i="2" data-galeria="loja"></div>
+            <div class="area__vitrine">
+              <div data-anim data-i="2" data-galeria="loja"></div>
+              <div class="polaroides-loja">
+                <img class="polaroide-solto polaroide-solto--1" src="assets/img/loja-polaroid-1.webp" alt="" loading="lazy">
+                <img class="polaroide-solto polaroide-solto--2" src="assets/img/loja-polaroid-2.webp" alt="" loading="lazy">
+                <img class="polaroide-solto polaroide-solto--3" src="assets/img/loja-polaroid-3.webp" alt="" loading="lazy">
+                <img class="loja-detalhes" src="assets/img/loja-deco-detalhes.webp" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </article>
 
-        <article class="area area--eventos em-escuro" data-painel="1" aria-labelledby="area-eventos">
+        <article class="area area--eventos" data-painel="1" aria-labelledby="area-eventos">
           <div class="area__grade">
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
-              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">A flor que faz o <em class="destaque" style="color:var(--rosa)">dia</em> ser inesquecível.</h3>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
               <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
               <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: como funciona o orçamento, prazo de montagem, atendimento em toda a região. Troque por conteúdo real depois.</p>
               <div data-anim data-i="4" class="topo__ctas">
                 <a class="btn btn--ouro" data-zap="evento" href="#contato">Pedir orçamento →</a>
               </div>
+              <ul data-anim data-i="5" class="area__recursos">
+                <li>Decoração<br>personalizada</li>
+                <li>Atendimento<br>especializado</li>
+                <li>Em toda<br>a região</li>
+              </ul>
             </div>
-            <div data-anim data-i="2" data-galeria="eventos"></div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="eventos"></div>
+            </div>
           </div>
         </article>
 
