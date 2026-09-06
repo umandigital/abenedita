@@ -77,24 +77,26 @@ Eventos é a galeria da Loja; as duas cestas são a mesma foto).
 
 Falta especificamente:
 
-- ✅ **dobras da Loja e dos Eventos refeitas iguais ao arquivo do handoff**
-  (`a_loja_nova.rar` e `eventos-novo.rar`, recebidos pelo Drive): fachada de
-  verdade da loja com o carrossel de 8 fotos, a pilha de 3 fotos com fita
-  adesiva, as ilustrações e frases nos cantos (tudo recortado do próprio
-  arquivo que veio do Claude Design); e a mesa de evento com o carrossel de
-  7 fotos, sobre o fundo floral rosa do handoff. As setas e os "cartões
-  fantasmas" que apareciam duplicados atrás do carrossel foram apagados da
-  arte de fundo.
+- ✅ **dobras da Loja e dos Eventos com o fundo limpo do handoff** (as artes
+  finais vieram direto de vocês, sem precisar eu reamostrar nada): fachada
+  de verdade da loja e mesa de evento como pano de fundo único, texto e
+  carrossel encaixados na área livre da parede/mesa, sem disputar espaço com
+  a decoração dos cantos.
 
-- **fotos das galerias em tamanho de verdade.** As fotos dos dois carrosséis
-  novos (Loja e Eventos) saíram recortadas do arquivo de design que vocês
-  mandaram, e ele já tinha essas fotos em tamanho pequeno — a foto principal
-  de cada carrossel ficou em boa resolução (762×474 e 505×452), mas as
-  miniaturas circulares (7 ou 8 por carrossel) são só ~92×92 pixels, porque
-  foi o tamanho que existia no arquivo de origem. Dá pra usar — aparecem só
-  em círculos pequenos —, mas se abrir mais que isso vai ficar mole. Se
-  existirem os arquivos originais dessas fotos (a mesma fachada, os mesmos
-  momentos da festa) em tamanho maior, é só me mandar que eu troco.
+- ✅ **corrigido o carrossel usando as miniaturas em vez das fotos de
+  verdade.** Uma tentativa anterior recortou as fotos do carrossel do
+  próprio arquivo de design, que só trazia elas em tamanho de miniatura
+  (~92×92) — ao clicar numa miniatura, a foto "grande" que abria era essa
+  mesma miniatura esticada, e ficava borrada. Voltei a usar as cinco fotos
+  reais de cada área (as mesmas capturas de tela já usadas antes, pequenas
+  mas nítidas o bastante) mais a foto grande da fachada/mesa que veio no
+  novo arquivo — sem foto indo pra tela maior do que ela realmente é.
+
+- **fotos das galerias em tamanho de verdade.** Ainda vale o pedido antigo:
+  as cinco fotos de cada carrossel (Loja e Eventos) são recortes de captura
+  de tela, a maioria ~250×320 pixels — dá pra demonstrar, mas ficam moles
+  numa tela grande ou retina. Os arquivos originais (a fachada de verdade,
+  os momentos reais da festa), em pelo menos 900×1125, resolvem.
 
 - **os retratos dos depoimentos são gerados por IA.** Os cinco arquivos
   `cli-*.webp` vieram de imagens do ChatGPT. Servem de marcação e estão

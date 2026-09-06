@@ -808,13 +808,13 @@
     galerias: {
       loja: [
         { foto: 'assets/img/loja-carrossel-1.webp', alt: '' }
-      ].concat([2,3,4,5,6,7,8].map(function (i) {
-        return { foto: 'assets/img/loja-carrossel-thumb-' + i + '.webp', alt: '' };
+      ].concat([1,2,3,4,5].map(function (i) {
+        return { foto: 'assets/img/loja-g' + i + '.webp', alt: '' };
       })),
       eventos: [
         { foto: 'assets/img/evento-carrossel-1.webp', alt: '' }
-      ].concat([2,3,4,5,6,7].map(function (i) {
-        return { foto: 'assets/img/evento-carrossel-thumb-' + i + '.webp', alt: '' };
+      ].concat([1,2,3,4,5].map(function (i) {
+        return { foto: 'assets/img/evento-g' + i + '.webp', alt: '' };
       }))
     },
     depoimentos: [

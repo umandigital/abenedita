@@ -441,7 +441,7 @@ a{color:inherit; text-decoration:none}
 /* Loja/Eventos: painel recebe uma única foto de fundo (fachada da loja /
    mesa de evento) e o grid larga o teto de 1280px pra virar de ponta a
    ponta, como no arquivo original. */
-.area--loja, .area--eventos{position:relative; overflow:hidden}
+.area--loja, .area--eventos{position:relative; overflow:hidden; align-items:flex-start; padding-top:calc(var(--header-h) + var(--s7) + 40px)}
 .area--loja .area__grade, .area--eventos .area__grade{
   max-width:none; align-items:start;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -470,7 +470,10 @@ a{color:inherit; text-decoration:none}
 
 .area__vitrine{position:relative; z-index:3; width:100%; max-width:620px; align-self:center}
 .area__vitrine .galeria{max-width:none; width:100%}
-.area__vitrine .galeria__palco{aspect-ratio:8/5; border-radius:clamp(20px,3vw,40px)}
+.area__vitrine .galeria__palco{
+  aspect-ratio:8/5; border-radius:clamp(20px,3vw,40px);
+  box-shadow:0 30px 60px rgba(28,18,8,.4), 0 10px 24px rgba(28,18,8,.28), 0 0 0 1px rgba(255,255,255,.5);
+}
 .area__vitrine .galeria__seta{width:52px; height:52px}
 .area__vitrine .galeria__minis{bottom:20px; gap:12px}
 .area__vitrine .galeria__mini{width:58px; height:58px; border-width:3px}
