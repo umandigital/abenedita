@@ -36,6 +36,14 @@ ErrorDocument 404 /abenedita/404.html
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 
+  # Mesma lógica pro JS e CSS: o site ainda está em ajuste, então uma
+  # atualização de função (como o lightbox das galerias) precisa aparecer
+  # na hora — sem isso, o navegador (ou um cache do próprio host) pode
+  # continuar servindo a versão antiga do arquivo mesmo depois do reenvio.
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
   # O painel não é secreto (a proteção de verdade é o RLS no Supabase),
   # mas também não é pra ficar indexado nem em cache.
   <Files "admin.html">
