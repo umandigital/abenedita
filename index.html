@@ -849,14 +849,32 @@ a{color:inherit; text-decoration:none}
 }
 
 /* =====================================================================
-   COMO PEDIR — lista simples, sem círculos nem linha pontilhada.
+   COMO PEDIR — quatro bolas coloridas com o número em itálico, ligadas por
+   uma linha pontilhada ondulada, igual ao arquivo original.
    ===================================================================== */
-.passos{list-style:none; margin:0 auto; padding:0; max-width:520px}
-.passos li{padding:var(--s3) 0; border-bottom:1px solid rgba(60,40,20,.1)}
-.passos li:last-child{border-bottom:0}
-.passos__num{display:block; font-family:var(--f-mono); font-size:12px; color:var(--nevoa-txt); margin-bottom:4px}
-.passos li h3{font-size:18px; margin:0 0 4px}
-.passos li p{color:var(--sepia); margin:0}
+.eyebrow--grande{font-size:clamp(18px,2.4vw,26px); letter-spacing:.28em; text-align:center}
+#como-pedir .secao-cabeca{margin-bottom:var(--s5)}
+#como-pedir .lead{margin-top:var(--s3)}
+
+.passos-trilha{position:relative}
+.passos-trilha__linha{
+  position:absolute; top:32px; left:0; width:100%; height:80px; pointer-events:none;
+  stroke:#C9A87A; stroke-width:2.5; fill:none; stroke-linecap:round; stroke-dasharray:2 12;
+}
+.passos{
+  position:relative; list-style:none; margin:0; padding:0; text-align:center;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:28px 18px;
+}
+.passos__bola{
+  display:flex; align-items:center; justify-content:center; width:70px; height:70px; margin:0 auto 18px;
+  border-radius:50%; font-family:var(--f-display); font-style:italic; font-size:28px;
+}
+.passos__bola--01{background:var(--ouro); color:var(--carvao); filter:drop-shadow(0 12px 22px rgba(233,178,58,.34))}
+.passos__bola--02{background:var(--laranja-queimado); color:var(--creme); filter:drop-shadow(0 12px 22px rgba(224,122,46,.34))}
+.passos__bola--03{background:var(--magenta); color:var(--creme); filter:drop-shadow(0 12px 22px rgba(192,53,107,.34))}
+.passos__bola--04{background:var(--verde); color:var(--creme); filter:drop-shadow(0 12px 22px rgba(92,122,58,.34))}
+.passos li h3{font-size:19px; margin:0 0 8px}
+.passos li p{font-size:13.5px; line-height:1.55; color:var(--sepia); margin:0}
 
 .diferenciais-cartao{
   position:relative; margin-top:80px; background:var(--verde-escuro-2); color:var(--creme);
@@ -1118,18 +1136,20 @@ a{color:inherit; text-decoration:none}
 
   <!-- ===================== 08 · COMO PEDIR ===================== -->
   <section class="secao secao--marfim revela" id="como-pedir" aria-labelledby="como-titulo">
-    <div class="wrap">
+    <div class="wrap wrap--texto">
       <div class="secao-cabeca">
-        <span class="eyebrow">Como pedir</span>
-        <h2 id="como-titulo">Quatro passos, nenhum cadastro.</h2>
+        <span class="eyebrow eyebrow--grande" id="como-titulo">Como pedir</span>
+        <p class="lead" style="text-align:center; margin-inline:auto">Do desejo à porta de casa em quatro passos. Sem cadastro nem pagamento no site — você preenche o formulário e o pedido chega pronto no nosso WhatsApp, onde combinamos tudo.</p>
       </div>
-      <ol class="passos">
-        <li><span class="passos__num">01</span><h3>Escolhe</h3><p>Monta a sacola com o que quiser.</p></li>
-        <li><span class="passos__num">02</span><h3>Preenche</h3><p>Nome, endereço, ocasião e data.</p></li>
-        <li><span class="passos__num">03</span><h3>Envia</h3><p>O pedido chega pronto no nosso WhatsApp.</p></li>
-        <li><span class="passos__num">04</span><h3>Recebe</h3><p>Combinamos entrega e pagamento na conversa.</p></li>
-      </ol>
-      <p class="lead" style="text-align:center; margin-inline:auto">Ninguém paga no site. O pagamento é combinado direto com a loja.</p>
+      <div class="passos-trilha">
+        <svg class="passos-trilha__linha" viewBox="0 0 1000 80" preserveAspectRatio="none" aria-hidden="true"><path d="M125 40 C220 2 280 78 375 40 C470 2 530 78 625 40 C720 2 780 78 875 40"></path></svg>
+        <ol class="passos">
+          <li><span class="passos__bola passos__bola--01">01</span><h3>Escolhe</h3><p>Navegue o catálogo e monte sua sacola de desejos com as flores que amou.</p></li>
+          <li><span class="passos__bola passos__bola--02">02</span><h3>Preenche</h3><p>Complete o formulário: entrega ou retirada, data, endereço e a mensagem do cartão.</p></li>
+          <li><span class="passos__bola passos__bola--03">03</span><h3>Envia</h3><p>O pedido chega pronto no nosso WhatsApp. Lá a gente confirma tudo e combina o pagamento.</p></li>
+          <li><span class="passos__bola passos__bola--04">04</span><h3>Recebe</h3><p>Flor fresca do dia entregue na porta ou retirada na loja.</p></li>
+        </ol>
+      </div>
 
       <div class="diferenciais-cartao">
         <svg class="diferenciais-cartao__traco" viewBox="0 0 200 200" aria-hidden="true"><path d="M40 160 C60 120 60 90 100 80 M100 80 C130 74 150 90 150 110 M100 80 C96 55 110 40 130 42"></path><circle cx="100" cy="80" r="7"></circle><circle cx="150" cy="110" r="5"></circle></svg>
