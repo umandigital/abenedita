@@ -866,23 +866,28 @@ a{color:inherit; text-decoration:none}
    RODAPÉ
    ===================================================================== */
 .rodape{background:var(--verde-escuro-2); color:var(--creme); padding:var(--s7) 0 var(--s3); border-radius:var(--r-topo) var(--r-topo) 0 0}
-.rodape__grade{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:var(--s4)}
+.rodape__grade{display:grid; grid-template-columns:1fr 1fr 1fr; align-items:center; gap:var(--s4)}
+.rodape__coluna{display:flex; flex-direction:column; gap:var(--s2)}
+.rodape__coluna--marca{align-items:flex-start}
+.rodape__coluna--endereco{align-items:center; text-align:center}
+.rodape__coluna--uman{align-items:flex-end; text-align:right}
 .rodape__selo{
   display:inline-flex; align-items:center; justify-content:center; width:88px; height:88px;
   border-radius:22px; overflow:hidden; background:var(--madeira) url('assets/img/bg_menu_crop.webp') center/cover no-repeat;
-  box-shadow:var(--sh-md); margin-bottom:var(--s2);
+  box-shadow:var(--sh-md);
 }
 .rodape__selo .logo-marca{width:70%; height:auto}
-.rodape p{font-size:14px; line-height:1.8; color:rgba(244,238,228,.7); max-width:280px}
-.rodape__redes{display:flex; gap:12px; margin-top:var(--s2)}
-.rodape__redes a{
-  width:38px; height:38px; border-radius:50%; border:1px solid rgba(244,238,228,.18);
-  display:flex; align-items:center; justify-content:center; color:var(--creme);
+.rodape p{font-size:14px; line-height:1.8; color:rgba(244,238,228,.7); margin:0}
+.rodape__instagram{
+  display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600;
+  color:var(--creme) !important;
 }
-.rodape__rotulo{
-  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.24em;
-  text-transform:uppercase; color:var(--ouro); margin-bottom:var(--s2);
+.rodape__instagram:hover{color:var(--ouro) !important}
+.rodape__criado-por{
+  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; color:rgba(244,238,228,.55);
 }
+.rodape__logo-uman{height:34px; width:auto; display:block}
 .rodape a{color:rgba(244,238,228,.7)}
 .rodape a:hover{color:var(--creme)}
 .rodape__baixo{
@@ -891,7 +896,8 @@ a{color:inherit; text-decoration:none}
   font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(244,238,228,.55);
 }
 @media (max-width:760px){
-  .rodape__grade{grid-template-columns:1fr 1fr; gap:var(--s5)}
+  .rodape__grade{grid-template-columns:1fr; gap:var(--s5); text-align:center}
+  .rodape__coluna--marca, .rodape__coluna--endereco, .rodape__coluna--uman{align-items:center; text-align:center}
 }
 
 /* =====================================================================
@@ -1240,31 +1246,26 @@ a{color:inherit; text-decoration:none}
 
 <footer class="rodape" id="contato">
   <div class="wrap rodape__grade">
-    <div>
+    <div class="rodape__coluna rodape__coluna--marca">
       <span class="rodape__selo"><img class="logo-marca" src="assets/img/logo.webp" alt="a Benedita Floristeria"></span>
-      <p>Flor fresca do dia, arranjos à mão e recado bem dado. Da nossa parede de lousa pra sua casa.</p>
-      <div class="rodape__redes">
-        <a data-zap="flutuante" href="#contato" aria-label="Falar no WhatsApp">✆</a>
-        <a href="#topo" aria-label="Voltar ao topo">◎</a>
-        <a href="#topo" aria-label="Voltar ao topo">✦</a>
-      </div>
+      <a class="rodape__instagram" href="https://www.instagram.com/a.benedita/" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
+        Siga-nos no Instagram!
+      </a>
     </div>
-    <div>
-      <span class="rodape__rotulo">A loja</span>
-      <p>Rua Anita Garibaldi, 1747<br>Bela Vista · Porto Alegre<br>Seg a sáb · 9h às 19h</p>
+    <div class="rodape__coluna rodape__coluna--endereco">
+      <p>Rua Anita Garibaldi, 1747<br>Bela Vista · Porto Alegre<br>WhatsApp 51 98505-4194</p>
     </div>
-    <div>
-      <span class="rodape__rotulo">Atendemos</span>
-      <p>Bela Vista · Moinhos<br>Menino Deus · Cidade Baixa<br>e região — combine a entrega</p>
-    </div>
-    <div>
-      <span class="rodape__rotulo">O que fazemos</span>
-      <p><a href="#catalogo">Loja física</a><br><a data-zap="assinatura" href="#contato">Assinaturas</a><br><a data-zap="evento" href="#contato">Eventos</a></p>
+    <div class="rodape__coluna rodape__coluna--uman">
+      <span class="rodape__criado-por">Criado por:</span>
+      <a href="https://umandigital.com.br" target="_blank" rel="noopener" aria-label="Uman — Presença e Performance Digital">
+        <img class="rodape__logo-uman" src="assets/img/logo-uman.webp" alt="Uman — Presença e Performance Digital">
+      </a>
     </div>
   </div>
   <div class="wrap rodape__baixo">
     <span>© 2026 a Benedita Floristeria</span>
-    <span>WhatsApp 51 98505-4194 · <a href="admin.html">painel</a></span>
+    <span><a href="admin.html">painel</a></span>
   </div>
 </footer>
 
