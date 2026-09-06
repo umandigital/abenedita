@@ -367,7 +367,7 @@
   function atualizaVeu() {
     var veu = $('#veu');
     if (!veu) return;
-    var aberto = ['#navGaveta', '#sacola', '#painelProduto'].some(function (sel) {
+    var aberto = ['#navGaveta', '#sacola', '#painelProduto', '#lightboxFoto'].some(function (sel) {
       var el = $(sel);
       return el && !el.hidden;
     });
@@ -380,6 +380,45 @@
       fechaNavGaveta();
       fechaSacolaGaveta();
       fechaPainelProduto();
+      fechaLightbox();
+    });
+  }
+
+  /* ===================================================================
+     LIGHTBOX DE FOTO
+     Clicar na foto grande da galeria (não na miniatura) amplia num
+     modal, com o mesmo véu escurecido compartilhado com gaveta/painel.
+     =================================================================== */
+  var focoAntesDoLightbox = null;
+  function abreLightbox(src, alt) {
+    var lb = $('#lightboxFoto'), img = $('#lightboxImg');
+    if (!lb || !img) return;
+    img.src = src;
+    img.alt = alt || '';
+    focoAntesDoLightbox = document.activeElement;
+    lb.hidden = false;
+    atualizaVeu();
+    var fechar = $('#lightboxFechar');
+    if (fechar) fechar.focus();
+  }
+  function fechaLightbox() {
+    var lb = $('#lightboxFoto');
+    if (!lb || lb.hidden) return;
+    lb.hidden = true;
+    $('#lightboxImg').src = '';
+    atualizaVeu();
+    if (focoAntesDoLightbox) focoAntesDoLightbox.focus();
+  }
+  function ligaLightbox() {
+    var lb = $('#lightboxFoto'), fechar = $('#lightboxFechar');
+    if (!lb || !fechar) return;
+    fechar.addEventListener('click', fechaLightbox);
+    /* .lightbox cobre a tela inteira (por cima do véu) pra centralizar a
+       foto — clicar na área vazia ao redor dela (o próprio elemento,
+       já que a foto e o botão são os únicos filhos) também fecha. */
+    lb.addEventListener('click', function (e) { if (e.target === lb) fechaLightbox(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !lb.hidden) fechaLightbox();
     });
   }
 
@@ -572,6 +611,10 @@
       img.decoding = 'async';
       if (f.w) img.width = f.w;
       if (f.h) img.height = f.h;
+      /* Clique na foto grande (não na miniatura) amplia num lightbox. O
+         clip-path das fotos que não estão em cena já cuida de não
+         capturar clique fora do círculo delas. */
+      img.addEventListener('click', function () { abreLightbox(f.src, f.alt); });
       palco.appendChild(img);
 
       /* A miniatura é um botão de verdade: o componente de origem usava
@@ -597,6 +640,15 @@
     }
     seta('ant',  'Foto anterior', 'M15 6l-6 6 6 6').addEventListener('click', function () { abre(aberta - 1, true); });
     seta('prox', 'Próxima foto',  'M9 6l6 6-6 6').addEventListener('click', function () { abre(aberta + 1, true); });
+
+    /* Indício visual de que a foto grande é clicável (amplia num
+       lightbox) — sem isso nada sugere que ela responde a clique.
+       pointer-events:none pra não atrapalhar o clique na própria foto. */
+    var lupa = document.createElement('span');
+    lupa.className = 'galeria__lupa';
+    lupa.setAttribute('aria-hidden', 'true');
+    lupa.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>';
+    palco.appendChild(lupa);
 
     palco.appendChild(minis);
     el.appendChild(palco);
@@ -1336,6 +1388,7 @@
     ligaNavegacao();
     ligaSacola();
     ligaVeu();
+    ligaLightbox();
     ligaFormulario();
     preparaTopo();
     preparaAreas();

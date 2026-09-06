@@ -549,7 +549,7 @@ a{color:inherit; text-decoration:none}
 }
 .galeria__foto{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  will-change:clip-path;
+  will-change:clip-path; cursor:zoom-in;
 }
 .galeria__seta{
   position:absolute; top:44%; transform:translateY(-50%); z-index:6;
@@ -561,6 +561,15 @@ a{color:inherit; text-decoration:none}
 .galeria__seta:hover{background:#fff; transform:translateY(-50%) scale(1.08)}
 .galeria__seta--ant{left:12px}
 .galeria__seta--prox{right:12px}
+/* Lupa: indício de que a foto grande amplia num lightbox ao clicar.
+   pointer-events:none pra não roubar o clique da própria foto. */
+.galeria__lupa{
+  position:absolute; top:14px; right:14px; z-index:6; pointer-events:none;
+  width:34px; height:34px; border-radius:50%;
+  background:rgba(28,20,12,.45); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
 /* nowrap é obrigatório, não estético: a bola que sai quica até o ponto da
    miniatura, e uma quebra de linha moveria o alvo no meio da animação. */
 .galeria__minis{
@@ -582,6 +591,7 @@ a{color:inherit; text-decoration:none}
   .galeria__mini{width:26px; height:26px; border-width:1.5px}
   .galeria__mini[aria-selected="true"]{width:34px; height:34px}
   .galeria__seta{width:38px; height:38px}
+  .galeria__lupa{width:28px; height:28px; top:10px; right:10px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -826,6 +836,25 @@ a{color:inherit; text-decoration:none}
 .sacola footer small{display:block; text-align:center; color:var(--nevoa-txt); font-size:12px; margin-top:12px}
 .veu{position:fixed; inset:0; z-index:75; background:rgba(28,20,12,.5); opacity:0; pointer-events:none; transition:opacity .3s ease}
 .veu[data-aberto]{opacity:1; pointer-events:auto}
+
+/* Lightbox: foto da galeria ampliada, fundo escurecido. Usa o mesmo véu
+   compartilhado com gaveta/painel (data-aberto) por trás, mais uma
+   camada própria mais escura — as fotos das galerias são pequenas
+   (fotos de marcação), então a ampliação também estica um pouco a
+   imagem; escurecer bem o fundo é o que faz ela ainda parecer em
+   destaque. */
+.lightbox{
+  position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center;
+  padding:6vw; background:rgba(15,10,6,.55);
+}
+.lightbox__img{
+  width:min(85vw,900px); max-height:88vh; height:auto; display:block;
+  object-fit:contain; border-radius:16px; box-shadow:0 30px 70px rgba(0,0,0,.5);
+}
+.lightbox__fechar{
+  position:fixed; top:22px; right:22px; z-index:2; width:44px; height:44px; border-radius:50%;
+  border:0; cursor:pointer; background:rgba(255,253,249,.92); color:var(--grafite); font-size:16px;
+}
 
 /* =====================================================================
    RODAPÉ
@@ -1244,6 +1273,12 @@ a{color:inherit; text-decoration:none}
 </div>
 
 <div class="veu" id="veu"></div>
+
+<!-- ===================== LIGHTBOX DE FOTO (galerias de Loja/Eventos) ===================== -->
+<div class="lightbox" id="lightboxFoto" role="dialog" aria-modal="true" aria-label="Foto ampliada" hidden>
+  <button type="button" class="lightbox__fechar" id="lightboxFechar" aria-label="Fechar foto">✕</button>
+  <img class="lightbox__img" id="lightboxImg" src="" alt="">
+</div>
 
 <!-- ===================== GAVETA DA SACOLA ===================== -->
 <aside class="sacola" id="sacola" role="dialog" aria-modal="true" aria-labelledby="sacola-titulo" hidden>
