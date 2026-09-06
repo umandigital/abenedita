@@ -452,6 +452,18 @@ a{color:inherit; text-decoration:none}
    em `top:33%` cai sempre no mesmo ponto da foto — em qualquer resolução,
    e não só numa faixa testada.
 
+   O palco precisa cobrir 100% da área (sem sobrar tarja da cor de fundo
+   nas laterais/topo em telas com proporção diferente da foto — 1672:941).
+   Por isso a largura/altura usam `max()` em vez de `min()`: reproduz a
+   conta que o `background-size:cover` faria (a maior das duas escalas
+   possíveis, por largura ou por altura), só que aplicada numa caixa com
+   proporção travada — o `.area--loja/eventos` corta o excesso com
+   `overflow:hidden` e centraliza com `translate(-50%,-50%)`. Como a caixa
+   nunca perde a proporção da foto, as porcentagens dos filhos continuam
+   caindo sempre no mesmo ponto dela — só que agora às vezes com uma
+   fatia (sempre a mesma, centralizada) cortada fora pela borda da tela,
+   em vez de sobrar cor lisa.
+
    As fontes escalam em `vw` (não `cqw`/container query): um `container-
    type:inline-size` neste elemento — precisa dele pra `cqw` funcionar —
    corrompia o próprio fundo (Chromium repete o `background-image` como se
@@ -463,7 +475,8 @@ a{color:inherit; text-decoration:none}
    herdado por Assinaturas. */
 .area--loja, .area--eventos{position:relative; overflow:hidden}
 .area--loja .area__cena, .area--eventos .area__cena{
-  position:relative; width:min(100%,177.8svh); aspect-ratio:1672/941; margin-inline:auto;
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:max(100%,177.68svh); height:max(56.28vw,100%);
 }
 .area--loja .area__cena{background:center/100% 100% no-repeat url('assets/img/loja-fundo.webp')}
 .area--eventos .area__cena{background:center/100% 100% no-repeat url('assets/img/evento-fundo.webp')}
@@ -515,7 +528,7 @@ a{color:inherit; text-decoration:none}
      texto empilhando em altura variável sem cortar a decoração no meio
      do texto. A foto de verdade continua visível dentro do carrossel. */
   .area--loja .area__cena, .area--eventos .area__cena{
-    width:100%; aspect-ratio:auto;
+    position:static; transform:none; width:100%; height:auto; aspect-ratio:auto;
   }
   .area--loja .area__cena{background:#EFE6D6 !important}
   .area--eventos .area__cena{background:#F3E1DA !important}
