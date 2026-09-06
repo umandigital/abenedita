@@ -309,6 +309,12 @@ a{color:inherit; text-decoration:none}
   .nav-gatilho{display:flex; align-items:center; justify-content:center}
 }
 
+/* Espaçamento reduzido no mobile — a escala cheia (pensada pro desktop)
+   deixava uma rolagem enorme na tela pequena. */
+@media (max-width:760px){
+  :root{--s4:22px; --s5:28px; --s6:40px; --s7:52px}
+}
+
 /* Botões flutuantes — sacola e WhatsApp */
 .flutuantes{position:fixed; right:22px; bottom:22px; z-index:55; display:flex; flex-direction:column; gap:10px}
 .flutuante{
@@ -871,12 +877,8 @@ a{color:inherit; text-decoration:none}
 .rodape__coluna--marca{align-items:flex-start}
 .rodape__coluna--endereco{align-items:center; text-align:center}
 .rodape__coluna--uman{align-items:flex-end; text-align:right}
-.rodape__selo{
-  display:inline-flex; align-items:center; justify-content:center; width:88px; height:88px;
-  border-radius:22px; overflow:hidden; background:var(--madeira) url('assets/img/bg_menu_crop.webp') center/cover no-repeat;
-  box-shadow:var(--sh-md);
-}
-.rodape__selo .logo-marca{width:70%; height:auto}
+.rodape__selo{display:inline-block}
+.rodape__selo .logo-marca{height:64px; width:auto; display:block}
 .rodape p{font-size:14px; line-height:1.8; color:rgba(244,238,228,.7); margin:0}
 .rodape__instagram{
   display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600;
@@ -887,11 +889,8 @@ a{color:inherit; text-decoration:none}
   display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em;
   text-transform:uppercase; color:rgba(244,238,228,.55);
 }
-.rodape__logo-uman-chip{
-  display:inline-flex; align-items:center; background:var(--creme); border-radius:12px;
-  padding:8px 14px; box-shadow:var(--sh-sm);
-}
-.rodape__logo-uman{height:26px; width:auto; display:block}
+.rodape__logo-uman-chip{display:inline-flex; align-items:center}
+.rodape__logo-uman{height:30px; width:auto; display:block; filter:brightness(0) invert(1)}
 .rodape a{color:rgba(244,238,228,.7)}
 .rodape a:hover{color:var(--creme)}
 .rodape__baixo{
@@ -1251,7 +1250,7 @@ a{color:inherit; text-decoration:none}
 <footer class="rodape" id="contato">
   <div class="wrap rodape__grade">
     <div class="rodape__coluna rodape__coluna--marca">
-      <span class="rodape__selo"><img class="logo-marca" src="assets/img/logo.webp" alt="a Benedita Floristeria"></span>
+      <a class="rodape__selo" href="#topo" aria-label="a Benedita Floristeria — início"><img class="logo-marca" src="assets/img/logo.webp" alt="a Benedita Floristeria"></a>
       <a class="rodape__instagram" href="https://www.instagram.com/a.benedita/" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
         Siga-nos no Instagram!
