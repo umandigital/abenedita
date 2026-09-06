@@ -8,6 +8,17 @@ aparelho/conta que não tenho aqui. Vou acrescentando conforme aparecem.
 
 ---
 
+## Banner da estação está no ar com data vencida
+
+Achei a arte real (`banner-campanha.png`) na pasta do handoff e liguei o
+banner por padrão — antes ele ficava escondido esperando o painel
+administrativo cadastrar algo. Só que essa arte é "Dia dos Namorados, até
+12 de junho" — e joga fora do ar assim que alguém notar a data errada.
+Duas opções: trocar a arte pelo painel (Banner → subir uma nova imagem) ou
+desligar o bloco (Banner → Ligado) até ter a campanha certa pronta.
+
+---
+
 ## Bloqueia o mobile de verdade
 
 ### 1. Testar num iPhone e num Android reais

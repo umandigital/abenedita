@@ -303,9 +303,15 @@
 
     var ativa = Math.round(ax);
     areas.rotulos.forEach(function (btn, i) {
-      btn.setAttribute('aria-selected', i === ativa ? 'true' : 'false');
+      var ligada = i === ativa;
+      btn.style.color = ligada ? btn.getAttribute('data-cor') : 'var(--pedra-txt)';
+      btn.setAttribute('aria-selected', ligada ? 'true' : 'false');
     });
-    if (areas.barra) areas.barra.style.transform = 'scaleX(' + (ax / 2).toFixed(3) + ')';
+    if (areas.barra) {
+      areas.barra.style.transform = 'scaleX(' + (ax / 2).toFixed(3) + ')';
+      var atual = areas.rotulos[ativa];
+      if (atual) areas.barra.style.background = atual.getAttribute('data-cor');
+    }
 
     $$('[data-painel]', areas.trilho).forEach(function (painel) {
       var k = +painel.getAttribute('data-painel');
@@ -495,14 +501,13 @@
      FORMULÁRIO
      =================================================================== */
   function ligaFormulario() {
-    var form = $('#formulario');
-    if (!form) return;
-    form.addEventListener('input', function (e) {
+    /* Os campos moram dentro da gaveta da sacola (não numa seção à parte):
+       é o pedido que pede os dados de quem compra, não uma página de
+       "fale conosco" solta no fim do site. */
+    var gaveta = $('#sacola');
+    if (!gaveta) return;
+    gaveta.addEventListener('input', function (e) {
       if (e.target.name) { estado.formulario[e.target.name] = e.target.value; pintaSacola(); }
-    });
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      window.open(linkZap(mensagemDoPedido()), '_blank', 'noopener');
     });
   }
 
@@ -799,7 +804,7 @@
      não responder.
      =================================================================== */
   var CONTEUDO = {
-    estacao: { ligado: false, arte: '', destino: 'evento' },
+    estacao: { ligado: true, arte: 'assets/img/banner-campanha.webp', destino: 'evento' },
     galerias: {
       loja: [1,2,3,4,5].map(function (i) {
         return { foto: 'assets/img/loja-g' + i + '.webp', alt: '' };

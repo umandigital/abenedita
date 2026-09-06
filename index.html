@@ -353,7 +353,7 @@ a{color:inherit; text-decoration:none}
    assim cada quadro cai na mesma coluna do nome/texto dela.
    ===================================================================== */
 #socias{background:linear-gradient(180deg, var(--areia) 0%, var(--areia-funda) 55%, var(--madeira) 100%)}
-#socias .secao-cabeca{text-align:left; margin-bottom:var(--s6)}
+#socias .secao-cabeca{margin-bottom:var(--s6)}
 #socias .secao-cabeca h2{margin-top:0}
 .socias-grade{
   display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,72px);
@@ -415,23 +415,16 @@ a{color:inherit; text-decoration:none}
    05 · ÁREAS DE ATUAÇÃO (trilho horizontal)
    ===================================================================== */
 #pilares{height:360vh; background:var(--creme)}
-/* Pílula flutuante das Áreas: um acento só (dourado), não mais a cor de
-   cada área — mais discreta, sem competir com o que rola atrás dela. */
 .areas__indicador{
   position:absolute; top:calc(var(--header-h) + 10px); left:50%; transform:translateX(-50%); z-index:40;
-  width:max-content; max-width:92vw; padding:14px 8px; border-radius:var(--r-pill);
-  background:rgba(28,25,21,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-  box-shadow:var(--sh-lg);
+  width:min(92vw,680px); padding:10px 24px; border-radius:var(--r-pill);
+  background:rgba(244,238,228,.9); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  box-shadow:var(--sh-md);
 }
-.areas__rotulos{display:flex; align-items:center; justify-content:center; gap:clamp(24px,4vw,48px); font-family:var(--f-mono); font-weight:700; font-size:var(--fs-rotulo); letter-spacing:.16em; text-transform:uppercase}
-.areas__rotulos button{
-  border:0; background:none; cursor:pointer; font:inherit; letter-spacing:inherit; text-transform:inherit;
-  color:rgba(247,242,232,.5); transition:color .3s ease; padding:8px 6px; white-space:nowrap;
-}
-.areas__rotulos button:hover{color:rgba(247,242,232,.8)}
-.areas__rotulos button[aria-selected="true"]{color:var(--ouro)}
-.areas__barra{position:relative; width:calc(100% - 16px); height:2px; margin:11px auto 0; background:rgba(247,242,232,.16); border-radius:2px}
-.areas__barra i{position:absolute; inset:0; background:var(--ouro); border-radius:2px; transform:scaleX(0); transform-origin:left center}
+.areas__rotulos{display:flex; align-items:center; justify-content:space-between; font-family:var(--f-mono); font-weight:700; font-size:var(--fs-rotulo); letter-spacing:.14em; text-transform:uppercase}
+.areas__rotulos button{border:0; background:none; cursor:pointer; font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--pedra-txt); transition:color .4s ease; padding:6px 4px}
+.areas__barra{position:relative; width:100%; height:2px; margin-top:9px; background:rgba(60,40,20,.16); border-radius:2px}
+.areas__barra i{position:absolute; inset:0; background:var(--magenta); border-radius:2px; transform:scaleX(0); transform-origin:left center; transition:background .4s ease}
 .areas__trilho{display:flex; width:300vw; height:100%; will-change:transform}
 .area{width:100vw; height:100%; flex-shrink:0; display:flex; align-items:center; padding:calc(var(--header-h) + var(--s5)) clamp(24px,5vw,80px) var(--s5)}
 .area__grade{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.86fr); gap:clamp(32px,5vw,80px); align-items:center; width:100%; max-width:1280px; margin-inline:auto}
@@ -715,7 +708,8 @@ a{color:inherit; text-decoration:none}
 .sacola header{display:flex; align-items:center; justify-content:space-between; padding:24px 28px; border-bottom:1px solid rgba(60,40,20,.12); flex:none}
 .sacola header h2{font-size:24px}
 .sacola header button{width:36px; height:36px; border-radius:50%; border:0; background:rgba(28,20,12,.08); cursor:pointer; font-size:15px; color:var(--grafite)}
-.sacola ul{flex:1; overflow-y:auto; padding:8px 28px; margin:0}
+.sacola__corpo{flex:1; overflow-y:auto; padding:8px 28px}
+.sacola__corpo ul{margin:0; padding:0}
 .sacola__vazio{
   font-family:var(--f-script); font-size:24px; color:var(--nevoa-txt); text-align:center; padding:30px 0;
 }
@@ -723,11 +717,69 @@ a{color:inherit; text-decoration:none}
 .sacola__itemNome{display:block; font-family:var(--f-display); font-size:17px}
 .sacola__itemDetalhe{display:block; font-size:12px; color:var(--nevoa-txt); font-family:var(--f-mono)}
 .sacola__remover{background:none; border:0; color:var(--magenta); cursor:pointer; font-size:12px; font-family:var(--f-mono); flex:none}
+/* Os dados de quem pede moram aqui dentro — não numa seção de contato à
+   parte no fim da página, que não existe no design original. */
+.sacola__dadosRotulo{
+  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--terracota-txt); margin:18px 0 10px;
+}
+.sacola__dados{display:flex; flex-direction:column; gap:10px}
+.sacola__campo{
+  border:1.5px solid rgba(60,40,20,.18); border-radius:12px; padding:12px 14px;
+  font-size:14px; font-family:var(--f-corpo); background:#fff; color:var(--grafite);
+  outline:none; width:100%; transition:border-color .2s, box-shadow .2s;
+}
+.sacola__campo:focus{border-color:var(--ouro); box-shadow:0 0 0 3px rgba(233,178,58,.2)}
+.sacola__linha{display:flex; gap:10px}
+.sacola__linha .sacola__campo{flex:1; min-width:0}
 .sacola footer{padding:20px 28px 28px; flex:none}
 .sacola footer p{display:flex; justify-content:space-between; font-family:var(--f-display); font-size:20px; padding-bottom:var(--s2)}
 .sacola footer a{display:block; text-align:center}
+.sacola footer small{display:block; text-align:center; color:var(--nevoa-txt); font-size:12px; margin-top:12px}
 .veu{position:fixed; inset:0; z-index:75; background:rgba(28,20,12,.5); opacity:0; pointer-events:none; transition:opacity .3s ease}
 .veu[data-aberto]{opacity:1; pointer-events:auto}
+
+/* =====================================================================
+   RODAPÉ
+   ===================================================================== */
+.rodape{background:var(--verde-escuro-2); color:var(--creme); padding:var(--s7) 0 var(--s3); border-radius:var(--r-topo) var(--r-topo) 0 0}
+.rodape__grade{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:var(--s4)}
+.rodape__selo{
+  display:inline-flex; align-items:center; justify-content:center; width:88px; height:88px;
+  border-radius:22px; overflow:hidden; background:var(--madeira) url('assets/img/bg_menu_crop.webp') center/cover no-repeat;
+  box-shadow:var(--sh-md); margin-bottom:var(--s2);
+}
+.rodape__selo .logo-marca{width:70%; height:auto}
+.rodape p{font-size:14px; line-height:1.8; color:rgba(244,238,228,.7); max-width:280px}
+.rodape__redes{display:flex; gap:12px; margin-top:var(--s2)}
+.rodape__redes a{
+  width:38px; height:38px; border-radius:50%; border:1px solid rgba(244,238,228,.18);
+  display:flex; align-items:center; justify-content:center; color:var(--creme);
+}
+.rodape__rotulo{
+  display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--ouro); margin-bottom:var(--s2);
+}
+.rodape a{color:rgba(244,238,228,.7)}
+.rodape a:hover{color:var(--creme)}
+.rodape__baixo{
+  margin-top:var(--s6); padding-top:var(--s3); border-top:1px solid rgba(244,238,228,.12);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(244,238,228,.55);
+}
+@media (max-width:760px){
+  .rodape__grade{grid-template-columns:1fr 1fr; gap:var(--s5)}
+}
+
+/* =====================================================================
+   COMO PEDIR — lista simples, sem círculos nem linha pontilhada.
+   ===================================================================== */
+.passos{list-style:none; margin:0 auto; padding:0; max-width:520px}
+.passos li{padding:var(--s3) 0; border-bottom:1px solid rgba(60,40,20,.1)}
+.passos li:last-child{border-bottom:0}
+.passos__num{display:block; font-family:var(--f-mono); font-size:12px; color:var(--nevoa-txt); margin-bottom:4px}
+.passos li h3{font-size:18px; margin:0 0 4px}
+.passos li p{color:var(--sepia); margin:0}
 @media (prefers-reduced-motion:reduce){ .sacola,.veu{transition:none} }
 </style>
 </head>
@@ -853,9 +905,9 @@ a{color:inherit; text-decoration:none}
 
       <div class="areas__indicador" id="areasIndicador">
         <div class="areas__rotulos" role="tablist" aria-label="Áreas de atuação">
-          <button type="button" role="tab" data-area="0" aria-selected="true">Loja</button>
-          <button type="button" role="tab" data-area="1" aria-selected="false">Eventos</button>
-          <button type="button" role="tab" data-area="2" aria-selected="false">Assinaturas</button>
+          <button type="button" role="tab" data-area="0" data-cor="#C0356B" aria-selected="true">Loja</button>
+          <button type="button" role="tab" data-area="1" data-cor="#5C7A3A" aria-selected="false">Eventos</button>
+          <button type="button" role="tab" data-area="2" data-cor="#A9663A" aria-selected="false">Assinaturas</button>
         </div>
         <div class="areas__barra" aria-hidden="true"><i id="areasBarra"></i></div>
       </div>
@@ -867,8 +919,8 @@ a{color:inherit; text-decoration:none}
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
               <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
-              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física.</p>
-              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação.</p>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física. Aqui entra um parágrafo maior contando o que a pessoa encontra na Benedita: buquês do dia, arranjos montados na hora, caixas, cestas e plantas.</p>
+              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: horário de funcionamento, endereço, opções de retirada e como fechar o pedido pelo WhatsApp. Troque por conteúdo real depois.</p>
               <div data-anim data-i="4" class="topo__ctas">
                 <a class="btn btn--ouro" href="#catalogo">Ver o catálogo</a>
                 <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
@@ -882,11 +934,11 @@ a{color:inherit; text-decoration:none}
           <div class="area__grade">
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
-              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Para o dia que <em class="destaque" style="color:var(--rosa)">não se repete</em>.</h3>
-              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos.</p>
-              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação.</p>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">A flor que faz o <em class="destaque" style="color:var(--rosa)">dia</em> ser inesquecível.</h3>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
+              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: como funciona o orçamento, prazo de montagem, atendimento em toda a região. Troque por conteúdo real depois.</p>
               <div data-anim data-i="4" class="topo__ctas">
-                <a class="btn btn--ouro" data-zap="evento" href="#contato">Orçar um evento</a>
+                <a class="btn btn--ouro" data-zap="evento" href="#contato">Pedir orçamento →</a>
               </div>
             </div>
             <div data-anim data-i="2" data-galeria="eventos"></div>
@@ -898,11 +950,10 @@ a{color:inherit; text-decoration:none}
             <div class="polaroides" data-anim data-i="2" data-pilha="assinatura"></div>
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-assinaturas">ASSINATURAS</p>
-              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor fresca <em class="destaque">toda semana</em>.</h3>
-              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a assinatura.</p>
-              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação.</p>
+              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor nova toda semana, sem <em class="destaque">precisar lembrar</em>.</h3>
+              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a assinatura: a gente escolhe a flor mais bonita da estação e entrega na frequência que combina com você. A casa sempre com flor fresca, sem esforço.</p>
               <!-- Sem "assinar agora": a assinatura é fechada na conversa. -->
-              <div data-anim data-i="4" class="topo__ctas">
+              <div data-anim data-i="3" class="topo__ctas">
                 <a class="btn btn--ouro" data-zap="assinaturaComo" href="#contato">Como funciona</a>
                 <a class="btn btn--contorno" data-zap="assinatura" href="#contato">Falar no WhatsApp</a>
               </div>
@@ -1007,36 +1058,36 @@ a{color:inherit; text-decoration:none}
     </div>
   </section>
 
-  <!-- ===================== 12 · CONTATO =====================
-       O formulário não envia para servidor nenhum: ele MONTA a mensagem de
-       WhatsApp com o que foi preenchido e com a sacola. -->
-  <section class="secao revela" id="contato" aria-labelledby="contato-titulo">
-    <div class="wrap wrap--texto">
-      <div class="secao-cabeca">
-        <span class="eyebrow">Contato</span>
-        <h2 id="contato-titulo">Conta pra gente o que você precisa.</h2>
-      </div>
-      <form class="formulario" id="formulario" novalidate>
-        <div class="campo"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name"></div>
-        <div class="campo"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
-        <div class="campo"><label for="f-endereco">Endereço de entrega</label><input id="f-endereco" name="endereco" autocomplete="street-address"></div>
-        <div class="campo"><label for="f-ocasiao">Ocasião</label><input id="f-ocasiao" name="ocasiao"></div>
-        <div class="campo"><label for="f-data">Data</label><input id="f-data" name="data" type="date"></div>
-        <button class="btn btn--ouro" type="submit">Enviar pelo WhatsApp</button>
-      </form>
-      <p class="lead">Ninguém paga no site. O pagamento é combinado na conversa.</p>
-    </div>
-  </section>
 
 </main>
 
-<footer class="rodape em-escuro" style="background:var(--madeira); padding:var(--s6) 0">
-  <div class="wrap">
-    <img class="logo-marca" src="assets/img/logo.webp" alt="a Benedita Floristeria" width="200" height="66" loading="lazy">
-    <nav aria-label="Canais de atendimento">
-      <a data-zap="flutuante" href="#contato">WhatsApp</a>
-    </nav>
-    <p><small>a Benedita Floristeria · Porto Alegre, RS · <a href="admin.html" style="text-decoration:underline">painel</a></small></p>
+<footer class="rodape" id="contato">
+  <div class="wrap rodape__grade">
+    <div>
+      <span class="rodape__selo"><img class="logo-marca" src="assets/img/logo.webp" alt="a Benedita Floristeria"></span>
+      <p>Flor fresca do dia, arranjos à mão e recado bem dado. Da nossa parede de lousa pra sua casa.</p>
+      <div class="rodape__redes">
+        <a data-zap="flutuante" href="#contato" aria-label="Falar no WhatsApp">✆</a>
+        <a href="#topo" aria-label="Voltar ao topo">◎</a>
+        <a href="#topo" aria-label="Voltar ao topo">✦</a>
+      </div>
+    </div>
+    <div>
+      <span class="rodape__rotulo">A loja</span>
+      <p>Rua Anita Garibaldi, 1747<br>Bela Vista · Porto Alegre<br>Seg a sáb · 9h às 19h</p>
+    </div>
+    <div>
+      <span class="rodape__rotulo">Atendemos</span>
+      <p>Bela Vista · Moinhos<br>Menino Deus · Cidade Baixa<br>e região — combine a entrega</p>
+    </div>
+    <div>
+      <span class="rodape__rotulo">O que fazemos</span>
+      <p><a href="#catalogo">Loja física</a><br><a data-zap="assinatura" href="#contato">Assinaturas</a><br><a data-zap="evento" href="#contato">Eventos</a></p>
+    </div>
+  </div>
+  <div class="wrap rodape__baixo">
+    <span>© 2026 a Benedita Floristeria</span>
+    <span>WhatsApp 51 98505-4194 · <a href="admin.html">painel</a></span>
   </div>
 </footer>
 
@@ -1061,10 +1112,23 @@ a{color:inherit; text-decoration:none}
     <h2 id="sacola-titulo">Sua sacola</h2>
     <button type="button" id="sacolaFechar" aria-label="Fechar a sacola">✕</button>
   </header>
-  <ul id="sacolaItens"></ul>
+  <div class="sacola__corpo">
+    <ul id="sacolaItens"></ul>
+    <span class="sacola__dadosRotulo">Seus dados</span>
+    <div class="sacola__dados">
+      <input class="sacola__campo" id="sc-nome" name="nome" placeholder="Nome" autocomplete="name">
+      <input class="sacola__campo" id="sc-email" name="email" type="email" placeholder="E-mail" autocomplete="email">
+      <input class="sacola__campo" id="sc-endereco" name="endereco" placeholder="Endereço de entrega" autocomplete="street-address">
+      <div class="sacola__linha">
+        <input class="sacola__campo" id="sc-ocasiao" name="ocasiao" placeholder="Ocasião">
+        <input class="sacola__campo" id="sc-data" name="data" type="date" placeholder="Data">
+      </div>
+    </div>
+  </div>
   <footer>
     <p id="sacolaTotal"></p>
     <a class="btn btn--ouro" id="sacolaEnviar" href="#">Enviar pelo WhatsApp</a>
+    <small>Ninguém paga no site. O pagamento é combinado na conversa.</small>
   </footer>
 </aside>
 
