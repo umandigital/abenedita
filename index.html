@@ -429,7 +429,7 @@ a{color:inherit; text-decoration:none}
 .area{width:100vw; height:100%; flex-shrink:0; display:flex; align-items:center; padding:calc(var(--header-h) + var(--s5)) clamp(24px,5vw,80px) var(--s5)}
 .area__grade{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.86fr); gap:clamp(32px,5vw,80px); align-items:center; width:100%; max-width:1280px; margin-inline:auto}
 .area__titulo{font-family:var(--f-mono); font-weight:700; font-size:var(--fs-gigante); line-height:.9; letter-spacing:.01em}
-.area--loja{background:var(--creme)}
+.area--loja{background:#EFE6D6 no-repeat center/cover; background-image:url('assets/img/loja-fundo.webp')}
 .area--loja .area__titulo{color:var(--magenta)}
 .area--eventos{background:#F3E1DA no-repeat center/cover; background-image:url('assets/img/evento-fundo.webp')}
 .area--eventos .area__titulo{color:var(--magenta)}
@@ -437,9 +437,9 @@ a{color:inherit; text-decoration:none}
 .area--assinaturas{background:var(--areia-quente)}
 .area--assinaturas .area__titulo{color:var(--terracota-fundo)}
 
-/* Loja/Eventos: painel recebe as artes recortadas do handoff (fotos reais da
-   fachada e da mesa de evento) soltas ao redor do conteúdo, então o grid
-   larga o teto de 1280px e vira de ponta a ponta como no arquivo original. */
+/* Loja/Eventos: painel recebe uma única foto de fundo (fachada da loja /
+   mesa de evento) e o grid larga o teto de 1280px pra virar de ponta a
+   ponta, como no arquivo original. */
 .area--loja, .area--eventos{position:relative; overflow:hidden}
 .area--loja .area__grade, .area--eventos .area__grade{max-width:none; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); align-items:start}
 .area--loja .area__grade > div:first-child, .area--eventos .area__grade > div:first-child{position:relative; z-index:2}
@@ -451,19 +451,6 @@ a{color:inherit; text-decoration:none}
 }
 .area__recursos li{padding:0 22px; border-left:1px solid rgba(60,40,20,.16)}
 .area__recursos li:first-child{border-left:0; padding-left:0}
-
-.area__deco{position:absolute; z-index:1; pointer-events:none; display:block; max-width:none; height:auto}
-.area__deco--loja-topo-esq{top:0; left:0; width:min(28vw,410px); border-bottom-right-radius:24px}
-.area__deco--loja-inferior-esq{bottom:0; left:0; width:min(40vw,590px); border-top-right-radius:24px}
-.area__deco--loja-topo-dir{top:0; right:0; width:min(30vw,440px); z-index:5}
-.area__deco--loja-direita{top:9%; right:0; width:min(11vw,160px)}
-
-.area__texto-vertical{
-  position:absolute; left:2px; top:56%; z-index:2; transform:translateY(-50%) rotate(180deg);
-  writing-mode:vertical-rl; font-family:var(--f-mono); font-size:10px; letter-spacing:.22em;
-  text-transform:uppercase; color:var(--nevoa-txt); white-space:nowrap;
-}
-.area__texto-vertical::after{content:'→'; display:block; margin-top:6px}
 
 .area__vitrine{position:relative; z-index:3}
 .area__vitrine .galeria{max-width:none; width:100%}
@@ -477,16 +464,8 @@ a{color:inherit; text-decoration:none}
   .area__vitrine .galeria__mini[aria-selected="true"]{width:54px; height:54px}
 }
 
-.polaroides-loja{position:relative; z-index:3; display:flex; align-items:flex-start; margin-top:clamp(18px,2.6vw,32px)}
-.polaroide-solto{width:26%; flex:none; border-radius:4px; box-shadow:0 16px 34px rgba(40,26,12,.24)}
-.polaroide-solto--2, .polaroide-solto--3{margin-left:-9%}
-.polaroide-solto--2{z-index:2}
-.loja-detalhes{width:19%; flex:none; margin-left:10px; border-radius:14px; object-fit:cover; align-self:stretch}
-
 @media (max-width:900px){
   .area--loja .area__grade, .area--eventos .area__grade{grid-template-columns:1fr}
-  .area__deco, .area__texto-vertical{display:none}
-  .polaroides-loja{display:none}
 }
 
 .polaroides{position:relative; height:min(62vh,500px)}
@@ -1001,11 +980,6 @@ a{color:inherit; text-decoration:none}
       <div class="areas__trilho" id="areasTrilho">
 
         <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
-          <img class="area__deco area__deco--loja-topo-esq" src="assets/img/loja-deco-topo-esq.webp" alt="" aria-hidden="true">
-          <img class="area__deco area__deco--loja-inferior-esq" src="assets/img/loja-deco-inferior-esq.webp" alt="" aria-hidden="true">
-          <img class="area__deco area__deco--loja-topo-dir" src="assets/img/loja-deco-topo-dir.webp" alt="" aria-hidden="true">
-          <img class="area__deco area__deco--loja-direita" src="assets/img/loja-deco-direita.webp" alt="" aria-hidden="true">
-          <span class="area__texto-vertical" aria-hidden="true">Beleza para realidade</span>
           <div class="area__grade">
             <div>
               <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
@@ -1017,14 +991,8 @@ a{color:inherit; text-decoration:none}
                 <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
               </div>
             </div>
-            <div class="area__vitrine">
-              <div data-anim data-i="2" data-galeria="loja"></div>
-              <div class="polaroides-loja">
-                <img class="polaroide-solto polaroide-solto--1" src="assets/img/loja-polaroid-1.webp" alt="" loading="lazy">
-                <img class="polaroide-solto polaroide-solto--2" src="assets/img/loja-polaroid-2.webp" alt="" loading="lazy">
-                <img class="polaroide-solto polaroide-solto--3" src="assets/img/loja-polaroid-3.webp" alt="" loading="lazy">
-                <img class="loja-detalhes" src="assets/img/loja-deco-detalhes.webp" alt="" loading="lazy">
-              </div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="loja"></div>
             </div>
           </div>
         </article>
