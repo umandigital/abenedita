@@ -436,116 +436,63 @@ a{color:inherit; text-decoration:none}
 .area{width:100vw; height:100%; flex-shrink:0; display:flex; align-items:center; padding:calc(var(--header-h) + var(--s5)) clamp(24px,5vw,80px) var(--s5)}
 .area__grade{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.86fr); gap:clamp(32px,5vw,80px); align-items:center; width:100%; max-width:1280px; margin-inline:auto}
 .area__titulo{font-family:var(--f-mono); font-weight:700; font-size:var(--fs-gigante); line-height:.9; letter-spacing:.01em}
-.area--loja{background:#EFE6D6}
-.area--loja .area__titulo{color:var(--magenta)}
-.area--eventos{background:#F3E1DA}
-.area--eventos .area__titulo{color:var(--magenta)}
-.area--eventos .destaque{color:var(--magenta)}
 .area--assinaturas{background:var(--areia-quente)}
 .area--assinaturas .area__titulo{color:var(--terracota-fundo)}
 
-/* Loja/Eventos: em vez de posicionar o conteúdo dentro do fluxo normal
-   (onde qualquer variação de altura de tela desloca texto pra cima/baixo
-   da foto), a foto de fundo vira um "palco" com proporção TRAVADA
-   (aspect-ratio, igual à imagem original) e todo o conteúdo é posicionado
-   por porcentagem dentro dele. Como a proporção nunca muda, um elemento
-   em `top:33%` cai sempre no mesmo ponto da foto — em qualquer resolução,
-   e não só numa faixa testada.
-
-   O palco precisa cobrir 100% da área (sem sobrar tarja da cor de fundo
-   nas laterais/topo em telas com proporção diferente da foto — 1672:941).
-   Por isso a largura/altura usam `max()` em vez de `min()`: reproduz a
-   conta que o `background-size:cover` faria (a maior das duas escalas
-   possíveis, por largura ou por altura), só que aplicada numa caixa com
-   proporção travada — o `.area--loja/eventos` corta o excesso com
-   `overflow:hidden` e centraliza com `translate(-50%,-50%)`. Como a caixa
-   nunca perde a proporção da foto, as porcentagens dos filhos continuam
-   caindo sempre no mesmo ponto dela — só que agora às vezes com uma
-   fatia (sempre a mesma, centralizada) cortada fora pela borda da tela,
-   em vez de sobrar cor lisa.
-
-   As fontes escalam em `vw` (não `cqw`/container query): um `container-
-   type:inline-size` neste elemento — precisa dele pra `cqw` funcionar —
-   corrompia o próprio fundo (Chromium repete o `background-image` como se
-   ele não coubesse mais na caixa, mesmo com `background-size:100% 100%`
-   e o tamanho batendo certinho no computed style; some assim que se
-   tira o container-type). `vw` não é tão exato quanto `cqw` seria — mede
-   a tela toda, não só o palco —, mas o palco ocupa quase 100% da largura
-   na maioria dos casos, então a diferença não se nota. Nada aqui é
-   herdado por Assinaturas. */
+/* Loja/Eventos: a foto de fundo é decoração pura — background-size:cover
+   simples no `.area`, sempre cobre 100% da área, sem matemática de
+   proporção nenhuma. O texto mora num cartão com fundo translúcido
+   (glassmorphism) por cima: assim ele continua legível em QUALQUER
+   ponto da foto, sem depender de acertar a porcentagem exata de onde a
+   decoração (quadro-negro, coração, vime) deixa a parede vazia — é essa
+   dependência frágil que quebrava toda vez que o fundo mudava de escala.
+   Estrutura igual à de Assinaturas (`.area__grade` com 2 colunas), só
+   que aqui o texto ganha o cartão porque o fundo é uma foto cheia, não
+   uma cor lisa. */
 .area--loja, .area--eventos{position:relative; overflow:hidden}
-.area--loja .area__cena, .area--eventos .area__cena{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:max(100%,177.68svh); height:max(56.28vw,100%);
-}
-.area--loja .area__cena{background:center/100% 100% no-repeat url('assets/img/loja-fundo.webp')}
-.area--eventos .area__cena{background:center/100% 100% no-repeat url('assets/img/evento-fundo.webp')}
+.area--loja{background:center/cover no-repeat url('assets/img/loja-fundo.webp')}
+.area--loja .area__titulo{color:var(--magenta)}
+.area--eventos{background:center/cover no-repeat url('assets/img/evento-fundo.webp')}
+.area--eventos .area__titulo{color:var(--magenta)}
+.area--eventos .destaque{color:var(--magenta)}
 
-.area--loja .area__cabeca, .area--eventos .area__cabeca{position:absolute; left:4.8%; top:31%; width:38%; z-index:2}
-.area--loja .area__corpo,  .area--eventos .area__corpo {position:absolute; left:4.8%; top:44%; width:38%; z-index:2}
-.area--loja .area__vitrine, .area--eventos .area__vitrine{position:absolute; right:5%; top:12%; width:44%; z-index:3}
-
-.area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(18px,3.4vw,56px); line-height:.9}
-.area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{
-  font-size:clamp(13px,1.95vw,32px); margin:0.6vw 0 0;
+.area--loja .area__texto, .area--eventos .area__texto{
+  background:rgba(255,253,247,.7); backdrop-filter:blur(16px) saturate(130%); -webkit-backdrop-filter:blur(16px) saturate(130%);
+  border:1px solid rgba(255,255,255,.6); border-radius:28px;
+  padding:clamp(24px,3vw,44px);
+  box-shadow:0 20px 50px rgba(40,26,12,.16);
 }
-.area--loja .area__corpo p, .area--eventos .area__corpo p{
-  font-size:clamp(10px,1.05vw,16px); line-height:1.5; margin:0 0 0.8vw;
-}
-.area--loja .area__corpo .topo__ctas, .area--eventos .area__corpo .topo__ctas{
-  margin-top:1vw; gap:0.9vw;
-}
-.area--loja .area__corpo :is(h3,p,.area__recursos li),
-.area--eventos .area__corpo :is(h3,p,.area__recursos li){
-  text-shadow:0 1px 2px rgba(255,251,244,.85), 0 2px 18px rgba(255,251,244,.7);
-}
-.area--loja .area__corpo .btn--contorno, .area--eventos .area__corpo .btn--contorno{
-  background:rgba(255,253,249,.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-}
-.area--loja .btn, .area--eventos .btn{padding:0.9vw 1.8vw; font-size:clamp(8px,0.72vw,11px)}
+.area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(32px,4vw,56px); line-height:.9}
+.area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{font-size:clamp(20px,2.2vw,32px); margin:10px 0 0}
+.area--loja .area__corpo, .area--eventos .area__corpo{margin-top:20px}
+.area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:clamp(14px,1.05vw,16px); line-height:1.6; margin:0 0 12px}
 
 .area__recursos{
-  display:flex; list-style:none; margin:1.2vw 0 0; padding:0;
-  font-family:var(--f-mono); font-size:clamp(7px,0.62vw,11px); letter-spacing:.08em; text-transform:uppercase;
+  display:flex; list-style:none; margin:18px 0 0; padding:0;
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--nevoa-txt); line-height:1.5;
 }
-.area__recursos li{padding:0 1.4vw; border-left:1px solid rgba(60,40,20,.16)}
+.area__recursos li{padding:0 16px; border-left:1px solid rgba(60,40,20,.16)}
 .area__recursos li:first-child{border-left:0; padding-left:0}
 
 .area__vitrine .galeria{max-width:none; width:100%}
 .area__vitrine .galeria__palco{
-  aspect-ratio:8/5; border-radius:3vw;
+  aspect-ratio:8/5; border-radius:24px;
   box-shadow:0 30px 60px rgba(28,18,8,.4), 0 10px 24px rgba(28,18,8,.28), 0 0 0 1px rgba(255,255,255,.5);
 }
-.area__vitrine .galeria__seta{width:clamp(26px,4.2vw,52px); height:clamp(26px,4.2vw,52px)}
-.area__vitrine .galeria__minis{bottom:1.6vw; gap:0.9vw}
-.area__vitrine .galeria__mini{width:clamp(20px,4.6vw,58px); height:clamp(20px,4.6vw,58px); border-width:2px}
-.area__vitrine .galeria__mini[aria-selected="true"]{width:clamp(24px,5.6vw,70px); height:clamp(24px,5.6vw,70px); border-color:var(--ouro)}
+.area__vitrine .galeria__seta{width:44px; height:44px}
+.area__vitrine .galeria__minis{bottom:14px; gap:8px}
+.area__vitrine .galeria__mini{width:40px; height:40px; border-width:2px}
+.area__vitrine .galeria__mini[aria-selected="true"]{width:50px; height:50px; border-color:var(--ouro)}
 
 @media (max-width:900px){
-  /* Sem palco travado: o conteúdo empilha normalmente (título, texto,
-     carrossel) e a foto de fundo sai — ela não tem como acompanhar o
-     texto empilhando em altura variável sem cortar a decoração no meio
-     do texto. A foto de verdade continua visível dentro do carrossel. */
-  .area--loja .area__cena, .area--eventos .area__cena{
-    position:static; transform:none; width:100%; height:auto; aspect-ratio:auto;
-  }
-  .area--loja .area__cena{background:#EFE6D6 !important}
-  .area--eventos .area__cena{background:#F3E1DA !important}
-  .area--loja .area__cabeca, .area--loja .area__corpo, .area--loja .area__vitrine,
-  .area--eventos .area__cabeca, .area--eventos .area__corpo, .area--eventos .area__vitrine{
-    position:static; width:100%; margin:0 0 var(--s4);
-  }
-  .area--loja .area__cabeca, .area--eventos .area__cabeca{padding-top:var(--s4)}
+  /* O cartão de texto (fundo translúcido) já garante leitura em cima da
+     foto em qualquer tamanho de tela, então no celular só precisa
+     encolher um pouco as fontes — a estrutura (grid de 1 coluna) já vem
+     do `.area__grade` geral logo abaixo. */
   .area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(26px,8vw,40px)}
   .area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{font-size:clamp(18px,5.6vw,26px)}
   .area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:14px}
-  .area__vitrine .galeria__palco{border-radius:16px}
-  .area__vitrine .galeria__seta{width:36px; height:36px}
-  .area__vitrine .galeria__mini{width:30px; height:30px}
-  .area__vitrine .galeria__mini[aria-selected="true"]{width:38px; height:38px}
-  .area__recursos{font-size:9.5px; gap:0}
-  .area__recursos li{padding:0 12px}
 }
 
 .polaroides{position:relative; height:min(62vh,500px)}
@@ -571,14 +518,11 @@ a{color:inherit; text-decoration:none}
   .area__grade{grid-template-columns:1fr; gap:var(--s4)}
   .polaroides{height:min(70vw,340px); margin-bottom:var(--s3)}
 
-  /* Loja/Eventos com foto de fundo: tudo um pouco menor no celular pra não
-     brigar com a imagem por trás — título, texto e o carrossel. O padding
-     genérico do `.area` acima (var(--s6)) não reserva espaço pro header
-     fixo, então o título nascia atrás dele — essas duas dobras precisam do
-     próprio respiro no topo. */
+  /* Loja/Eventos: o padding genérico do `.area` acima (var(--s6)) não
+     reserva espaço pro header fixo, então o cartão de texto nascia atrás
+     dele — essas duas dobras precisam do próprio respiro no topo. */
   .area--loja, .area--eventos{padding-top:calc(var(--header-h) + 24px)}
   :root{ --fs-gigante:clamp(26px,8vw,40px); --fs-chamada:clamp(18px,5.6vw,26px); }
-  .area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:14px}
   .area__vitrine .galeria__palco{border-radius:16px}
   .area__vitrine .galeria__seta{width:36px; height:36px}
   .area__vitrine .galeria__minis{bottom:10px; gap:6px}
@@ -1097,17 +1041,19 @@ a{color:inherit; text-decoration:none}
       <div class="areas__trilho" id="areasTrilho">
 
         <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
-          <div class="area__cena">
-            <div class="area__cabeca">
-              <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
-              <h3 data-anim data-i="1">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
-            </div>
-            <div class="area__corpo">
-              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física. Aqui entra um parágrafo maior contando o que a pessoa encontra na Benedita: buquês do dia, arranjos montados na hora, caixas, cestas e plantas.</p>
-              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: horário de funcionamento, endereço, opções de retirada e como fechar o pedido pelo WhatsApp. Troque por conteúdo real depois.</p>
-              <div data-anim data-i="4" class="topo__ctas">
-                <a class="btn btn--ouro" href="#catalogo">Ver o catálogo</a>
-                <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
+          <div class="area__grade">
+            <div class="area__texto">
+              <div class="area__cabeca">
+                <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
+                <h3 data-anim data-i="1">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
+              </div>
+              <div class="area__corpo">
+                <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física. Aqui entra um parágrafo maior contando o que a pessoa encontra na Benedita: buquês do dia, arranjos montados na hora, caixas, cestas e plantas.</p>
+                <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: horário de funcionamento, endereço, opções de retirada e como fechar o pedido pelo WhatsApp. Troque por conteúdo real depois.</p>
+                <div data-anim data-i="4" class="topo__ctas">
+                  <a class="btn btn--ouro" href="#catalogo">Ver o catálogo</a>
+                  <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
+                </div>
               </div>
             </div>
             <div class="area__vitrine" data-anim data-i="2">
@@ -1117,22 +1063,24 @@ a{color:inherit; text-decoration:none}
         </article>
 
         <article class="area area--eventos" data-painel="1" aria-labelledby="area-eventos">
-          <div class="area__cena">
-            <div class="area__cabeca">
-              <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
-              <h3 data-anim data-i="1">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
-            </div>
-            <div class="area__corpo">
-              <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
-              <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: como funciona o orçamento, prazo de montagem, atendimento em toda a região. Troque por conteúdo real depois.</p>
-              <div data-anim data-i="4" class="topo__ctas">
-                <a class="btn btn--ouro" data-zap="evento" href="#contato">Pedir orçamento →</a>
+          <div class="area__grade">
+            <div class="area__texto">
+              <div class="area__cabeca">
+                <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
+                <h3 data-anim data-i="1">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
               </div>
-              <ul data-anim data-i="5" class="area__recursos">
-                <li>Decoração<br>personalizada</li>
-                <li>Atendimento<br>especializado</li>
-                <li>Em toda<br>a região</li>
-              </ul>
+              <div class="area__corpo">
+                <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
+                <p data-anim data-i="3" data-marcacao>Segundo parágrafo de marcação, com espaço para mais texto: como funciona o orçamento, prazo de montagem, atendimento em toda a região. Troque por conteúdo real depois.</p>
+                <div data-anim data-i="4" class="topo__ctas">
+                  <a class="btn btn--ouro" data-zap="evento" href="#contato">Pedir orçamento →</a>
+                </div>
+                <ul data-anim data-i="5" class="area__recursos">
+                  <li>Decoração<br>personalizada</li>
+                  <li>Atendimento<br>especializado</li>
+                  <li>Em toda<br>a região</li>
+                </ul>
+              </div>
             </div>
             <div class="area__vitrine" data-anim data-i="2">
               <div data-galeria="eventos"></div>
