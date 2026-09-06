@@ -8,17 +8,6 @@ aparelho/conta que não tenho aqui. Vou acrescentando conforme aparecem.
 
 ---
 
-## Widget do Instagram
-
-A seção "O dia a dia da floricultura" (antes da "Manda uma mensagem", que
-foi removida) já está no ar com uma grade de marcação (`#instagram-embed`
-em `index.html`) esperando o script de verdade. Contratem o Elfsight, o
-Juicer ou equivalente, e colem o script/embed deles no lugar do conteúdo
-de `#instagram-embed` — isso exige uma conta/plano dessas ferramentas, que
-não crio por vocês.
-
----
-
 ## Banner da estação está no ar com data vencida
 
 Achei a arte real (`banner-campanha.png`) na pasta do handoff e liguei o
