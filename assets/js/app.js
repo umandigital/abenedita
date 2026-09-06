@@ -909,7 +909,7 @@
         var v = cfg[0].valor;
         CONTEUDO.estacao = {
           ligado: v.ligado !== false,
-          arte: caminhoMidia(v.arte || ''),
+          arte: v.arte ? caminhoMidia(v.arte) : CONTEUDO.estacao.arte,
           destino: v.destino || 'evento'
         };
       }

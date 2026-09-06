@@ -17,6 +17,13 @@ administrativo cadastrar algo. Só que essa arte é "Dia dos Namorados, até
 Duas opções: trocar a arte pelo painel (Banner → subir uma nova imagem) ou
 desligar o bloco (Banner → Ligado) até ter a campanha certa pronta.
 
+✅ Corrigido um bug à parte que fazia esse banner sumir **só no site publicado**
+(nunca aqui no sandbox, que não alcança o Supabase real): a linha `estacao` já
+existe no banco com `arte:null` (ninguém subiu arte pelo painel ainda), e o
+código substituía o objeto inteiro assim que a resposta do banco chegava,
+trocando a arte de marcação por uma arte vazia e escondendo o bloco. Agora só
+troca a arte quando o banco manda alguma.
+
 ---
 
 ## Bloqueia o mobile de verdade
@@ -99,6 +106,12 @@ Falta especificamente:
 
 - **as doze fotos de produto**. Hoje são retângulos coloridos gerados aqui,
   800×1000. Cada produto pede uma.
+
+- **as três fotinhos das Assinaturas** (a pilha de polaroides "semana 1/2/3"
+  que ilustra a área de Assinaturas). Essa peça inteira estava sem nenhuma
+  implementação — nem CSS nem imagem —, então criei o efeito visual (pilha
+  de fotos giradas, como no design) e coloquei três retângulos coloridos de
+  marcação (`assina-g1/2/3.webp`) no lugar das fotos de verdade.
 
 ### 4. Os textos e as fotos das sócias
 
