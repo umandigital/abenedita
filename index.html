@@ -438,41 +438,37 @@ a{color:inherit; text-decoration:none}
 .area--assinaturas{background:var(--areia-quente)}
 .area--assinaturas .area__titulo{color:var(--terracota-fundo)}
 
-/* Loja/Eventos: painel recebe uma única foto de fundo (fachada da loja /
-   mesa de evento) e o grid larga o teto de 1280px pra virar de ponta a
-   ponta, como no arquivo original. */
-/* O fundo é uma foto (background-size:cover) que escala com a ALTURA da
-   tela, não com pixels fixos — então qualquer espaçamento de conteúdo que
-   precise ficar sempre abaixo/acima de um elemento da foto (a rama do
-   topo, as floreiras de baixo) tem que escalar do mesmo jeito, em `svh`,
-   senão descola em telas mais baixas (ex.: notebook 1366×768) mesmo
-   funcionando numa tela alta. Nada aqui é herdado por Assinaturas. */
-.area--loja, .area--eventos{
-  position:relative; overflow:hidden; align-items:flex-start;
-  padding-top:max(calc(var(--header-h) + 60px), 30svh);
+/* Loja/Eventos: em vez de posicionar o conteúdo dentro do fluxo normal
+   (onde qualquer variação de altura de tela desloca texto pra cima/baixo
+   da foto), a foto de fundo vira um "palco" com proporção TRAVADA
+   (aspect-ratio, igual à imagem original) e todo o conteúdo é posicionado
+   por porcentagem dentro dele. Como a proporção nunca muda, um elemento
+   em `top:33%` cai sempre no mesmo ponto da foto — em qualquer resolução,
+   e não só numa faixa testada. As fontes usam `cqw` (unidade de container
+   query), que é a largura do palco, não da tela — encolhem e crescem
+   junto com ele. Nada aqui é herdado por Assinaturas. */
+.area--loja, .area--eventos{position:relative; overflow:hidden}
+.area--loja .area__cena, .area--eventos .area__cena{
+  position:relative; width:min(100%,177.8svh); aspect-ratio:1672/941; margin-inline:auto;
+  background-repeat:no-repeat; background-position:center; background-size:100% 100%;
+  container-type:inline-size;
 }
-.area--loja .area__grade, .area--eventos .area__grade{
-  max-width:none; align-items:start;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  grid-template-areas:"cabeca vitrine" "corpo vitrine";
-}
-.area--loja .area__cabeca, .area--eventos .area__cabeca{grid-area:cabeca}
-.area--loja .area__corpo,  .area--eventos .area__corpo {grid-area:corpo; max-width:52ch}
-.area--loja .area__vitrine, .area--eventos .area__vitrine{grid-area:vitrine}
-.area--loja .area__cabeca, .area--loja .area__corpo,
-.area--eventos .area__cabeca, .area--eventos .area__corpo{position:relative; z-index:2}
-.area--loja .area__cabeca .area__titulo, .area--eventos .area__cabeca .area__titulo{
-  font-size:clamp(28px,6svh,56px);
-}
+.area--loja .area__cena{background-image:url('assets/img/loja-fundo.webp')}
+.area--eventos .area__cena{background-image:url('assets/img/evento-fundo.webp')}
+
+.area--loja .area__cabeca, .area--eventos .area__cabeca{position:absolute; left:4.8%; top:31%; width:38%; z-index:2}
+.area--loja .area__corpo,  .area--eventos .area__corpo {position:absolute; left:4.8%; top:44%; width:38%; z-index:2}
+.area--loja .area__vitrine, .area--eventos .area__vitrine{position:absolute; right:5%; top:12%; width:44%; z-index:3}
+
+.area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(18px,3.4cqw,56px); line-height:.9}
 .area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{
-  font-size:clamp(18px,3.2svh,32px) !important;
+  font-size:clamp(13px,1.95cqw,32px); margin:0.6cqw 0 0;
 }
-.area--loja .area__corpo, .area--eventos .area__corpo{margin-top:clamp(10px,2.6svh,32px)}
 .area--loja .area__corpo p, .area--eventos .area__corpo p{
-  font-size:clamp(13px,1.8svh,16px); line-height:1.5; margin:0 0 clamp(4px,1svh,10px);
+  font-size:clamp(10px,1.05cqw,16px); line-height:1.5; margin:0 0 0.8cqw;
 }
 .area--loja .area__corpo .topo__ctas, .area--eventos .area__corpo .topo__ctas{
-  margin-top:clamp(6px,1.6svh,16px);
+  margin-top:1cqw; gap:0.9cqw;
 }
 .area--loja .area__corpo :is(h3,p,.area__recursos li),
 .area--eventos .area__corpo :is(h3,p,.area__recursos li){
@@ -481,35 +477,50 @@ a{color:inherit; text-decoration:none}
 .area--loja .area__corpo .btn--contorno, .area--eventos .area__corpo .btn--contorno{
   background:rgba(255,253,249,.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
+.area--loja .btn, .area--eventos .btn{padding:0.9cqw 1.8cqw; font-size:clamp(8px,0.72cqw,11px)}
 
 .area__recursos{
-  display:flex; list-style:none; margin:clamp(8px,1.8svh,32px) 0 0; padding:0;
-  font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  display:flex; list-style:none; margin:1.2cqw 0 0; padding:0;
+  font-family:var(--f-mono); font-size:clamp(7px,0.62cqw,11px); letter-spacing:.08em; text-transform:uppercase;
   color:var(--nevoa-txt); line-height:1.5;
 }
-.area__recursos li{padding:0 22px; border-left:1px solid rgba(60,40,20,.16)}
+.area__recursos li{padding:0 1.4cqw; border-left:1px solid rgba(60,40,20,.16)}
 .area__recursos li:first-child{border-left:0; padding-left:0}
 
-.area__vitrine{position:relative; z-index:3; width:100%; max-width:min(620px,62svh); align-self:center}
 .area__vitrine .galeria{max-width:none; width:100%}
 .area__vitrine .galeria__palco{
-  aspect-ratio:8/5; border-radius:clamp(20px,3vw,40px);
+  aspect-ratio:8/5; border-radius:3cqw;
   box-shadow:0 30px 60px rgba(28,18,8,.4), 0 10px 24px rgba(28,18,8,.28), 0 0 0 1px rgba(255,255,255,.5);
 }
-.area__vitrine .galeria__seta{width:52px; height:52px}
-.area__vitrine .galeria__minis{bottom:20px; gap:12px}
-.area__vitrine .galeria__mini{width:58px; height:58px; border-width:3px}
-.area__vitrine .galeria__mini[aria-selected="true"]{width:70px; height:70px; border-color:var(--ouro)}
-@media (max-width:1300px){
-  .area__vitrine .galeria__mini{width:44px; height:44px}
-  .area__vitrine .galeria__mini[aria-selected="true"]{width:54px; height:54px}
-}
+.area__vitrine .galeria__seta{width:clamp(26px,4.2cqw,52px); height:clamp(26px,4.2cqw,52px)}
+.area__vitrine .galeria__minis{bottom:1.6cqw; gap:0.9cqw}
+.area__vitrine .galeria__mini{width:clamp(20px,4.6cqw,58px); height:clamp(20px,4.6cqw,58px); border-width:2px}
+.area__vitrine .galeria__mini[aria-selected="true"]{width:clamp(24px,5.6cqw,70px); height:clamp(24px,5.6cqw,70px); border-color:var(--ouro)}
 
 @media (max-width:900px){
-  .area--loja .area__grade, .area--eventos .area__grade{
-    grid-template-columns:1fr; grid-template-areas:"cabeca" "vitrine" "corpo";
+  /* Sem palco travado: o conteúdo empilha normalmente (título, texto,
+     carrossel) e a foto de fundo sai — ela não tem como acompanhar o
+     texto empilhando em altura variável sem cortar a decoração no meio
+     do texto. A foto de verdade continua visível dentro do carrossel. */
+  .area--loja .area__cena, .area--eventos .area__cena{
+    width:100%; aspect-ratio:auto; container-type:normal; background-image:none !important;
   }
-  .area--loja .area__vitrine, .area--eventos .area__vitrine{max-width:100%; justify-self:stretch}
+  .area--loja .area__cena{background-color:#EFE6D6}
+  .area--eventos .area__cena{background-color:#F3E1DA}
+  .area--loja .area__cabeca, .area--loja .area__corpo, .area--loja .area__vitrine,
+  .area--eventos .area__cabeca, .area--eventos .area__corpo, .area--eventos .area__vitrine{
+    position:static; width:100%; margin:0 0 var(--s4);
+  }
+  .area--loja .area__cabeca, .area--eventos .area__cabeca{padding-top:var(--s4)}
+  .area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(26px,8vw,40px)}
+  .area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{font-size:clamp(18px,5.6vw,26px)}
+  .area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:14px}
+  .area__vitrine .galeria__palco{border-radius:16px}
+  .area__vitrine .galeria__seta{width:36px; height:36px}
+  .area__vitrine .galeria__mini{width:30px; height:30px}
+  .area__vitrine .galeria__mini[aria-selected="true"]{width:38px; height:38px}
+  .area__recursos{font-size:9.5px; gap:0}
+  .area__recursos li{padding:0 12px}
 }
 
 .polaroides{position:relative; height:min(62vh,500px)}
@@ -1058,13 +1069,10 @@ a{color:inherit; text-decoration:none}
       <div class="areas__trilho" id="areasTrilho">
 
         <article class="area area--loja" data-painel="0" aria-labelledby="area-loja">
-          <div class="area__grade">
+          <div class="area__cena">
             <div class="area__cabeca">
               <p class="area__titulo" data-anim data-i="0" id="area-loja">LOJA</p>
-              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
-            </div>
-            <div class="area__vitrine" data-anim data-i="2">
-              <div data-galeria="loja"></div>
+              <h3 data-anim data-i="1">Flor pronta pra <em class="destaque">levar hoje</em>.</h3>
             </div>
             <div class="area__corpo">
               <p data-anim data-i="2" data-marcacao>Texto de marcação sobre a loja física. Aqui entra um parágrafo maior contando o que a pessoa encontra na Benedita: buquês do dia, arranjos montados na hora, caixas, cestas e plantas.</p>
@@ -1074,17 +1082,17 @@ a{color:inherit; text-decoration:none}
                 <a class="btn btn--contorno" data-zap="flutuante" href="#contato">Chamar no WhatsApp</a>
               </div>
             </div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="loja"></div>
+            </div>
           </div>
         </article>
 
         <article class="area area--eventos" data-painel="1" aria-labelledby="area-eventos">
-          <div class="area__grade">
+          <div class="area__cena">
             <div class="area__cabeca">
               <p class="area__titulo" data-anim data-i="0" id="area-eventos">EVENTOS</p>
-              <h3 data-anim data-i="1" style="font-size:var(--fs-chamada)">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
-            </div>
-            <div class="area__vitrine" data-anim data-i="2">
-              <div data-galeria="eventos"></div>
+              <h3 data-anim data-i="1">A flor que faz o <em class="destaque">dia</em> ser inesquecível.</h3>
             </div>
             <div class="area__corpo">
               <p data-anim data-i="2" data-marcacao>Texto de marcação sobre eventos. Aqui entra um parágrafo maior: casamento, aniversário, formatura ou empresa. A gente pensa cada detalhe e monta a decoração com você, do arranjo de mesa ao arco de entrada.</p>
@@ -1097,6 +1105,9 @@ a{color:inherit; text-decoration:none}
                 <li>Atendimento<br>especializado</li>
                 <li>Em toda<br>a região</li>
               </ul>
+            </div>
+            <div class="area__vitrine" data-anim data-i="2">
+              <div data-galeria="eventos"></div>
             </div>
           </div>
         </article>
