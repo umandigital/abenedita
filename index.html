@@ -444,31 +444,37 @@ a{color:inherit; text-decoration:none}
    (aspect-ratio, igual à imagem original) e todo o conteúdo é posicionado
    por porcentagem dentro dele. Como a proporção nunca muda, um elemento
    em `top:33%` cai sempre no mesmo ponto da foto — em qualquer resolução,
-   e não só numa faixa testada. As fontes usam `cqw` (unidade de container
-   query), que é a largura do palco, não da tela — encolhem e crescem
-   junto com ele. Nada aqui é herdado por Assinaturas. */
+   e não só numa faixa testada.
+
+   As fontes escalam em `vw` (não `cqw`/container query): um `container-
+   type:inline-size` neste elemento — precisa dele pra `cqw` funcionar —
+   corrompia o próprio fundo (Chromium repete o `background-image` como se
+   ele não coubesse mais na caixa, mesmo com `background-size:100% 100%`
+   e o tamanho batendo certinho no computed style; some assim que se
+   tira o container-type). `vw` não é tão exato quanto `cqw` seria — mede
+   a tela toda, não só o palco —, mas o palco ocupa quase 100% da largura
+   na maioria dos casos, então a diferença não se nota. Nada aqui é
+   herdado por Assinaturas. */
 .area--loja, .area--eventos{position:relative; overflow:hidden}
 .area--loja .area__cena, .area--eventos .area__cena{
   position:relative; width:min(100%,177.8svh); aspect-ratio:1672/941; margin-inline:auto;
-  background-repeat:no-repeat; background-position:center; background-size:100% 100%;
-  container-type:inline-size;
 }
-.area--loja .area__cena{background-image:url('assets/img/loja-fundo.webp')}
-.area--eventos .area__cena{background-image:url('assets/img/evento-fundo.webp')}
+.area--loja .area__cena{background:center/100% 100% no-repeat url('assets/img/loja-fundo.webp')}
+.area--eventos .area__cena{background:center/100% 100% no-repeat url('assets/img/evento-fundo.webp')}
 
 .area--loja .area__cabeca, .area--eventos .area__cabeca{position:absolute; left:4.8%; top:31%; width:38%; z-index:2}
 .area--loja .area__corpo,  .area--eventos .area__corpo {position:absolute; left:4.8%; top:44%; width:38%; z-index:2}
 .area--loja .area__vitrine, .area--eventos .area__vitrine{position:absolute; right:5%; top:12%; width:44%; z-index:3}
 
-.area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(18px,3.4cqw,56px); line-height:.9}
+.area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(18px,3.4vw,56px); line-height:.9}
 .area--loja .area__cabeca h3, .area--eventos .area__cabeca h3{
-  font-size:clamp(13px,1.95cqw,32px); margin:0.6cqw 0 0;
+  font-size:clamp(13px,1.95vw,32px); margin:0.6vw 0 0;
 }
 .area--loja .area__corpo p, .area--eventos .area__corpo p{
-  font-size:clamp(10px,1.05cqw,16px); line-height:1.5; margin:0 0 0.8cqw;
+  font-size:clamp(10px,1.05vw,16px); line-height:1.5; margin:0 0 0.8vw;
 }
 .area--loja .area__corpo .topo__ctas, .area--eventos .area__corpo .topo__ctas{
-  margin-top:1cqw; gap:0.9cqw;
+  margin-top:1vw; gap:0.9vw;
 }
 .area--loja .area__corpo :is(h3,p,.area__recursos li),
 .area--eventos .area__corpo :is(h3,p,.area__recursos li){
@@ -477,25 +483,25 @@ a{color:inherit; text-decoration:none}
 .area--loja .area__corpo .btn--contorno, .area--eventos .area__corpo .btn--contorno{
   background:rgba(255,253,249,.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
-.area--loja .btn, .area--eventos .btn{padding:0.9cqw 1.8cqw; font-size:clamp(8px,0.72cqw,11px)}
+.area--loja .btn, .area--eventos .btn{padding:0.9vw 1.8vw; font-size:clamp(8px,0.72vw,11px)}
 
 .area__recursos{
-  display:flex; list-style:none; margin:1.2cqw 0 0; padding:0;
-  font-family:var(--f-mono); font-size:clamp(7px,0.62cqw,11px); letter-spacing:.08em; text-transform:uppercase;
+  display:flex; list-style:none; margin:1.2vw 0 0; padding:0;
+  font-family:var(--f-mono); font-size:clamp(7px,0.62vw,11px); letter-spacing:.08em; text-transform:uppercase;
   color:var(--nevoa-txt); line-height:1.5;
 }
-.area__recursos li{padding:0 1.4cqw; border-left:1px solid rgba(60,40,20,.16)}
+.area__recursos li{padding:0 1.4vw; border-left:1px solid rgba(60,40,20,.16)}
 .area__recursos li:first-child{border-left:0; padding-left:0}
 
 .area__vitrine .galeria{max-width:none; width:100%}
 .area__vitrine .galeria__palco{
-  aspect-ratio:8/5; border-radius:3cqw;
+  aspect-ratio:8/5; border-radius:3vw;
   box-shadow:0 30px 60px rgba(28,18,8,.4), 0 10px 24px rgba(28,18,8,.28), 0 0 0 1px rgba(255,255,255,.5);
 }
-.area__vitrine .galeria__seta{width:clamp(26px,4.2cqw,52px); height:clamp(26px,4.2cqw,52px)}
-.area__vitrine .galeria__minis{bottom:1.6cqw; gap:0.9cqw}
-.area__vitrine .galeria__mini{width:clamp(20px,4.6cqw,58px); height:clamp(20px,4.6cqw,58px); border-width:2px}
-.area__vitrine .galeria__mini[aria-selected="true"]{width:clamp(24px,5.6cqw,70px); height:clamp(24px,5.6cqw,70px); border-color:var(--ouro)}
+.area__vitrine .galeria__seta{width:clamp(26px,4.2vw,52px); height:clamp(26px,4.2vw,52px)}
+.area__vitrine .galeria__minis{bottom:1.6vw; gap:0.9vw}
+.area__vitrine .galeria__mini{width:clamp(20px,4.6vw,58px); height:clamp(20px,4.6vw,58px); border-width:2px}
+.area__vitrine .galeria__mini[aria-selected="true"]{width:clamp(24px,5.6vw,70px); height:clamp(24px,5.6vw,70px); border-color:var(--ouro)}
 
 @media (max-width:900px){
   /* Sem palco travado: o conteúdo empilha normalmente (título, texto,
@@ -503,10 +509,10 @@ a{color:inherit; text-decoration:none}
      texto empilhando em altura variável sem cortar a decoração no meio
      do texto. A foto de verdade continua visível dentro do carrossel. */
   .area--loja .area__cena, .area--eventos .area__cena{
-    width:100%; aspect-ratio:auto; container-type:normal; background-image:none !important;
+    width:100%; aspect-ratio:auto;
   }
-  .area--loja .area__cena{background-color:#EFE6D6}
-  .area--eventos .area__cena{background-color:#F3E1DA}
+  .area--loja .area__cena{background:#EFE6D6 !important}
+  .area--eventos .area__cena{background:#F3E1DA !important}
   .area--loja .area__cabeca, .area--loja .area__corpo, .area--loja .area__vitrine,
   .area--eventos .area__cabeca, .area--eventos .area__corpo, .area--eventos .area__vitrine{
     position:static; width:100%; margin:0 0 var(--s4);
