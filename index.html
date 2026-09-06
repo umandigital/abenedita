@@ -463,8 +463,8 @@ a{color:inherit; text-decoration:none}
   padding:clamp(24px,3vw,44px);
   box-shadow:0 20px 50px rgba(40,26,12,.18), inset 0 1px 0 rgba(255,255,255,.5);
 }
-.area--loja .area__texto :is(h3,p,.area__recursos li),
-.area--eventos .area__texto :is(h3,p,.area__recursos li){
+.area--loja .area__texto :is(h3,p),
+.area--eventos .area__texto :is(h3,p){
   text-shadow:0 1px 12px rgba(255,253,247,.5);
 }
 .area--loja .area__titulo, .area--eventos .area__titulo{font-size:clamp(32px,4vw,56px); line-height:.9}
@@ -472,17 +472,14 @@ a{color:inherit; text-decoration:none}
 .area--loja .area__corpo, .area--eventos .area__corpo{margin-top:20px}
 .area--loja .area__corpo p, .area--eventos .area__corpo p{font-size:clamp(14px,1.05vw,16px); line-height:1.6; margin:0 0 12px}
 
-.area__recursos{
-  display:flex; list-style:none; margin:18px 0 0; padding:0;
-  font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
-  color:var(--nevoa-txt); line-height:1.5;
-}
-.area__recursos li{padding:0 16px; border-left:1px solid rgba(60,40,20,.16)}
-.area__recursos li:first-child{border-left:0; padding-left:0}
-
-.area__vitrine .galeria{max-width:none; width:100%}
+/* Galeria do mesmo tamanho do cartão de texto ao lado: a grade estica
+   os dois filhos (align-items:stretch) e a galeria preenche 100% dessa
+   altura em vez de manter a proporção própria (8:5) fixa. */
+.area--loja .area__grade, .area--eventos .area__grade{align-items:stretch}
+.area__vitrine{height:100%}
+.area__vitrine .galeria{max-width:none; width:100%; height:100%}
 .area__vitrine .galeria__palco{
-  aspect-ratio:8/5; border-radius:24px;
+  height:100%; border-radius:24px;
   box-shadow:0 30px 60px rgba(28,18,8,.4), 0 10px 24px rgba(28,18,8,.28), 0 0 0 1px rgba(255,255,255,.5);
 }
 .area__vitrine .galeria__seta{width:44px; height:44px}
@@ -528,13 +525,13 @@ a{color:inherit; text-decoration:none}
      dele — essas duas dobras precisam do próprio respiro no topo. */
   .area--loja, .area--eventos{padding-top:calc(var(--header-h) + 24px)}
   :root{ --fs-gigante:clamp(26px,8vw,40px); --fs-chamada:clamp(18px,5.6vw,26px); }
-  .area__vitrine .galeria__palco{border-radius:16px}
+  .area__vitrine{height:auto}
+  .area__vitrine .galeria{height:auto}
+  .area__vitrine .galeria__palco{height:auto; aspect-ratio:8/5; border-radius:16px}
   .area__vitrine .galeria__seta{width:36px; height:36px}
   .area__vitrine .galeria__minis{bottom:10px; gap:6px}
   .area__vitrine .galeria__mini{width:30px; height:30px; border-width:2px}
   .area__vitrine .galeria__mini[aria-selected="true"]{width:38px; height:38px}
-  .area__recursos{font-size:9.5px; gap:0}
-  .area__recursos li{padding:0 12px}
 }
 
 /* =====================================================================
@@ -1080,11 +1077,6 @@ a{color:inherit; text-decoration:none}
                 <div data-anim data-i="4" class="topo__ctas">
                   <a class="btn btn--ouro" data-zap="evento" href="#contato">Pedir orçamento →</a>
                 </div>
-                <ul data-anim data-i="5" class="area__recursos">
-                  <li>Decoração<br>personalizada</li>
-                  <li>Atendimento<br>especializado</li>
-                  <li>Em toda<br>a região</li>
-                </ul>
               </div>
             </div>
             <div class="area__vitrine" data-anim data-i="2">
