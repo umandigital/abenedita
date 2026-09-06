@@ -3,7 +3,7 @@
   "short_name": "a Benedita",
   "description": "Flores frescas do dia em Porto Alegre. Pedido pelo WhatsApp.",
   "lang": "pt-BR",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#F4EEE4",
   "theme_color": "#6E4A2C",

@@ -1,0 +1,66 @@
+# a Benedita Floristeria — configuração para hospedagem Apache (cPanel).
+# Site 100% estático: sem build, sem backend próprio (só chama o Supabase
+# direto do navegador). Isso aqui reproduz o que o netlify.toml fazia lá no
+# Netlify, adaptado pra sintaxe do Apache.
+
+# ---------------------------------------------------------------------
+# Página de erro
+# ---------------------------------------------------------------------
+ErrorDocument 404 /abenedita/404.html
+
+# ---------------------------------------------------------------------
+# Rotas do catálogo
+# Cada categoria pode ganhar endereço próprio (/abenedita/catalogo/aneis),
+# mas o site é um arquivo só: o servidor entrega sempre o index.html e o
+# JavaScript abre a vista certa. Ainda não é usado por nenhum link do
+# site, mas fica pronto pra quando for.
+# ---------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /abenedita/
+  RewriteRule ^catalogo/ index.html [L]
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Cabeçalhos de segurança
+# ---------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  # O HTML carrega conteúdo do Supabase, então não pode ficar em cache
+  # longo — uma home em cache faz a pessoa jurar que a alteração não subiu.
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # O painel não é secreto (a proteção de verdade é o RLS no Supabase),
+  # mas também não é pra ficar indexado nem em cache.
+  <Files "admin.html">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+    Header set X-Robots-Tag "noindex, nofollow"
+  </Files>
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Cache de imagens, vídeos e fontes — mudam de nome quando trocam, então
+# podem ficar em cache por muito tempo sem risco de ficar desatualizado.
+# ---------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  <FilesMatch "\.(jpg|jpeg|png|webp|gif|svg|ico|mp4|webm|woff2?)$">
+    ExpiresDefault "access plus 1 year"
+  </FilesMatch>
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(woff2?)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>
+
+# Compressão, se o módulo existir.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
