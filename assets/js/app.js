@@ -830,15 +830,12 @@
       { pergunta:'Como cuido das flores?', resposta:'Troque a água a cada dois dias, corte os talos na diagonal e fuja do sol forte. A gente manda as dicas junto.' }
     ],
     catalogo: {
-      /* capa/video: mesmo par nas cinco por enquanto — é o primeiro vídeo de
-         categoria que chegou, e a ideia é so mostrar o hover funcionando
-         antes de cada categoria ganhar o seu. Ver PENDENCIAS.md. */
       categorias: [
-        { slug:'arranjos',       nome:'Arranjos',        acento:'#C0356B', capa:'assets/img/categoria-exemplo-capa.webp', video:'assets/video/categoria-exemplo.mp4' },
-        { slug:'buques',         nome:'Buquês',          acento:'#E9B23A', capa:'assets/img/categoria-exemplo-capa.webp', video:'assets/video/categoria-exemplo.mp4' },
-        { slug:'caixas-prontas', nome:'Caixas prontas',  acento:'#B23A3A', capa:'assets/img/categoria-exemplo-capa.webp', video:'assets/video/categoria-exemplo.mp4' },
-        { slug:'cestas',         nome:'Cestas',          acento:'#5C7A3A', capa:'assets/img/categoria-exemplo-capa.webp', video:'assets/video/categoria-exemplo.mp4' },
-        { slug:'cachepos',       nome:'Cachepôs',        acento:'#8A5AA8', capa:'assets/img/categoria-exemplo-capa.webp', video:'assets/video/categoria-exemplo.mp4' }
+        { slug:'arranjos',       nome:'Arranjos',        acento:'#C0356B', capa:'assets/img/categoria-arranjos-capa.webp',       video:'assets/video/categoria-arranjos.mp4' },
+        { slug:'buques',         nome:'Buquês',          acento:'#E9B23A', capa:'assets/img/categoria-buques-capa.webp',        video:'assets/video/categoria-buques.mp4' },
+        { slug:'caixas-prontas', nome:'Caixas prontas',  acento:'#B23A3A', capa:'assets/img/categoria-caixas-prontas-capa.webp', video:'assets/video/categoria-caixas-prontas.mp4' },
+        { slug:'cestas',         nome:'Cestas',          acento:'#5C7A3A', capa:'assets/img/categoria-cestas-capa.webp',        video:'assets/video/categoria-cestas.mp4' },
+        { slug:'cachepos',       nome:'Cachepôs',        acento:'#8A5AA8', capa:'assets/img/categoria-cachepos-capa.webp',      video:'assets/video/categoria-cachepos.mp4' }
       ],
       /* Preços de marcação — ver PENDENCIAS.md. */
       produtos: [
